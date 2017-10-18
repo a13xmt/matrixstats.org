@@ -1,0 +1,58 @@
+{% extends 'room_stats/base.html' %}
+
+{% block content %}
+  <h1>{{ room.name }} stats</h1>
+  <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank">{{ room.id }}</a>
+  <div style="height:200px; width:300px;">
+    <canvas id="dailyVisitorsChart" height="200" width="300"></canvas>
+  </div>
+  <script>
+   var ctx = document.getElementById("dailyVisitorsChart").getContext("2d");
+   var labels = {{ labels | safe }};
+   var cfg = {
+     type: 'bar',
+     data: {
+       labels: labels,
+       datasets: [{
+         label: "Members",
+         data: {{ points | safe }},
+         type: 'line',
+         pointRadius: 1,
+         fill: false,
+         lineTension: 0,
+         borderWidth: 2,
+         borderColor: 'green',
+       }]
+     },
+     options: {
+       scales: {
+         xAxes: [{
+           type: 'category',
+           /* distribution: 'series',*/
+           ticks: {
+             source: 'labels',
+           }
+         }],
+         yAxes: [{
+           scaleLabel: {
+             display: true,
+             type: 'linear',
+             labelString: 'Members',
+           },
+           ticks: {
+             userCallback: function(label, index, labels) {
+               if (Math.floor(label) === label) {
+                 return label;
+               }
+             },
+           }
+         }]
+       }
+     }
+   };
+   var chart = new Chart(ctx, cfg);
+  </script>
+  {% for p in points %}
+    <div>{{ p.x }} - {{ p.y }}</div>
+  {% endfor %}
+{% endblock content %}

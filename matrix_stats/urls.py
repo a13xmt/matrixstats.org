@@ -16,6 +16,23 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from room_stats import views
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^stats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/(?P<days>[0-9]*)$',
+        views.get_daily_members_stats
+    ),
+    url(r'^room/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)$',
+        views.room_stats_view, name='room-stats',
+    ),
+    url(r'^rooms/$', views.list_rooms),
+    url(r'^rooms/top/', views.list_rooms_by_members_count),
+    url(r'^rooms/random/', views.list_rooms_by_random),
+    url(r'^rooms/russian/', views.list_rooms_by_lang_ru),
+    url(r'^rooms/tags/', views.list_tags),
+    url(r'^rooms/tag/(?P<tag>\w+)', views.list_rooms_with_tag, name='rooms-with-tag'),
+
+
+
 ]

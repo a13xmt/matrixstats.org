@@ -1,0 +1,9 @@
+{% extends 'room_stats/base.html' %}
+
+{% block content %}
+  {% for tag in tags %}
+    {% url 'rooms-with-tag' tag=tag as rooms_url %}
+      <a class="tag-cloud" href="{{ rooms_url }}">#{{tag}} </a>
+  {% endfor %}
+
+{% endblock content %}

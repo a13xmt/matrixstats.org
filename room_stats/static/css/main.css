@@ -1,0 +1,54 @@
+/*
+ */
+.content-container {
+  max-width: 700px;
+  margin: auto;
+}
+
+a.tag-cloud {
+  font-size: 0.8em;
+  color: rgb(0, 45, 90);
+  text-decoration: none;
+}
+
+
+/*
+ *
+ * Rooms
+ *
+ */
+
+.room-container {
+  border: 1px grey solid;
+  margin-bottom: 5px;
+  padding: 10px;
+  cursor: pointer;
+  background-color: rgb(245,245,245);
+  border-radius: 2px;
+}
+
+.room-container > h1 {
+  font-size: 16px;
+  margin: 0 0 10px 0;
+}
+
+.room-container > h1 a, .room-container > h1 a:visited {
+  text-decoration: none;
+  color: rgb(119,119,119);
+
+}
+
+.room-members-count {
+  font-size: 0.8em;
+  float: right;
+}
+
+.room-desc {
+  font-size: 0.6em;
+  font-family: italic;
+
+}
+
+
+
+

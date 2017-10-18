@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.db import models
 
 class Room(models.Model):
@@ -9,3 +11,23 @@ class Room(models.Model):
     avatar_url = models.TextField(blank=True, null=True)
     is_public_readable = models.BooleanField()
     is_guest_writeable = models.BooleanField()
+
+    def __str__(self):
+        return "(%s) %s" % (self.members_count, self.name)
+
+def tmpdate():
+    return datetime.now() - timedelta(days=1)
+
+class DailyMembers(models.Model):
+    id = models.CharField(max_length=511, primary_key=True, editable=False)
+    room_id = models.CharField(max_length=511)
+    members_count = models.IntegerField()
+    date = models.DateField(default=datetime.now, editable=False)#auto_now=True)
+
+    def save(self):
+        self.id = "%s-%s" % ( self.room_id, self.date.strftime("%Y%m%d"))
+        super(DailyMembers, self).save()
+
+    class Meta:
+        verbose_name_plural = "Daily Members"
+

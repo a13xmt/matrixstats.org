@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Matrix stats</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href='{% static "css/main.css" %}'>
+
+    <script src='{% static "vendor/Chart.bundle.min.js" %}' type="text/javascript" ></script>
+    {% block additional_imports %}
+    {% endblock additional_imports %}
+
+  </head>
+
+  <body>
+    <div class="content-container">
+      {% block content %}
+      {% endblock content %}
+    </div>
+
+
+    <script src='{% static "js/main.js" %}' type="text/javascript"></script>
+
+  </body>
+
+</html>
