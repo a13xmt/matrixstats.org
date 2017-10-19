@@ -80,5 +80,13 @@ def list_rooms_by_lang_ru(request):
     context = {'rooms': rooms}
     return render(request, 'room_stats/rooms_list.html', context)
 
+from django.contrib.postgres.search import SearchVector
+def list_rooms_by_search_term(request, term):
+    rooms = Room.objects.annotate(
+        search=SearchVector('name', 'aliases', 'topic'),
+    ).filter(search=term)
+    context = {'rooms': rooms}
+    return render(request, 'room_stats/rooms_list.html', context)
+
 # Create your views here.
 
