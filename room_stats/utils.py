@@ -1,12 +1,14 @@
 import json
+import re
 from datetime import datetime
 from django.db import transaction
 
-from room_stats.models import Room, DailyMembers
+from room_stats.models import Room, DailyMembers, Tag
 
 @transaction.atomic
 def update_rooms():
-    f = open('room_stats/matrix-rooms-181017.json', 'r')
+    date = datetime.now().strftime("%d%m%y")
+    f = open('room_stats/matrix-rooms-%s.json' % date, 'r')
     rooms = json.loads(f.read())['chunk']
     for room in rooms:
         r = Room(
@@ -32,14 +34,21 @@ def update_daily_members():
         )
         dm.save()
 
-def extract_tags():
-    import re
+@transaction.atomic
+def update_tags():
+    # clear previous relations
+    Tag.objects.all().delete()
     hashtag = re.compile("#\w+")
     rooms = Room.objects.filter(members_count__gt=5, topic__iregex=r'#\w+')
     tags = []
     for room in rooms:
-        tags.extend(hashtag.findall(room.topic))
-    return tags
+        room_tags = hashtag.findall(room.topic)
+        for tag in room_tags:
+            linked_tag = Tag(
+                id=tag[1:],
+            )
+            linked_tag.save()
+            linked_tag.rooms.add(room)
 
 def daily_stats_to_file():
     import requests
@@ -68,5 +77,11 @@ def daily_stats_to_file():
     f = open('room_stats/matrix-rooms-%s.json' % date, 'w')
     f.write(json.dumps(result))
     f.close()
+
+def update():
+    daily_stats_to_file()
+    update_rooms()
+    update_tags()
+    update_daily_members()
 
 

@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http.response import JsonResponse
 
-from room_stats.models import Room, DailyMembers
-from room_stats.utils import extract_tags
+from room_stats.models import Room, DailyMembers, Tag
 
 def get_daily_members_stats(request, room_id, days=30):
     from_date = datetime.now() - timedelta(days=int(days)-1)
@@ -66,7 +65,7 @@ def list_rooms_with_tag(request, tag):
     return render(request, 'room_stats/rooms_list.html', context)
 
 def list_tags(request):
-    tags = [tag[1:] for tag in extract_tags()]
+    tags = Tag.objects.all()
     context = {'tags': tags}
     return render(request, 'room_stats/tag_list.html', context)
 

@@ -11,12 +11,10 @@ class Room(models.Model):
     avatar_url = models.TextField(blank=True, null=True)
     is_public_readable = models.BooleanField()
     is_guest_writeable = models.BooleanField()
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "(%s) %s" % (self.members_count, self.name)
-
-def tmpdate():
-    return datetime.now() - timedelta(days=1)
 
 class DailyMembers(models.Model):
     id = models.CharField(max_length=511, primary_key=True, editable=False)
@@ -30,4 +28,9 @@ class DailyMembers(models.Model):
 
     class Meta:
         verbose_name_plural = "Daily Members"
+
+class Tag(models.Model):
+    id = models.CharField(max_length=100, primary_key=True)
+    rooms = models.ManyToManyField(Room)
+    updated_at = models.DateTimeField(auto_now=True)
 

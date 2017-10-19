@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from room_stats.models import Room
+from room_stats.models import Tag
 from room_stats.models import DailyMembers
 
 class RoomAdmin(admin.ModelAdmin):
@@ -26,5 +27,10 @@ class RoomAdmin(admin.ModelAdmin):
 class DailyMembersAdmin(admin.ModelAdmin):
     list_display = ('room_id', 'date','members_count')
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'updated_at')
+
 admin.site.register(Room, RoomAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(DailyMembers, DailyMembersAdmin)
+
