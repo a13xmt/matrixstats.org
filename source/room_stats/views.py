@@ -25,7 +25,7 @@ def room_stats_view(request, room_id):
     dm = DailyMembers.objects.filter(
         room_id=room_id,
         date__gte=from_date,
-    )
+    ).order_by('date')
     points = []
     for day in dm:
         points.append({
