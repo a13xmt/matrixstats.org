@@ -188,7 +188,12 @@ def update_daily_members():
 
 def update():
     date = datetime.now().strftime("%d%m%y")
-    filename = "room_stats/matrix-rooms-%s.json" % date
+
+    app_stats_dir = os.environ.get("APP_STATS_DIR")
+    filename = os.path.join(
+        app_stats_dir,
+        "matrix-rooms-%s.json" % date
+    )
 
     get_all_rooms_to_file(filename)
     update_rooms_from_file(filename)
@@ -197,10 +202,15 @@ def update():
     update_daily_members()
 
 
-def update_daily_members_from_dir(directory):
+def import_daily_members():
     """Update daily members stastistics from directory's files"""
     import glob
-    for daily_stats_file in glob.glob("%s/matrix-rooms-*.json" % directory):
+    app_stats_dir = os.environ.get('APP_STATS_DIR')
+    pattern = os.path.join(
+        app_stats_dir,
+        "matrix-rooms-*.json"
+    )
+    for daily_stats_file in glob.glob(pattern):
         with open(daily_stats_file) as f:
             data = f.read()
             rooms = json.loads(data)
