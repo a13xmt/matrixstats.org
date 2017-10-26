@@ -29,6 +29,7 @@ services:
       - ./source/matrix_stats/env/prod
     command: 'gunicorn matrix_stats.wsgi:application -w 2 -b :8000'
     volumes:
+      - 'mediadata:/media'
       - 'staticdata:/static'
       - 'logsdata:/logs'
       - 'storagedata:/storage'
@@ -37,8 +38,8 @@ services:
 
 volumes:
   pgdata:
+  storagedata:
   mediadata:
   staticdata:
   logsdata:
   letsencryptdata:
-
