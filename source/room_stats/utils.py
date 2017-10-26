@@ -42,7 +42,7 @@ class MatrixClient:
             self.token = r.json()['access_token']
             return self.token
         else:
-            raise MatrixClientException(r.text)
+            raise MatrixClientError(r.text)
 
     def get(self, path, params={}):
         params['access_token'] = self.get_token()
@@ -53,7 +53,7 @@ class MatrixClient:
         if r.status_code == 200:
             return r.json()
         else:
-            raise MatrixClientException(r.text)
+            raise MatrixClientError(r.text)
 
     def get_public_rooms(self, timeout=30, chunk_size=2000, limit=None, args={}):
         upper_time_bound = datetime.now() + timedelta(seconds=timeout)
@@ -74,7 +74,7 @@ class MatrixClient:
             if limit and len(rooms) >= limit:
                 break
             if datetime.now() > upper_time_bound:
-                raise MatrixClientTimeoutException()
+                raise MatrixClientTimeoutError()
         return rooms
 
 
