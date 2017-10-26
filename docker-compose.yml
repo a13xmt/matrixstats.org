@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_DB=matrixstats
+      - POSTGRES_USER=matrixstats
+      - POSTGRES_PASSWORD=matrixstats
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data/'
+
+  nginx:
+    build: './docks/nginx/.'
+    volumes:
+      - 'mediadata:/media'
+      - 'staticdata:/static'
+      - 'letsencryptdata:/etc/letsencrypt'
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+
+  web:
+    build: './source/.' 
+    image: 'websource'
+    env_file:
+      - ./source/matrix_stats/env/prod
+    command: 'gunicorn matrix_stats.wsgi:application -w 2 -b :8000'
+    volumes:
+      - 'mediadata:/media'
+      - 'staticdata:/static'
+      - 'logsdata:/logs'
+    depends_on:
+      - postgres 
+
+volumes:
+  pgdata:
+  mediadata:
+  staticdata:
+  logsdata:
+  letsencryptdata:
+
