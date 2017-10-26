@@ -20,7 +20,7 @@ class RoomAdmin(admin.ModelAdmin):
     logo.short_description = "logo"
 
 
-    list_display = ('logo', 'members_count', 'name', 'topic', 'is_public_readable', 'is_guest_writeable')
+    list_display = ('logo', 'members_count', 'name', 'topic', 'is_public_readable', 'is_guest_writeable', 'updated_at')
     ordering = ('-members_count', )
 
 

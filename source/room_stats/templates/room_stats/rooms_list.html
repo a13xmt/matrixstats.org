@@ -3,7 +3,7 @@
 {% block content %}
   {% for room in rooms %}
     {% url 'room-stats' room_id=room.id as room_url %}
-    <div class="room-container" onclick="document.location='{{ room_url }}'">
+    <div class="room-container {% if room.is_public_readable %}room-public{% endif %}" onclick="document.location='{{ room_url }}'">
       <h1><a href="{% url 'room-stats' room_id=room.id %}">{{ room.name }}</a></h1>
       <div class="room-members-count">{{ room.members_count }}</div>
       <div class="room-desc">{{ room.topic }}</div>
