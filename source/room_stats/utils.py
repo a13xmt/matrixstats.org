@@ -126,8 +126,13 @@ def update_rooms_from_file(filename):
     f = open(filename, 'r')
     rooms = json.loads(f.read())
     print("Rooms found: %s" % len(rooms))
-    for room in rooms:
-        r = Room(
+
+    room_ids = [ r['room_id'] for r in rooms ]
+    # delete rooms
+    Room.objects.filter(id__in=room_ids).delete()
+
+    rooms_next = [
+        Room(
             id=room['room_id'],
             name=room.get('name',''),
             aliases=", ".join(room.get('aliases', [])),
@@ -136,9 +141,10 @@ def update_rooms_from_file(filename):
             avatar_url=room.get('avatar_url', ''),
             is_public_readable=room['world_readable'],
             is_guest_writeable=room['guest_can_join']
-        )
-        r.save()
+        ) for room in rooms
+    ]
 
+    Room.objects.bulk_create(rooms_next)
 
 @transaction.atomic
 def update_tags():
@@ -146,7 +152,6 @@ def update_tags():
     Tag.objects.all().delete()
     hashtag = re.compile("#\w+")
     rooms = Room.objects.filter(members_count__gt=5, topic__iregex=r'#\w+')
-    tags = []
     for room in rooms:
         room_tags = hashtag.findall(room.topic)
         for tag in room_tags:
@@ -160,13 +165,25 @@ def update_tags():
 @transaction.atomic
 def update_daily_members():
     rooms = Room.objects.all()
-    daily_members_list = []
-    for room in rooms:
-        dm = DailyMembers(
+
+    date = datetime.now()
+    date_for_id = date.strftime("%Y%m%d")
+
+    # Delete old records
+    DailyMembers.objects.filter(
+        date__year=date.year,
+        date__month=date.month,
+        date__day=date.day
+    ).delete()
+
+    daily_members = [
+        DailyMembers(
+            id="%s-%s" % ( room.id, date_for_id),
             room_id=room.id,
             members_count=room.members_count
-        )
-        dm.save()
+        ) for room in rooms
+    ]
+    DailyMembers.objects.bulk_create(daily_members)
 
 
 def update():
@@ -179,4 +196,38 @@ def update():
     update_tags()
     update_daily_members()
 
+
+def update_daily_members_from_dir(directory):
+    """Update daily members stastistics from directory's files"""
+    import glob
+    for daily_stats_file in glob.glob("%s/matrix-rooms-*.json" % directory):
+        with open(daily_stats_file) as f:
+            data = f.read()
+            rooms = json.loads(data)
+            rooms = rooms if type(rooms) is list else rooms['chunk'] # old format
+
+            # parse date from file name
+            date = daily_stats_file[-11:-5]
+            date = datetime.strptime(date, "%d%m%y")
+
+            # Delete old records
+            DailyMembers.objects.filter(
+                date__year=date.year,
+                date__month=date.month,
+                date__day=date.day
+            ).delete()
+
+            date_for_id = date.strftime("%Y%m%d")
+
+            daily_members = [
+                DailyMembers(
+                    id="%s-%s" % ( room['room_id'], date_for_id),
+                    room_id=room['room_id'],
+                    members_count=room['num_joined_members'],
+                    date=date
+                ) for room in rooms
+            ]
+
+            DailyMembers.objects.bulk_create(daily_members)
+            print("Rooms count: %s | %s" % (len(daily_members), date))
 
