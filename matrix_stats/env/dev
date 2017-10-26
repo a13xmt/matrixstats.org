@@ -1,5 +1,0 @@
-DB_HOST=192.168.55.10
-DB_PORT=5432
-DB_NAME=matrixstats
-DB_USER=matrixstatsadmin
-DB_PASSWORD=matrixstatsadmin
