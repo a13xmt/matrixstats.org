@@ -56,8 +56,9 @@ def room_stats_view(request, room_id):
 def list_rooms(request):
     return render(request, 'room_stats/rooms.html')
 
+# FIXME optimize query and add daily/weekly/monthly stats
 def list_server_stats(request, server):
-    server_stats = ServerStats.objects.filter(server=server).order_by('-id')[0:200]
+    server_stats = ServerStats.objects.filter(server=server).order_by('id')[0:200]
     points = []
     for stat in server_stats:
         points.append({
