@@ -7,6 +7,9 @@ from django.db import transaction
 
 from room_stats.models import Room, DailyMembers, Tag
 
+rs = requests.Session()
+rs.headers.update({'User-Agent': 'Matrixbot/1.0 (+https://matrixstats.org)'})
+
 class MatrixClientError(Exception):
     pass
 
@@ -34,7 +37,7 @@ class MatrixClient:
             'password': password,
             'type': 'm.login.password',
         }
-        r = requests.post(
+        r = rs.post(
             self.__get_url('/login'),
             json=payload
         )
@@ -46,7 +49,7 @@ class MatrixClient:
 
     def get(self, path, params={}):
         params['access_token'] = self.get_token()
-        r = requests.get(
+        r = rs.get(
             self.__get_url(path),
             params=params
         )
