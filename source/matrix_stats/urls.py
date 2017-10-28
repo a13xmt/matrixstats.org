@@ -26,10 +26,10 @@ urlpatterns = [
     url(r'^room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)$',
         views.room_stats_view, name='room-stats',
     ),
-    url(r'^rooms/$', views.list_rooms),
+    url(r'^$', views.list_rooms),
     url(r'^rooms/top/', views.list_rooms_by_members_count),
     url(r'^rooms/random/', views.list_rooms_by_random),
-    url(r'^rooms/russian/', views.list_rooms_by_lang_ru),
+    url(r'^rooms/cyrillic/', views.list_rooms_by_lang_ru),
     url(r'^rooms/tags/', views.list_tags),
     url(r'^rooms/tag/(?P<tag>\w+)', views.list_rooms_with_tag, name='rooms-with-tag'),
 

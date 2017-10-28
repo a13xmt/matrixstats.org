@@ -1,8 +1,21 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http.response import JsonResponse
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from room_stats.models import Room, DailyMembers, Tag
+
+
+def render_rooms_paginated(request, queryset, context={}, page_size=20):
+    page = request.GET.get('page', 1)
+    paginator = Paginator(queryset, page_size)
+    try:
+        rooms = paginator.page(page)
+    except EmptyPage:
+        rooms = paginator.page(paginator.num_pages)
+    context['rooms'] = rooms
+    return render(request, 'room_stats/rooms_list.html', context)
+
 
 def get_daily_members_stats(request, room_id, days=30):
     from_date = datetime.now() - timedelta(days=int(days)-1)
@@ -49,20 +62,17 @@ def list_rooms_by_random(request):
     return render(request, 'room_stats/rooms_list.html', context)
 
 def list_rooms_by_members_count(request):
+    # rooms = Room.objects.filter(
+    #     members_count__gt=5).order_by('-members_count')[:20]
+    # context = {'rooms': rooms}
+    # return render(request, 'room_stats/rooms_list.html', context)
     rooms = Room.objects.filter(
-        members_count__gt=5).order_by('-members_count')[:20]
-    context = {'rooms': rooms}
-    return render(request, 'room_stats/rooms_list.html', context)
-
-def list_rooms_with_tags(request):
-    rooms = Room.objects.filter(topic__iregex=r'#').order_by('?')[:20]
-    context = {'rooms': rooms}
-    return render(request, 'room_stats/rooms_list.html', context)
+        members_count__gt=5).order_by('-members_count')
+    return render_rooms_paginated(request,rooms)
 
 def list_rooms_with_tag(request, tag):
-    rooms = Room.objects.filter(topic__iregex='#%s' % tag).order_by('?')[:20]
-    context = {'rooms': rooms}
-    return render(request, 'room_stats/rooms_list.html', context)
+    rooms = Room.objects.filter(topic__iregex='#%s' % tag)
+    return render_rooms_paginated(request, rooms)
 
 def list_tags(request):
     tags = Tag.objects.all()
@@ -76,17 +86,15 @@ def all_rooms_view(request):
     return render(request, 'room_stats/rooms_list.html', context)
 
 def list_rooms_by_lang_ru(request):
-    rooms = Room.objects.filter(topic__iregex=r'[а-яА-ЯёЁ]+').order_by('?')[:20]
-    context = {'rooms': rooms}
-    return render(request, 'room_stats/rooms_list.html', context)
+    rooms = Room.objects.filter(topic__iregex=r'[а-яА-ЯёЁ]+') #.order_by('?')[:20]
+    return render_rooms_paginated(request, rooms)
 
 from django.contrib.postgres.search import SearchVector
 def list_rooms_by_search_term(request, term):
     rooms = Room.objects.annotate(
         search=SearchVector('name', 'aliases', 'topic'),
     ).filter(search=term)
-    context = {'rooms': rooms}
-    return render(request, 'room_stats/rooms_list.html', context)
+    return render_rooms_paginated(request, rooms)
 
 # Create your views here.
 

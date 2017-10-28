@@ -11,6 +11,22 @@ a.tag-cloud {
   text-decoration: none;
 }
 
+.content {
+  
+}
+
+.pagination {
+  /* display: inline-block; */
+  display: table;
+  margin: 20px auto;
+}
+
+.pagination a {
+  padding: 4px;
+  text-decoration: none;
+  color: rgb(80,80,80);
+}
+
 
 /*
  *

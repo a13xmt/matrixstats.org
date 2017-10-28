@@ -11,4 +11,18 @@
 
   {% endfor %}
 
+  {% if rooms.has_other_pages %}
+    <div class="pagination">
+      {% if rooms.has_previous %}
+        <a href="?page={{ rooms.previous_page_number }}">&laquo;</a>
+      {% endif %}
+
+      <a class="active">{{ rooms.number }} / {{ rooms.paginator.num_pages}}</a>
+
+      {% if rooms.has_next %}
+        <a href="?page={{ rooms.next_page_number }}">&raquo;</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
 {% endblock content %}
