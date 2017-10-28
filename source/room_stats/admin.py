@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from room_stats.models import Room
 from room_stats.models import Tag
 from room_stats.models import DailyMembers
+from room_stats.models import ServerStats
 
 class RoomAdmin(admin.ModelAdmin):
     def logo(self, obj):
@@ -30,7 +31,11 @@ class DailyMembersAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'updated_at')
 
+class ServerStatsAdmin(admin.ModelAdmin):
+    list_display = ('latency', 'date')
+
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(DailyMembers, DailyMembersAdmin)
+admin.site.register(ServerStats, ServerStatsAdmin)
 

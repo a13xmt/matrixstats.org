@@ -35,3 +35,8 @@ class Tag(models.Model):
     rooms = models.ManyToManyField(Room)
     updated_at = models.DateTimeField(auto_now=True)
 
+class ServerStats(models.Model):
+    server = models.CharField(max_length=255)
+    latency = models.IntegerField()
+    date = models.DateField(default=datetime.now)
+

@@ -5,7 +5,7 @@ import requests
 from datetime import datetime, timedelta
 from django.db import transaction
 
-from room_stats.models import Room, DailyMembers, Tag
+from room_stats.models import Room, DailyMembers, Tag, ServerStats
 
 rs = requests.Session()
 rs.headers.update({'User-Agent': 'Matrixbot/1.0 (+https://matrixstats.org)'})
@@ -203,6 +203,31 @@ def update():
 
     update_tags()
     update_daily_members()
+
+from requests.exceptions import Timeout
+def update_server_stats():
+    username = os.environ.get("MATRIX_USERNAME")
+    password = os.environ.get("MATRIX_PASSWORD")
+
+    payload = {
+        'user': username,
+        'password': password,
+        'type': 'm.login.password',
+    }
+    latency = 0
+    try:
+        r = rs.post(
+            'https://matrix.org/_matrix/client/r0/login',
+            json=payload
+        )
+        latency = r.elapsed.microseconds / 1000
+    except Timeout:
+        latency = 0
+    stats = ServerStats(
+        server='matrix.org',
+        latency=latency
+    )
+    stats.save()
 
 
 def import_daily_members():
