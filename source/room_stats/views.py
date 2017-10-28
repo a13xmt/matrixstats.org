@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from room_stats.models import Room, DailyMembers, Tag
+from room_stats.models import Room, DailyMembers, Tag, ServerStats
 
 
 def render_rooms_paginated(request, queryset, context={}, page_size=20):
@@ -55,6 +55,23 @@ def room_stats_view(request, room_id):
 
 def list_rooms(request):
     return render(request, 'room_stats/rooms.html')
+
+def list_server_stats(request, server):
+    server_stats = ServerStats.objects.filter(server=server).order_by('-id')[0:200]
+    points = []
+    for stat in server_stats:
+        points.append({
+            'x': stat.date.strftime("%H:%M %d-%m-%Y"),
+            'y': stat.latency
+        })
+    labels = str([ point['x'] for point in points ])
+    context = {
+        'server_stats': server_stats,
+        'points': points,
+        'labels': labels,
+        'server': server
+    }
+    return render(request, 'room_stats/server_stats.html', context)
 
 def list_rooms_by_random(request):
     rooms = Room.objects.filter(members_count__gt=5).order_by('?')[:20]

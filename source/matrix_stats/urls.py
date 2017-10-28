@@ -27,6 +27,7 @@ urlpatterns = [
         views.room_stats_view, name='room-stats',
     ),
     url(r'^$', views.list_rooms),
+    url(r'^server/(?P<server>[a-zA-Z0-9\.]+)', views.list_server_stats, name='server-stats'),
     url(r'^rooms/top/', views.list_rooms_by_members_count),
     url(r'^rooms/random/', views.list_rooms_by_random),
     url(r'^rooms/cyrillic/', views.list_rooms_by_lang_ru),

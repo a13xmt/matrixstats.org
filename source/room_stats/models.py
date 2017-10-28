@@ -38,5 +38,5 @@ class Tag(models.Model):
 class ServerStats(models.Model):
     server = models.CharField(max_length=255)
     latency = models.IntegerField()
-    date = models.DateField(default=datetime.now)
+    date = models.DateTimeField(default=datetime.now)
 

@@ -1,0 +1,54 @@
+{% extends 'room_stats/base.html' %}
+
+{% block content %}
+
+  <div class="server-stats-graph">
+    <canvas id="serverLatencyGraph" ></canvas>
+  </div>
+
+  <script>
+    var ctx = document.getElementById("serverLatencyGraph").getContext("2d");
+    var labels = {{ labels | safe }};
+    var cfg = {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "{{ server }} latency, ms",
+          data: {{ points | safe }},
+          type: 'line',
+          pointRadius: 1,
+          fill: false,
+          lineTension: 0,
+          borderWidth: 2,
+          borderColor: 'green',
+        }]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'category',
+            ticks: {
+              source: 'labels',
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              type: 'linear',
+            },
+            ticks: {
+              userCallback: function(label, index, labels) {
+                if (Math.floor(label) === label) {
+                  return label;
+                }
+              },
+            }
+          }]
+        }
+      }
+    };
+    var chart = new Chart(ctx, cfg);
+  </script>
+
+{% endblock content %}
