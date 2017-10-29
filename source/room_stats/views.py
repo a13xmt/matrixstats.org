@@ -58,16 +58,25 @@ def list_rooms(request):
 
 # FIXME optimize query and add daily/weekly/monthly stats
 def list_server_stats(request, server):
-    server_stats = ServerStats.objects.filter(server=server).order_by('id')[0:200]
+    server_stats = ServerStats.objects.filter(server=server).order_by('id')[0:180]
     points = []
+
+    LATENCY_GROUP_SIZE = 6;
+    latency_group = []
     for stat in server_stats:
-        points.append({
-            'x': stat.date.strftime("%H:%M %d-%m-%Y"),
-            'y': stat.latency
-        })
+        latency_group.append(stat.latency)
+        if len(latency_group) == LATENCY_GROUP_SIZE:
+            points.append({
+                'x': stat.date.strftime("%H:%M %d-%m-%Y"),
+                'y': sum(latency_group) / LATENCY_GROUP_SIZE
+            })
+            latency_group = []
+        # points.append({
+        #     'x': stat.date.strftime("%H:%M %d-%m-%Y"),
+        #     'y': stat.latency
+        # })
     labels = str([ point['x'] for point in points ])
     context = {
-        'server_stats': server_stats,
         'points': points,
         'labels': labels,
         'server': server
@@ -113,6 +122,4 @@ def list_rooms_by_search_term(request, term):
         search=SearchVector('name', 'aliases', 'topic'),
     ).filter(search=term)
     return render_rooms_paginated(request, rooms)
-
-# Create your views here.
 
