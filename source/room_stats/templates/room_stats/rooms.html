@@ -2,9 +2,19 @@
 
 {% block content %}
   <ul>
-    <li><a href="/rooms/random">Random</a></li>
+
     <li><a href="/rooms/top">Top by members</a></li>
+    <li><a href="/rooms/random">Random</a></li>
     <li><a href="/rooms/cyrillic">Cyrillic</a></li>
+    <br>
+    <li>Top absolute:
+      <a href="{% url 'top-abs-weekly' %}">weekly</a>,
+      <a href="{% url 'top-abs-monthly' %}">monthly</a>
+    </li>
+    <li>Top relative:
+      <a href="{% url 'top-rel-weekly' %}">weekly</a>,
+      <a href="{% url 'top-rel-monthly' %}">monthly</a>
+    </li>
     <br>
     <li><a href="/rooms/tags">Tags</a></li>
     <li>

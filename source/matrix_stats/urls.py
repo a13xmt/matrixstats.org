@@ -28,7 +28,17 @@ urlpatterns = [
     ),
     url(r'^$', views.list_rooms),
     url(r'^server/(?P<server>[a-zA-Z0-9\.]+)', views.list_server_stats, name='server-stats'),
-    url(r'^rooms/top/', views.list_rooms_by_members_count),
+
+    url(r'^top/abs/weekly/$', views.list_most_joinable_rooms, kwargs={
+        'delta': 7, 'rating': 'absolute'}, name='top-abs-weekly'),
+    url(r'^top/abs/monthly/$', views.list_most_joinable_rooms, kwargs={
+        'delta': 30, 'rating': 'absolute'}, name='top-abs-monthly'),
+    url(r'^top/rel/weekly/$', views.list_most_joinable_rooms, kwargs={
+        'delta': 7, 'rating': 'relative'}, name='top-rel-weekly'),
+    url(r'^top/rel/monthly/$', views.list_most_joinable_rooms, kwargs={
+        'delta': 30, 'rating': 'relative'}, name='top-rel-monthly'),
+    url(r'^top/$', views.list_rooms_by_members_count),
+
     url(r'^rooms/random/', views.list_rooms_by_random),
     url(r'^rooms/cyrillic/', views.list_rooms_by_lang_ru),
     url(r'^rooms/tags/', views.list_tags),

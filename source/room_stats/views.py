@@ -123,3 +123,24 @@ def list_rooms_by_search_term(request, term):
     ).filter(search=term)
     return render_rooms_paginated(request, rooms)
 
+from .rawsql import MOST_INCOMERS_PER_PERIOD_QUERY
+def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
+    rating_to_order_mapper = {
+        'absolute': 'delta',
+        'relative': 'percentage'
+    }
+    # supported order_by values: ('delta', 'percentage')
+    from_date = datetime.now() - timedelta(days=delta)
+    to_date = datetime.now()
+    rooms = Room.objects.raw(
+        MOST_INCOMERS_PER_PERIOD_QUERY % {
+            'from_date': from_date,
+            'to_date': to_date,
+            'order_by': rating_to_order_mapper[rating]
+        }
+    )[:limit]
+    context = {
+        'rating': rating
+    }
+    return render_rooms_paginated(request, rooms, context=context)
+
