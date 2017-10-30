@@ -37,7 +37,7 @@ urlpatterns = [
         'delta': 7, 'rating': 'relative'}, name='top-rel-weekly'),
     url(r'^top/rel/monthly/$', views.list_most_joinable_rooms, kwargs={
         'delta': 30, 'rating': 'relative'}, name='top-rel-monthly'),
-    url(r'^top/$', views.list_rooms_by_members_count),
+    url(r'^rooms/top/$', views.list_rooms_by_members_count),
 
     url(r'^rooms/random/', views.list_rooms_by_random),
     url(r'^rooms/cyrillic/', views.list_rooms_by_lang_ru),
