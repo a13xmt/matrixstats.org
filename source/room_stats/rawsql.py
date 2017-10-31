@@ -23,7 +23,7 @@ SELECT * from (
     ORDER BY room_id, date DESC
   ) fd
   ON fd.room_id = td.room_id
-  WHERE td.members_count > 5 or fd.members_count > 5
+  WHERE td.members_count > 15 or fd.members_count > 15
 ) as rs, room_stats_room r
 WHERE rs.room_id = r.id
 ORDER BY %(order_by)s DESC;
