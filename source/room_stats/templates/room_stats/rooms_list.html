@@ -4,21 +4,37 @@
   {% for room in rooms %}
     {% url 'room-stats' room_id=room.id as room_url %}
     <div class="room-container {% if room.is_public_readable %}room-public{% endif %}" onclick="document.location='{{ room_url }}'">
-      <h1><a href="{% url 'room-stats' room_id=room.id %}">{{ room.name }}</a></h1>
-      <div class="room-members-count">
-        {{ room.members_count }}
-        {% if rating %}
-          <br/>
-          {% if rating == 'absolute' %}
-            {{ room.delta|stringformat:"+d" }}
-          {% endif %}
-          {% if rating == 'relative' %}
-            {{ room.percentage|stringformat:"+d" }}&#37;
-          {% endif %}
-        {% endif %}
-      </div>
+      <a class="room-title" href="{% url 'room-stats' room_id=room.id %}">
+        {{ room.name }}</a>
 
-      <div class="room-desc">{{ room.topic }}</div>
+      <div class="room-description">
+        <div class="room-desc">
+          {% if room.topic %}
+            {{ room.topic }}
+          {% else %}
+            <i class="room-desc-empty">No description is provided</i>
+          {% endif %}
+        </div>
+      </div>
+      <div class="room-members-stats">
+        <div class="room-members-count">
+          {{ room.members_count }}
+        </div>
+        <div class="room-members-modifier">
+          {% if rating %}
+            {% if rating == 'absolute' %}
+              {{ room.delta|stringformat:"+d" }}
+            {% endif %}
+            {% if rating == 'relative' %}
+              {% if room.members_from == 0 or room.percentage > 300 %}
+                New
+              {% else %}
+                {% if room.percentage > 0 %}+{% else %}-{% endif %}{{ room.percentage|floatformat:"2" }}&#37;
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
     </div>
 
   {% endfor %}

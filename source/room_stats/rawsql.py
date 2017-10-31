@@ -2,12 +2,12 @@ MOST_INCOMERS_PER_PERIOD_QUERY = """
 SELECT * from (
   SELECT
   td.room_id as room_id,
-  COALESCE(fd.members_count, 1) as members_from,
+  COALESCE(fd.members_count, 0) as members_from,
   td.members_count as members_to,
   fd.date as date_from,
   td.date as date_to,
   td.members_count - COALESCE(fd.members_count, 0) as delta,
-  td.members_count / COALESCE(fd.members_count, 1) as percentage
+  (td.members_count::decimal / COALESCE(fd.members_count, 1) - 1) * 100 as percentage
   FROM
   (
     SELECT DISTINCT ON (room_id) dm.*
