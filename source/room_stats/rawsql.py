@@ -40,5 +40,6 @@ NEW_ROOMS_FOR_LAST_N_DAYS_QUERY = """
   ) as rc
   LEFT JOIN room_stats_room as r
   ON r.id = rc.room_id
+  WHERE r.id != ''
   ORDER BY members_count DESC;
 """

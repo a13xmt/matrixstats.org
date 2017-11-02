@@ -148,7 +148,7 @@ from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY
 def list_new_rooms(request, delta=3):
     rooms = Room.objects.raw(
         NEW_ROOMS_FOR_LAST_N_DAYS_QUERY % delta
-    )[::]
+    )[:]
     return render_rooms_paginated(request, rooms)
 
 
