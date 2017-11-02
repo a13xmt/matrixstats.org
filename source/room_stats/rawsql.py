@@ -28,3 +28,17 @@ SELECT * from (
 WHERE rs.room_id = r.id
 ORDER BY %(order_by)s DESC;
 """
+
+NEW_ROOMS_FOR_LAST_N_DAYS_QUERY = """
+  SELECT * FROM (
+    SELECT room_id FROM (
+        SELECT room_id, count(1)
+        FROM room_stats_dailymembers
+        GROUP BY room_id
+    ) as rds
+    WHERE count <= %s
+  ) as rc
+  LEFT JOIN room_stats_room as r
+  ON r.id = rc.room_id
+  ORDER BY members_count DESC;
+"""

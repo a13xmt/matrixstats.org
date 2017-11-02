@@ -29,6 +29,10 @@ urlpatterns = [
     url(r'^$', views.list_rooms),
     url(r'^server/(?P<server>[a-zA-Z0-9\.]+)', views.list_server_stats, name='server-stats'),
 
+    url(r'^new/1d/$', views.list_new_rooms, kwargs={'delta': 1}, name='new-1d'),
+    url(r'^new/3d/$', views.list_new_rooms, kwargs={'delta': 3}, name='new-3d'),
+    url(r'^new/weekly/$', views.list_new_rooms, kwargs={'delta': 7}, name='new-weekly'),
+
     url(r'^top/abs/weekly/$', views.list_most_joinable_rooms, kwargs={
         'delta': 7, 'rating': 'absolute'}, name='top-abs-weekly'),
     url(r'^top/abs/monthly/$', views.list_most_joinable_rooms, kwargs={
@@ -37,6 +41,7 @@ urlpatterns = [
         'delta': 7, 'rating': 'relative'}, name='top-rel-weekly'),
     url(r'^top/rel/monthly/$', views.list_most_joinable_rooms, kwargs={
         'delta': 30, 'rating': 'relative'}, name='top-rel-monthly'),
+
     url(r'^rooms/top/$', views.list_rooms_by_members_count),
 
     url(r'^rooms/random/', views.list_rooms_by_random),
