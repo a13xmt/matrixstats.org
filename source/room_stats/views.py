@@ -58,7 +58,7 @@ def list_rooms(request):
 
 # FIXME optimize query and add daily/weekly/monthly stats
 def list_server_stats(request, server):
-    server_stats = ServerStats.objects.filter(server=server).order_by('id')[0:180]
+    server_stats = reversed(ServerStats.objects.filter(server=server).order_by('-id')[:1800])
     points = []
 
     LATENCY_GROUP_SIZE = 6;
