@@ -1,7 +1,7 @@
 /*
  */
 .content-container {
-  max-width: 700px;
+  max-width: 750px;
   margin: auto;
 }
 
@@ -101,7 +101,102 @@ a:visited.room-title{
 
 
 
+/*
+ *
+ * Room details page
+ *
+ */
+.room-details-container {
+  border: 1px grey solid;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+}
 
+.room-details-logo {
+  /* max-height: 128px; */
+  /* max-width: 128px; */
+  width: 128px;
+  height: 128px;
+  margin-right: 10px;
+}
+
+.room-details-logo > img {
+  width: 100%;
+  heigth: 100%;
+}
+
+.room-details-main {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+
+.room-details-header {
+  font-size: 30px;
+  font-weight: bold;
+  flex: 1 1 100%;
+}
+
+.room-details-topic {
+  flex: 1 1 100%;
+  margin-top: 10px;
+  font-size: 0.8em;
+}
+
+.room-details-topic > p {
+  margin: 0;
+}
+
+.room-details-topic > p > a {
+  color: grey;
+}
+
+.room-details-aliases {
+  margin-top: 10px;
+  font-size: 0.7em;
+  font-family: italic;
+  color: #808080;
+}
+
+.room-details-links {
+  flex: 1 1 100%;
+  margin: 10px 10px 5px 10px;
+  border: 1px grey solid;
+  border-radius: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.room-details-links > div {
+  flex: 1 1 33%;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.room-details-links > div:nth-child(3n-1){
+  border-left: 1px grey solid;
+  border-right: 1px grey solid;
+}
+
+.room-details-buttons {
+  margin: 5px 10px 5px 10px;
+
+}
+
+.room-details-buttons > div {
+  display: inline-block;
+  border: 1px grey solid;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: rgb(240,248,255);
+}
+
+/* .room-details-links > div:nth-child(-n+3){ */
+/*   border-bottom: 1px grey solid; */
+/* } */
 
 /*
  *

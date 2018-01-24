@@ -51,10 +51,11 @@ def room_stats_view(request, room_id):
         'points': points,
         'labels': labels,
     }
-    return render(request, 'room_stats/room_stats.html', context)
+    # return render(request, 'room_stats/room_stats.html', context)
+    return render(request, 'room_stats/room_details.html', context)
 
 def list_rooms(request):
-    return render(request, 'room_stats/rooms.html')
+    return render(request, 'room_stats/index.html')
 
 # FIXME optimize query and add daily/weekly/monthly stats
 def list_server_stats(request, server):
@@ -152,3 +153,7 @@ def list_new_rooms(request, delta=3):
     return render_rooms_paginated(request, rooms)
 
 
+def list_public_rooms(request):
+    rooms = Room.objects.filter(
+        is_public_readable=True).order_by('-members_count')
+    return render_rooms_paginated(request,rooms)

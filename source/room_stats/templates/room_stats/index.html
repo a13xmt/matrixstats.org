@@ -1,9 +1,14 @@
 {% extends 'room_stats/base.html' %}
 
 {% block content %}
+
+  <h1>Matrix stats</h1>
   <ul>
 
-    <li><a href="/rooms/top">Top by members</a></li>
+    <li>Top by members:
+       <a href="/rooms/top">All</a>,
+       <a href="/rooms/public">Public</a>
+    </li>
     <li><a href="/rooms/random">Random</a></li>
     <li><a href="/rooms/cyrillic">Cyrillic</a></li>
     <br>
