@@ -32,9 +32,11 @@ def get_daily_members_stats(request, room_id, days=30):
     return JsonResponse({'result':result})
 
 def room_stats_view(request, room_id):
-    days = 30
-    from_date = datetime.now() - timedelta(days=int(days)-1)
     room = Room.objects.get(id=room_id)
+
+    # graph
+    days = 30
+    from_date = datetime.now() - timedelta(days=int(days))
     dm = DailyMembers.objects.filter(
         room_id=room_id,
         date__gte=from_date,
@@ -51,7 +53,25 @@ def room_stats_view(request, room_id):
         'points': points,
         'labels': labels,
     }
-    # return render(request, 'room_stats/room_stats.html', context)
+
+
+    # members delta
+    current_members = dm.last().members_count
+    try:
+        last_week_members = dm.filter(
+            date=datetime.now() - timedelta(days=7)
+        ).first().members_count
+    except AttributeError:
+        last_week_members = 0
+    try:
+        last_month_members = dm.filter(
+            date=datetime.now() - timedelta(days=30)
+        ).first().members_count
+    except AttributeError:
+        last_month_members = 0
+    context['members_weekly_diff'] = current_members - last_week_members
+    context['members_monthly_diff'] = current_members - last_month_members
+
     return render(request, 'room_stats/room_details.html', context)
 
 def list_rooms(request):
@@ -132,7 +152,7 @@ def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
     }
     # supported order_by values: ('delta', 'percentage')
     from_date = datetime.now() - timedelta(days=delta)
-    to_date = datetime.now()
+    to_date = datetime.now() - timedelta(days=1)
     rooms = Room.objects.raw(
         MOST_INCOMERS_PER_PERIOD_QUERY % {
             'from_date': from_date,

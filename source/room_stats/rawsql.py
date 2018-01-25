@@ -12,14 +12,14 @@ SELECT * from (
   (
     SELECT DISTINCT ON (room_id) dm.*
     FROM room_stats_dailymembers dm
-    WHERE date <= '%(to_date)s'
+    WHERE date = '%(to_date)s'
     ORDER BY room_id, date DESC
   ) td
   LEFT JOIN
   (
     SELECT DISTINCT ON (room_id) dm.*
     FROM room_stats_dailymembers dm
-    WHERE date <= '%(from_date)s'
+    WHERE date = '%(from_date)s'
     ORDER BY room_id, date DESC
   ) fd
   ON fd.room_id = td.room_id

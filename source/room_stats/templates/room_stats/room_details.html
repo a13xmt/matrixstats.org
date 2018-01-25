@@ -21,43 +21,60 @@
     <div class="room-details-aliases">{{ room.aliases }}</div>
   </div>
 
-  <div class="room-details-links">
-    <div class="room-details-embers-count">Members count:<br>{{ room.members_count }}</div>
-    <div class="room-details-embers-count">Weekly change:<br>{{ room.members_count }}</div>
-    <div class="room-details-embers-count">Monthly change:<br>{{ room.members_count }}</div>
+  <div class="room-details-buttons">
+    <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank">
+      open in Riot
+    </a>
+    {% if room.is_public_readable %}
+      <a href="https://view.matrix.org/room/{{ room.id }}/" target="blank">
+        Preview
+      </a>
+    {% endif %}
   </div>
 
-  <div class="room-details-buttons">
-    <div>Open in riot</div>
-    <div>Preview</div>
+  <div class="room-details-links">
+    <div class="room-details-members-count">Members count:<br>{{ room.members_count }}</div>
+    <div class="room-details-members-count">Weekly change:<br>
+      <span class="{% if members_weekly_diff > 0 %}positive{% elif members_weekly_diff < 0 %}negative{% endif %}">
+        {% if members_weekly_diff == 0 %}—{% else %}
+        {{ members_weekly_diff | stringformat:"+d" }}{% endif %}
+      </span>
+    </div>
+    <div class="room-details-members-count">Monthly change:<br>
+      <span class="{% if members_monthly_diff > 0 %}positive{% elif members_monthly_diff < 0 %}negative{% endif %}">
+        {% if members_monthly_diff == 0 %}—{% else %}
+        {{ members_monthly_diff | stringformat:"+d" }}{% endif %}
+      </span>
+    </div>
   </div>
+
 
 </div>
 
-  <div class="room-stats-container">
-    <h1>{{ room.name }}</h1>
-    <div class="room-topic">
-      {% if room.topic %}
-        {{ room.topic }}
-      {% else %}
-        <i>No description is provided</i>
-      {% endif %}
-    </div>
-    <div class="room-aliases">{{ room.aliases }}</div>
+<!-- <div class="room-stats-container">
+     <h1>{{ room.name }}</h1>
+     <div class="room-topic">
+     {% if room.topic %}
+     {{ room.topic }}
+     {% else %}
+     <i>No description is provided</i>
+     {% endif %}
+     </div>
+     <div class="room-aliases">{{ room.aliases }}</div>
 
-    <div class="room-links">
-      <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank">
-        open in Riot
-      </a>
-      {% if room.is_public_readable %}
-        &nbsp;
-        <a href="https://view.matrix.org/room/{{ room.id }}/" target="blank">
-          Preview
-        </a>
-      {% endif %}
-    </div>
-  </div>
-
+     <div class="room-links">
+     <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank">
+     open in Riot
+     </a>
+     {% if room.is_public_readable %}
+     &nbsp;
+     <a href="https://view.matrix.org/room/{{ room.id }}/" target="blank">
+     Preview
+     </a>
+     {% endif %}
+     </div>
+     </div>
+-->
   <div class="room-graph">
     <canvas id="dailyVisitorsChart" ></canvas>
   </div>
