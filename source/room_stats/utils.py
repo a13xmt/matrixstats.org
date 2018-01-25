@@ -124,30 +124,52 @@ def get_all_rooms_to_file(filename, limit=None):
     f.write(json.dumps(rooms))
     f.close()
 
+from django_bulk_update.helper import bulk_update
 @transaction.atomic
 def update_rooms_from_file(filename):
+
     f = open(filename, 'r')
-    rooms = json.loads(f.read())
-    print("Rooms found: %s" % len(rooms))
+    rooms_list = json.loads(f.read())
+    rooms_dict = {room['room_id']: room for room in rooms_list}
+    room_ids = [ r['room_id'] for r in rooms_list ]
+    print("Rooms found: %s" % len(rooms_list))
 
-    room_ids = [ r['room_id'] for r in rooms ]
-    # delete rooms
-    Room.objects.filter(id__in=room_ids).delete()
+    # split rooms before bulk_create and bulk_update
+    existing_rooms = Room.objects.filter(id__in=room_ids)
+    existing_room_ids = [room.id for room in existing_rooms]
+    new_room_ids = [id for id in room_ids if id not in existing_room_ids]
+    print("new room ids: %s" % new_room_ids)
 
-    rooms_next = [
-        Room(
-            id=room['room_id'],
-            name=room.get('name',''),
-            aliases=", ".join(room.get('aliases', [])),
-            topic=room.get('topic',''),
-            members_count=room['num_joined_members'],
-            avatar_url=room.get('avatar_url', ''),
-            is_public_readable=room['world_readable'],
-            is_guest_writeable=room['guest_can_join']
-        ) for room in rooms
-    ]
+    date_now = datetime.now()
+    for room in existing_rooms:
+        r = rooms_dict.get(room.id)
+        room.name = r.get('name', '')
+        room.aliases = ", ".join(r.get('aliases', []))
+        room.topic = r.get('topic','')
+        room.members_count = r.get('num_joined_members', 0)
+        room.avatar_url = r.get('avatar_url', '')
+        room.is_public_readable = r.get('world_readable', False)
+        room.is_guest_writeable = r.get('guest_can_join', False)
+        room.updated_at = date_now
+    bulk_update(existing_rooms)
 
-    Room.objects.bulk_create(rooms_next)
+    new_rooms = []
+    for room_id in new_room_ids:
+        r = rooms_dict.get(room_id)
+        room = Room(
+            id=r['room_id'],
+            name=r.get('name',''),
+            aliases=", ".join(r.get('aliases', [])),
+            topic=r.get('topic',''),
+            members_count=r.get('num_joined_members', 0),
+            avatar_url=r.get('avatar_url', ''),
+            is_public_readable=r.get('world_readable'),
+            is_guest_writeable=r.get('guest_can_join'),
+            created_at=date_now,
+            updated_at=date_now
+        )
+        new_rooms.append(room)
+    Room.objects.bulk_create(new_rooms)
 
 @transaction.atomic
 def update_tags():

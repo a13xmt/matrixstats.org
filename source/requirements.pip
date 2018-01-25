@@ -4,3 +4,4 @@ pytest-django
 gunicorn
 psycopg2
 requests
+django-bulk-update

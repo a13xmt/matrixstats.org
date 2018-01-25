@@ -12,7 +12,8 @@ class Room(models.Model):
     avatar_url = models.TextField(blank=True, null=True)
     is_public_readable = models.BooleanField()
     is_guest_writeable = models.BooleanField()
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return "(%s) %s" % (self.members_count, self.name)

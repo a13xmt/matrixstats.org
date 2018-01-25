@@ -197,50 +197,6 @@ a:visited.room-title{
   border: 1px #4682B4 solid;
 }
 
-/* .room-details-links > div:nth-child(-n+3){ */
-/*   border-bottom: 1px grey solid; */
-/* } */
-
-/*
- *
- * Room stats
- *
- */
-
-.room-stats-container {
-  padding: 15px 25px;
-  margin-bottom: 40px;
-  background-color: rgb(245,245,245);
-  border-radius: 2px;
-}
-
-.room-stats-container > h1 {
-  /* margin: 15px 0; */
-  margin: 0 0 15px 0;
-  color: rgb(119,119,119);
-  font-size: 20px;
-}
-
-.room-topic {
-  font-size: 12px;
-}
-
-.room-aliases {
-  font-family: italic;
-  color: #808080;
-}
-
-
-.room-aliases, .room-links {
-  font-size: 11px;
-  margin-top: 10px;
-}
-
-.room-links > a {
-  color: grey;
-}
-
-
 /*
  *
  * Utils
