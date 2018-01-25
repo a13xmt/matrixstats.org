@@ -19,9 +19,9 @@ class Room(models.Model):
 
 class DailyMembers(models.Model):
     id = models.CharField(max_length=511, primary_key=True, editable=False)
-    room_id = models.CharField(max_length=511)
+    room_id = models.CharField(max_length=511, db_index=True)
     members_count = models.IntegerField()
-    date = models.DateField(default=datetime.now, editable=False)#auto_now=True)
+    date = models.DateField(default=datetime.now, editable=False, db_index=True)#auto_now=True)
 
     def save(self):
         self.id = "%s-%s" % ( self.room_id, self.date.strftime("%Y%m%d"))
@@ -39,4 +39,8 @@ class ServerStats(models.Model):
     server = models.CharField(max_length=255)
     latency = models.IntegerField()
     date = models.DateTimeField(default=datetime.now)
+
+class Category(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    pass
 
