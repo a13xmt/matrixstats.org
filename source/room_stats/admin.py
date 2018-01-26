@@ -5,6 +5,7 @@ from room_stats.models import Room
 from room_stats.models import Tag
 from room_stats.models import DailyMembers
 from room_stats.models import ServerStats
+from room_stats.models import Category
 
 class RoomAdmin(admin.ModelAdmin):
     def logo(self, obj):
@@ -34,8 +35,20 @@ class TagAdmin(admin.ModelAdmin):
 class ServerStatsAdmin(admin.ModelAdmin):
     list_display = ('latency', 'date')
 
+class CategoryAdmin(admin.ModelAdmin):
+    def image_preview(self, obj):
+        style = "max-width: 100px;"
+        return mark_safe("<img src='/static/%s' style='%s'/>" %  (obj.image.name, style))
+    image_preview.short_description = 'Image'
+
+    def rooms_count(self, obj):
+        return obj.room_set.count()
+
+    list_display = ('image_preview', 'name', 'rooms_count')
+
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(DailyMembers, DailyMembersAdmin)
 admin.site.register(ServerStats, ServerStatsAdmin)
+admin.site.register(Category, CategoryAdmin)
 

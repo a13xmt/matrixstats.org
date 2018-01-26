@@ -3,9 +3,25 @@ from django.utils import timezone
 
 from django.db import models
 
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='category/', blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "categories"
+
+class CategoryRequest(models.Model):
+    room_id = models.CharField(max_length=255)
+    existing_category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
+    proposed_category = models.CharField(max_length=255, blank=True, null=True)
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sender_ip = models.GenericIPAddressField(protocol='IPv4', blank=True, null=True)
+
 class Room(models.Model):
     id = models.CharField(max_length=511, primary_key=True)
     name = models.TextField(blank=True, null=True)
+    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
     aliases = models.TextField(blank=True, null=True)
     topic = models.TextField(blank=True, null=True)
     members_count = models.IntegerField()
@@ -40,8 +56,3 @@ class ServerStats(models.Model):
     server = models.CharField(max_length=255)
     latency = models.IntegerField()
     date = models.DateTimeField(default=datetime.now)
-
-class Category(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    pass
-

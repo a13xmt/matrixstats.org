@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from room_stats.models import Room, DailyMembers, Tag, ServerStats
+from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category
 
 
 def render_rooms_paginated(request, queryset, context={}, page_size=20):
@@ -75,7 +75,17 @@ def room_stats_view(request, room_id):
     return render(request, 'room_stats/room_details.html', context)
 
 def list_rooms(request):
-    return render(request, 'room_stats/index.html')
+    categories = Category.objects.all()
+    context = {
+        'categories': categories
+    }
+    return render(request, 'room_stats/index.html', context)
+
+def list_rooms_by_category(request, category_name):
+    category = Category.objects.filter(name=category_name).first()
+    if not category: return
+    rooms = Room.objects.filter(category=category)
+    return render_rooms_paginated(request, rooms)
 
 # FIXME optimize query and add daily/weekly/monthly stats
 def list_server_stats(request, server):

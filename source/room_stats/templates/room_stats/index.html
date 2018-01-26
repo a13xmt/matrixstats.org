@@ -36,6 +36,17 @@
     <li><a href="{% url 'server-stats' server='matrix.org' %}">matrix.org stats</a></li>
   </ul>
 
+
+  <h1>Categories</h1>
+  <div class="category-block">
+    {% for category in categories %}
+    <a class="category-item"
+      style="background-image: url('/static/{{ category.image.name }}');"
+      href="/category/{{ category.name }}"><span>{{ category.name }}</span></a>
+    {% endfor %}
+  </div>
+
+
   <!-- Development in progress :) -->
 
 {% endblock content %}
