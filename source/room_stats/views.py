@@ -117,7 +117,10 @@ def list_server_stats(request, server):
 
 def list_rooms_by_random(request):
     rooms = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
-    context = {'rooms': rooms}
+    context = {
+        'rooms': rooms,
+        'title': "Matrix Rooms: Random"
+    }
     return render(request, 'room_stats/rooms_list.html', context)
 
 def list_rooms_by_members_count(request):
@@ -125,13 +128,19 @@ def list_rooms_by_members_count(request):
     #     members_count__gt=5).order_by('-members_count')[:20]
     # context = {'rooms': rooms}
     # return render(request, 'room_stats/rooms_list.html', context)
+    context = {
+        'title': 'Matrix Rooms: Top by members'
+    }
     rooms = Room.objects.filter(
         members_count__gt=5).order_by('-members_count')
-    return render_rooms_paginated(request,rooms)
+    return render_rooms_paginated(request,rooms, context)
 
 def list_rooms_with_tag(request, tag):
     rooms = Room.objects.filter(topic__iregex='#%s' % tag)
-    return render_rooms_paginated(request, rooms)
+    context = {
+        'title': 'Matrix Rooms: by #%s tag' % tag
+    }
+    return render_rooms_paginated(request, rooms, context)
 
 def list_tags(request):
     tags = Tag.objects.all()
@@ -146,14 +155,20 @@ def all_rooms_view(request):
 
 def list_rooms_by_lang_ru(request):
     rooms = Room.objects.filter(topic__iregex=r'[а-яА-ЯёЁ]+') #.order_by('?')[:20]
-    return render_rooms_paginated(request, rooms)
+    context = {
+        'title': 'Matrix Rooms: Cyrillic | Русскоязычные комнаты Matrix'
+    }
+    return render_rooms_paginated(request, rooms, context)
 
 from django.contrib.postgres.search import SearchVector
 def list_rooms_by_search_term(request, term):
     rooms = Room.objects.annotate(
         search=SearchVector('name', 'aliases', 'topic'),
     ).filter(search=term)
-    return render_rooms_paginated(request, rooms)
+    context = {
+        'title': "Matrix Search: %s" % term
+    }
+    return render_rooms_paginated(request, rooms, context)
 
 from .rawsql import MOST_INCOMERS_PER_PERIOD_QUERY
 def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
@@ -171,8 +186,13 @@ def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
             'order_by': rating_to_order_mapper[rating]
         }
     )[:limit]
+
+    title = "Matrix Trends: Most %s rooms for last %s days" % (
+        'joinable' if rating == 'absolute' else 'expansive', delta)
+
     context = {
-        'rating': rating
+        'rating': rating,
+        'title': title
     }
     return render_rooms_paginated(request, rooms, context=context)
 
@@ -181,13 +201,19 @@ def list_new_rooms(request, delta=3):
     rooms = Room.objects.raw(
         NEW_ROOMS_FOR_LAST_N_DAYS_QUERY % delta
     )[:]
-    return render_rooms_paginated(request, rooms)
+    context = {
+        'title': "Matrix Trends: New rooms for last %s days" % delta
+    }
+    return render_rooms_paginated(request, rooms, context)
 
 
 def list_public_rooms(request):
     rooms = Room.objects.filter(
         is_public_readable=True).order_by('-members_count')
-    return render_rooms_paginated(request,rooms)
+    context = {
+        'title': 'Matrix Rooms: Top by members (Public)'
+    }
+    return render_rooms_paginated(request, rooms, context)
 
 @login_required
 def set_room_category(request, room_id, category_id):

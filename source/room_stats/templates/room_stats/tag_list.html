@@ -1,5 +1,9 @@
 {% extends 'room_stats/base.html' %}
 
+{% block title %}
+  Matrix Stats: Tags
+{% endblock %}
+
 {% block content %}
   {% for tag in tags %}
     {% url 'rooms-with-tag' tag=tag.id as rooms_url %}

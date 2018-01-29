@@ -1,5 +1,10 @@
 {% extends 'room_stats/base.html' %}
 
+
+{% block title %}
+  Matrix Stats: Index Page
+{% endblock %}
+
 {% block content %}
 
   <section>
@@ -35,8 +40,6 @@
         <input placeholder="Search" id="search_term" />
         <input type="submit" value="Search" onclick="search_by_term();" />
       </li>
-      <br>
-      <li><a href="{% url 'server-stats' server='matrix.org' %}">matrix.org stats</a></li>
     </ul>
   </section>
 

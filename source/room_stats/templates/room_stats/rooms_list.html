@@ -1,5 +1,9 @@
 {% extends 'room_stats/base.html' %}
 
+{% block title %}
+  {{ title }}
+{% endblock %}
+
 {% block content %}
   <div itemscope itemtype="https://schema.org/BreadcrumbList">
   {% for room in rooms %}

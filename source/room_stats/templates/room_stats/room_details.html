@@ -1,6 +1,10 @@
 {% extends 'room_stats/base.html' %}
 {% load custom_filters %}
 
+{% block title %}
+  Matrix Room: {{ room.name }}
+{% endblock %}
+
 {% block content %}
 
 <div class="room-details-container" itemscope itemtype="https://schema.org/Conversation">
