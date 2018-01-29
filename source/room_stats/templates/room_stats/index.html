@@ -2,49 +2,58 @@
 
 {% block content %}
 
-  <h1>Matrix stats</h1>
-  <ul>
+  <section>
+    <header>
+      <h1>Matrix stats</h1>
+    </header>
+    <ul>
 
-    <li>Top by members:
-       <a href="/rooms/top">All</a>,
-       <a href="/rooms/public">Public</a>
-    </li>
-    <li><a href="/rooms/random">Random</a></li>
-    <li><a href="/rooms/cyrillic">Cyrillic</a></li>
-    <br>
-    <li>New rooms:
-      <a href="{% url 'new-1d' %}">1d</a>,
-      <a href="{% url 'new-3d' %}">3d</a>,
-      <a href="{% url 'new-weekly' %}">weekly</a>
-    </li>
+      <li>Top by members:
+        <a href="/rooms/top">All</a>,
+        <a href="/rooms/public">Public</a>
+      </li>
+      <li><a href="/rooms/random">Random</a></li>
+      <li><a href="/rooms/cyrillic">Cyrillic</a></li>
+      <br>
+      <li>New rooms:
+        <a href="{% url 'new-1d' %}">1d</a>,
+        <a href="{% url 'new-3d' %}">3d</a>,
+        <a href="{% url 'new-weekly' %}">weekly</a>
+      </li>
 
-    <li>Top absolute:
-      <a href="{% url 'top-abs-weekly' %}">weekly</a>,
-      <a href="{% url 'top-abs-monthly' %}">monthly</a>
-    </li>
-    <li>Top relative:
-      <a href="{% url 'top-rel-weekly' %}">weekly</a>,
-      <a href="{% url 'top-rel-monthly' %}">monthly</a>
-    </li>
-    <br>
-    <li><a href="/rooms/tags">Tags</a></li>
-    <li>
-      <input placeholder="Search" id="search_term" />
-      <input type="submit" value="Search" onclick="search_by_term();" />
-    </li>
-    <br>
-    <li><a href="{% url 'server-stats' server='matrix.org' %}">matrix.org stats</a></li>
-  </ul>
+      <li>Top absolute:
+        <a href="{% url 'top-abs-weekly' %}">weekly</a>,
+        <a href="{% url 'top-abs-monthly' %}">monthly</a>
+      </li>
+      <li>Top relative:
+        <a href="{% url 'top-rel-weekly' %}">weekly</a>,
+        <a href="{% url 'top-rel-monthly' %}">monthly</a>
+      </li>
+      <br>
+      <li><a href="/rooms/tags">Tags</a></li>
+      <li>
+        <input placeholder="Search" id="search_term" />
+        <input type="submit" value="Search" onclick="search_by_term();" />
+      </li>
+      <br>
+      <li><a href="{% url 'server-stats' server='matrix.org' %}">matrix.org stats</a></li>
+    </ul>
+  </section>
 
 
-  <h1>Categories</h1>
-  <div class="category-block">
-    {% for category in categories %}
-    <a class="category-item"
-      style="background-image: url('/static/{{ category.image.name }}');"
-      href="/category/{{ category.name }}"><span>{{ category.name }}</span></a>
-    {% endfor %}
-  </div>
+  <section>
+    <header>
+      <h1>Categories</h1>
+    </header>
+    <div class="category-block">
+      {% for category in categories %}
+      <a class="category-item"
+        draggable="false"
+        style="background-image: url('/static/{{ category.image.name }}');"
+        href="/category/{{ category.name }}"><span class="noselect">{{ category.name }}</span></a>
+      {% endfor %}
+    </div>
+  </section>
 
 
   <!-- Development in progress :) -->

@@ -6,8 +6,18 @@ from room_stats.models import Tag
 from room_stats.models import DailyMembers
 from room_stats.models import ServerStats
 from room_stats.models import Category
+from django.template.loader import render_to_string
 
 class RoomAdmin(admin.ModelAdmin):
+    all_categories = Category.objects.all()
+    def category_widget(self, obj):
+        context = {
+            'room': obj,
+            'categories': RoomAdmin.all_categories
+        }
+        return render_to_string('admin/widgets/category_widget.html', context)
+    category_widget.short_description = "category"
+
     def logo(self, obj):
         if obj.avatar_url is '':
             return ""
@@ -22,8 +32,18 @@ class RoomAdmin(admin.ModelAdmin):
     logo.short_description = "logo"
 
 
-    list_display = ('logo', 'members_count', 'name', 'topic', 'is_public_readable', 'is_guest_writeable', 'updated_at')
+    list_display = ('logo', 'members_count', 'name', 'topic', 'category_widget', 'is_public_readable', 'is_guest_writeable', 'updated_at')
     ordering = ('-members_count', )
+
+    class Media:
+        js = (
+            'vendor/jquery-3.3.1.min.js',
+            'vendor/toastr.min.js',
+            'js/category_widget.js',
+        )
+        css = {
+            'all': ('vendor/toastr.min.css',)
+        }
 
 
 class DailyMembersAdmin(admin.ModelAdmin):

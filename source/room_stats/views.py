@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.contrib.auth.decorators import login_required
 
 from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category
 
@@ -187,3 +188,11 @@ def list_public_rooms(request):
     rooms = Room.objects.filter(
         is_public_readable=True).order_by('-members_count')
     return render_rooms_paginated(request,rooms)
+
+@login_required
+def set_room_category(request, room_id, category_id):
+    room = Room.objects.get(id=room_id)
+    category = None if int(category_id) == 0 else Category.objects.get(id=category_id)
+    room.category = category
+    room.save()
+    return JsonResponse({'status': 'ok'})

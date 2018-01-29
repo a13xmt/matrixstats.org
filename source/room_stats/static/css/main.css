@@ -45,14 +45,16 @@ a.tag-cloud {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  text-decoration: none;
+  color: inherit;
 
 }
 
-.room-title {
+.room-name {
   font-size: 16px;
   margin: 0 0 10px 0;
   flex: 1 100%;
-  font-weight: bold;
+  color: rgb(119,119,119);
 }
 
 a.room-title,
@@ -67,6 +69,7 @@ a:visited.room-title{
 
 .room-description {
   flex: 1;
+  font-size: 0.6em;
 }
 
 .room-members-stats {
@@ -89,10 +92,6 @@ a:visited.room-title{
   flex: 1 100%;
   text-align: right;
   color: rgb(119,119,119);
-}
-
-.room-desc {
-  font-size: 0.6em;
 }
 
 .room-desc-empty {
@@ -252,5 +251,14 @@ a:visited.room-title{
 
 .negative {
   color: red;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 

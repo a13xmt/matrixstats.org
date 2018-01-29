@@ -3,30 +3,34 @@
 
 {% block content %}
 
-<div class="room-details-container">
+<div class="room-details-container" itemscope itemtype="https://schema.org/Conversation">
+
   <div class="room-details-logo">
-  {% if room.avatar_url %}
-    <img src="https://matrix.org/_matrix/media/r0/thumbnail/{{ room.avatar_url | slice:'6:' }}?width=128&height=128" />
-  {% endif %}
+    {% if room.avatar_url %}
+      <img src="https://matrix.org/_matrix/media/r0/thumbnail/{{ room.avatar_url | slice:'6:' }}?width=128&height=128" itemprop="image" />
+    {% endif %}
   </div>
+
   <div class="room-details-main">
-    <div class="room-details-header">{{ room.name }}</div>
-    <div class="room-details-topic">
+    <div class="room-details-header" itemprop="name">{{ room.name }}</div>
+    <div class="room-details-topic" itemprop="description">
       {% if room.topic %}
         {{ room.topic | format_lines | linebreaks | urlize }}
       {% else %}
         <i>No description is provided</i>
       {% endif %}
     </div>
-    <div class="room-details-aliases">{{ room.aliases }}</div>
+
+    <meta itemprop="alternateName" value="{{ room.id }}" />
+    <div class="room-details-aliases" itemprop="alternateName">{{ room.aliases }}</div>
   </div>
 
   <div class="room-details-buttons">
-    <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank">
+    <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank" itemprop="sameAs">
       open in Riot
     </a>
     {% if room.is_public_readable %}
-      <a href="https://view.matrix.org/room/{{ room.id }}/" target="blank">
+      <a href="https://view.matrix.org/room/{{ room.id }}/" target="blank" itemprop="sameAs">
         Preview
       </a>
     {% endif %}

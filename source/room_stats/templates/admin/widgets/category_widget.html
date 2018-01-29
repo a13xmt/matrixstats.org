@@ -1,0 +1,6 @@
+<select id="{{ room.id }}" class="category_widget">
+  <option value="0">-</option>
+  {% for category in categories %}
+  <option value="{{ category.id}}" {% if room.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+  {% endfor %}
+</select>
