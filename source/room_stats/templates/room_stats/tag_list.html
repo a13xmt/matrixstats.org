@@ -5,11 +5,17 @@
 {% endblock %}
 
 {% block content %}
+  <div class="tags-header">
+    <h1>Matrix Tags</h1>
+    {% if not show_all %}
+      <a href="{% url 'tags' %}?all=True">[nsfw disabled]</a>
+    {% else %}
+      <a href="{% url 'tags' %}">[nsfw enabled]</a>
+    {% endif %}
+  </div>
   {% for tag in tags %}
     {% url 'rooms-with-tag' tag=tag.id as rooms_url %}
-<!-- <a class="tag-cloud" href="{{ rooms_url }}">#{{tag}}({{num}}) </a> -->
-
-  <a class="tag-cloud" href="{{ rooms_url }}">#{{tag.id}} </a>
+    <a class="tag-cloud" href="{{ rooms_url }}" style="font-size: {{ tag.relative_size }}em;">#{{tag.id}}</a>
   {% endfor %}
 
 {% endblock content %}

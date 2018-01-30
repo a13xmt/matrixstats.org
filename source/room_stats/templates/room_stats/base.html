@@ -22,6 +22,18 @@
   </head>
 
   <body itemscope itemtype="http://schema.org/WebPage">
+
+    <nav role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
+      <div class="nav-header">Matrix Stats</div>
+      <div class="nav-links">
+        <a itemprop="url" href="/">Home</a>
+        <a itemprop="url" href="/page1/">Ratings</a>
+        <a itemprop="url" href="/page2/">Categories</a>
+        <a itemprop="url" href="{% url 'tags' %}">Tags</a>
+        <a itemprop="url" href="/page2/">About</a>
+      </div>
+    </nav>
+
     <div class="content-container">
       {% block content %}
       {% endblock content %}

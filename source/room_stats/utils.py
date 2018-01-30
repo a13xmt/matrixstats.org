@@ -176,7 +176,7 @@ def update_tags():
     # clear previous relations
     Tag.objects.all().delete()
     hashtag = re.compile("#\w+")
-    rooms = Room.objects.filter(members_count__gt=5, topic__iregex=r'#\w+')
+    rooms = Room.objects.filter(topic__iregex=r'#\w+')
     for room in rooms:
         room_tags = hashtag.findall(room.topic)
         for tag in room_tags:

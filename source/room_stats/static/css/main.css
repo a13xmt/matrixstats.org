@@ -1,18 +1,20 @@
 /*
  */
+
+body {
+  margin: 0;
+  padding: 0;
+}
 .content-container {
   max-width: 750px;
   margin: auto;
 }
 
 a.tag-cloud {
-  font-size: 0.8em;
+  /* font-size: 0.8em; */
+  margin: 0px 2px;
   color: rgb(0, 45, 90);
   text-decoration: none;
-}
-
-.content {
-  
 }
 
 .pagination {
@@ -27,6 +29,43 @@ a.tag-cloud {
   color: rgb(80,80,80);
 }
 
+/*
+ *
+ * Navigation
+ *
+ */
+
+nav {
+  background-color: #333;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.nav-header{
+  font-size: 28px;
+  font-weight: bold;
+  display: inline-block;
+  min-width: 50%;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.nav-links {
+  display: inline-block;
+}
+
+nav a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  display: inline-block;
+}
+
+nav a:hover {
+  background-color: #666;
+}
 
 /*
  *
@@ -238,6 +277,33 @@ a:visited.room-title{
 .room-details-buttons > a:hover {
   color: #4682B4;
   border: 1px #4682B4 solid;
+}
+
+/*
+ *
+ * Tags
+ *
+ */
+
+.tags-header {
+  position: relative;
+}
+
+.tags-header h1 {
+  display: inline-block;
+}
+
+.tags-header a{
+  position: absolute;
+  right: 25px;
+  top: 30px;
+  font-size: 12px;
+  text-decoration: none;
+  color: grey;
+}
+
+.tags-header a:focus{
+  outline: none;
 }
 
 /*
