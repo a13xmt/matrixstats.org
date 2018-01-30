@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category
 
@@ -143,8 +144,20 @@ def list_rooms_with_tag(request, tag):
     return render_rooms_paginated(request, rooms, context)
 
 def list_tags(request):
-    tags = Tag.objects.all()
-    context = {'tags': tags}
+    show_all = request.GET.get('all', None)
+    if show_all:
+        tags = Tag.objects.annotate(Count('rooms'))
+    else:
+        tags = Tag.objects.exclude(id__iregex='(anal|blowjobs|porn|sex|kink|adult)').annotate(Count('rooms'))
+    sizes = [tag.rooms__count for tag in tags]
+    clamp = lambda n, minn, maxn: max(min(maxn, n), minn)
+    smin, smax = min(sizes), max(sizes)
+    for tag in tags:
+        tag.relative_size = (clamp(tag.rooms__count, 1, 6) / 5) + 0.6
+    context = {
+        'tags': tags,
+        'show_all': show_all
+    }
     return render(request, 'room_stats/tag_list.html', context)
 
 
