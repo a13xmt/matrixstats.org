@@ -8,9 +8,9 @@
   <div class="tags-header">
     <h1>Matrix Tags</h1>
     {% if not show_all %}
-      <a href="{% url 'tags' %}?all=True">[nsfw disabled]</a>
+      <a href="{% url 'tags' %}?all=True">[nsfw enabled]</a>
     {% else %}
-      <a href="{% url 'tags' %}">[nsfw enabled]</a>
+      <a href="{% url 'tags' %}">[nsfw disabled]</a>
     {% endif %}
   </div>
   {% for tag in tags %}

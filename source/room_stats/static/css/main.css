@@ -8,6 +8,8 @@ body {
 .content-container {
   max-width: 750px;
   margin: auto;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
 a.tag-cloud {
@@ -61,6 +63,10 @@ nav a {
   padding: 10px 15px;
   margin-bottom: 15px;
   display: inline-block;
+}
+
+nav a:focus {
+  outline: none;
 }
 
 nav a:hover {
