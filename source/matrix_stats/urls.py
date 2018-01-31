@@ -47,9 +47,9 @@ urlpatterns = [
 
     url(r'^rooms/top/$', views.list_rooms_by_members_count),
 
-    url(r'^rooms/random/', views.list_rooms_by_random),
-    url(r'^rooms/public/', views.list_public_rooms),
-    url(r'^rooms/cyrillic/', views.list_rooms_by_lang_ru),
+    url(r'^rooms/random/', views.list_rooms_by_random, name='random'),
+    url(r'^rooms/public/', views.list_public_rooms, name='public'),
+    url(r'^rooms/cyrillic/', views.list_rooms_by_lang_ru, name='cyrillic'),
     url(r'^rooms/tags/', views.list_tags, name='tags'),
     url(r'^rooms/tag/(?P<tag>\w+)', views.list_rooms_with_tag, name='rooms-with-tag'),
 

@@ -76,17 +76,6 @@ def room_stats_view(request, room_id):
 
     return render(request, 'room_stats/room_details.html', context)
 
-def list_rooms(request):
-    categories = Category.objects.all()
-    top = Room.objects.order_by('-members_count')[:20]
-    random = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
-    context = {
-        'categories': categories,
-        'top': top,
-        'random': random
-    }
-    return render(request, 'room_stats/index.html', context)
-
 def list_rooms_by_category(request, category_name):
     category = Category.objects.filter(name=category_name).first()
     if not category: return
@@ -188,7 +177,7 @@ def list_rooms_by_search_term(request, term):
     return render_rooms_paginated(request, rooms, context)
 
 from .rawsql import MOST_INCOMERS_PER_PERIOD_QUERY
-def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
+def get_most_joinable_rooms(delta, rating='absolute', limit=100):
     rating_to_order_mapper = {
         'absolute': 'delta',
         'relative': 'percentage'
@@ -203,6 +192,10 @@ def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
             'order_by': rating_to_order_mapper[rating]
         }
     )[:limit]
+    return rooms
+
+def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
+    rooms = get_most_joinable_rooms(delta, rating, limit)
 
     title = "Matrix Trends: Most %s rooms for last %s days" % (
         'joinable' if rating == 'absolute' else 'expansive', delta)
@@ -239,3 +232,19 @@ def set_room_category(request, room_id, category_id):
     room.category = category
     room.save()
     return JsonResponse({'status': 'ok'})
+
+
+def list_rooms(request):
+    categories = Category.objects.all()
+    top = Room.objects.order_by('-members_count')[:20]
+    random = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
+    most_joinable = get_most_joinable_rooms(delta=30, rating='absolute', limit=20)
+    most_expanding = get_most_joinable_rooms(delta=30, rating='relative', limit=20)
+    context = {
+        'categories': categories,
+        'top': top,
+        'random': random,
+        'most_joinable': most_joinable,
+        'most_expanding': most_expanding
+    }
+    return render(request, 'room_stats/index.html', context)

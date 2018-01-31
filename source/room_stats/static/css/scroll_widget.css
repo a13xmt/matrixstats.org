@@ -1,5 +1,5 @@
 .scrollable-room-widget {
-  max-width: 700px;
+  max-width: 1000px;
   margin: 10px;
 }
 
@@ -11,7 +11,21 @@
   color: white;
   text-align: center;
   word-break: break-all;
+  position: relative;
 
+
+}
+
+.scrollable-room-widget-header > a {
+  color: white;
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: normal;
+  text-align: right;
+
+  position: absolute;
+  right: 10px;
+  top: 8px;
 }
 
 .scroll-viewport {
@@ -21,7 +35,6 @@
 	overflow: hidden;
 
 	margin: 0 auto;
-	/* background: #444; */
 }
 
 .scroll-wrapper {

@@ -14,11 +14,19 @@
 {% block content %}
     <span>Welcome to Matrix Stats. There you can find some matrix rooms and their detailed statistics</span>
 
-  {% with rooms=top header='Top rooms' %}
+  {% with rooms=top link='/rooms/top' header='Top rooms' %}
     {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
   {% endwith %}
 
-  {% with rooms=random header='Random rooms' %}
+  {% with rooms=random link='/rooms/random' header='Random rooms' %}
+    {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
+  {% endwith %}
+
+  {% with rooms=most_joinable link='/top/abs/monthly/' header='Most joinable for 30 days' %}
+    {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
+  {% endwith %}
+
+  {% with rooms=most_expanding link='/top/rel/monthly/' header='Becoming popular for 30 days' %}
     {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
   {% endwith %}
 
@@ -58,12 +66,9 @@
     </ul>
   </section>
 
-  {% comment %}
   <section>
-    <header>
-      <h1>Categories</h1>
-    </header>
     <div class="category-block">
+      <div class="category-header">Categories</div>
       {% for category in categories %}
       <a class="category-item"
         draggable="false"
@@ -72,8 +77,6 @@
       {% endfor %}
     </div>
   </section>
-
-  {% endcomment %}
 
 
   <!-- Development in progress :) -->

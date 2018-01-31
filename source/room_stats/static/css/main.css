@@ -6,7 +6,7 @@ body {
   padding: 0;
 }
 .content-container {
-  max-width: 750px;
+  max-width: 1000px;
   margin: auto;
   margin-top: 10px;
   margin-bottom: 20px;
@@ -152,11 +152,25 @@ a:visited.room-title{
 
 .category-block {
   font-size: 0;
+  /* max-width: 600px; */
+  margin: 0 auto;
+  display: inline-block;
+  max-width: 562.5px;
+}
+
+.category-header {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 5px;
+  background-color: #444;
+  color: white;
+  text-align: center;
+  word-break: break-all;
 }
 
 .category-item {
-  min-height: 200px;
-  min-width: 200px;
+  min-height: 187.5px;
+  min-width: 187.5px;
   max-width: 33%;
   position: relative;
   background-repeat: no-repeat;
