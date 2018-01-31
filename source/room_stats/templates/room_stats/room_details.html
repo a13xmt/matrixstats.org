@@ -1,4 +1,5 @@
 {% extends 'room_stats/base.html' %}
+{% load staticfiles %}
 {% load custom_filters %}
 
 {% block title %}
@@ -12,6 +13,8 @@
   <div class="room-details-logo">
     {% if room.avatar_url %}
       <img src="https://matrix.org/_matrix/media/r0/thumbnail/{{ room.avatar_url | slice:'6:' }}?width=128&height=128" itemprop="image" />
+    {% else %}
+      <img src="{% static 'img/no-logo.png' %}" title="No active logo yet" />
     {% endif %}
   </div>
 

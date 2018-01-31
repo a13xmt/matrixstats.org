@@ -78,8 +78,12 @@ def room_stats_view(request, room_id):
 
 def list_rooms(request):
     categories = Category.objects.all()
+    top = Room.objects.order_by('-members_count')[:20]
+    random = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
     context = {
-        'categories': categories
+        'categories': categories,
+        'top': top,
+        'random': random
     }
     return render(request, 'room_stats/index.html', context)
 

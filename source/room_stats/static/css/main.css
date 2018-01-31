@@ -334,3 +334,9 @@ a:visited.room-title{
   user-select: none;
 }
 
+.blur {
+  font-size: 6px;
+  text-shadow: 0 0 3px #000;
+	color: rgba(255,255,255,0);
+
+}

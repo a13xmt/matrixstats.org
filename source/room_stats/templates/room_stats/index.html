@@ -1,11 +1,26 @@
 {% extends 'room_stats/base.html' %}
+{% load staticfiles %}
 
+{% block additional_imports %}
+    <link rel="stylesheet" href='{% static "css/scroll_widget.css" %}'>
+    <script src='{% static "vendor/iscroll.js" %}' type="text/javascript" ></script>
+    <script src='{% static "js/scroll_widget.js" %}' type="text/javascript" ></script>
+{% endblock %}
 
 {% block title %}
   Matrix Stats: Index Page
 {% endblock %}
 
 {% block content %}
+    <span>Welcome to Matrix Stats. There you can find some matrix rooms and their detailed statistics</span>
+
+  {% with rooms=top header='Top rooms' %}
+    {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
+  {% endwith %}
+
+  {% with rooms=random header='Random rooms' %}
+    {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
+  {% endwith %}
 
   <section>
     <header>
@@ -63,5 +78,10 @@
 
   <!-- Development in progress :) -->
 
+  <script>
+  (function() {
+    InitScrollWidget();
+  })();
+  </script>
 {% endblock content %}
 

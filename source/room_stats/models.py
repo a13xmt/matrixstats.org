@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from django.utils import timezone
 
+import re
+
 from django.db import models
 
 class Category(models.Model):
@@ -33,6 +35,17 @@ class Room(models.Model):
 
     def __str__(self):
         return "(%s) %s" % (self.members_count, self.name)
+
+    def get_short_name(self, max_len=20):
+        if len(self.name) < 1 :
+            return self.aliases.split(',')[0].split(':')[0]
+        elif len(self.name) < max_len:
+            return self.name
+        else:
+            t = self.name.split(':')[0].split('/')[0].split("|")[0].split(',')[0].split('—')[0]
+            tw = t[0:max_len].split(' ')
+            return ' '.join(tw[:-1]) if len(tw) > 1 else tw[0]
+            # return ' '.join(self.name[:max_len+1].split(' ')[0:-1]) + '...'
 
 class DailyMembers(models.Model):
     id = models.CharField(max_length=511, primary_key=True, editable=False)

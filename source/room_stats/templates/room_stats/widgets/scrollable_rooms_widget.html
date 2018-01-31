@@ -1,0 +1,40 @@
+{% load staticfiles %}
+
+<section>
+  <div class="scrollable-room-widget">
+    <div class="scrollable-room-widget-header">
+      {{ header }}
+    </div>
+    <div class="scroll-viewport">
+      <div class="scroll-wrapper">
+        <div class="scroll-scroller">
+          {% for room in rooms %}
+          <div class="scroll-item">
+            <a class="room-widget" href="{% url 'room-stats' room_id=room.id %}">
+              <div class="room-widget-top">
+                <div class="room-widget-logo">
+                {% if room.avatar_url %}
+                  <img src="https://matrix.org/_matrix/media/r0/thumbnail/{{ room.avatar_url | slice:'6:' }}?width=128&height=128"/>
+                {% else %}
+                  <img src="{% static 'img/no-logo.png' %}"/>
+                {% endif %}
+                </div>
+                <div class="room-widget-header">
+                  {{ room.get_short_name }}
+                </div>
+              </div>
+              <div class="room-widget-content">
+                {% if room.topic %}
+                  {{ room.topic }}
+                {% else %}
+                  <span class="blur">There is no topic available. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sagittis augue quis velit hendrerit volutpat. Maecenas imperdiet augue libero, laoreet malesuada massa dignissim a. Pellentesque sit amet turpis non lacus auctor ultricies in eget odio.No topic available</span>
+                {% endif %}
+              </div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
