@@ -1,31 +1,5 @@
 .scrollable-room-widget {
   max-width: 1000px;
-  margin: 10px;
-}
-
-.scrollable-room-widget-header {
-  font-size: 18px;
-  font-weight: bold;
-  padding: 5px;
-  background-color: #444;
-  color: white;
-  text-align: center;
-  word-break: break-all;
-  position: relative;
-
-
-}
-
-.scrollable-room-widget-header > a {
-  color: white;
-  font-size: 12px;
-  text-decoration: none;
-  font-weight: normal;
-  text-align: right;
-
-  position: absolute;
-  right: 10px;
-  top: 8px;
 }
 
 .scroll-viewport {

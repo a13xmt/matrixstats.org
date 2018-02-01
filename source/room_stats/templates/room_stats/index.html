@@ -12,7 +12,12 @@
 {% endblock %}
 
 {% block content %}
-    <span>Welcome to Matrix Stats. There you can find some matrix rooms and their detailed statistics</span>
+    <h1>Welcome to Matrix Stats</h1>
+    <div class="text">
+      Welcome to Matrix Stats - the first public catalog for <a href="https://matrix.org">matrix</a> rooms. There you can find a lot of rooms grouped by <a href="{% url 'ratings' %}">ratings</a> or <a href="{% url 'categories' %}">categories</a>. If you have a room, you can <a href="{% url 'promote' %}">promote</a> it as well. Feel free to explore new things.
+    </div>
+
+    <h1><a href="{% url 'ratings' %}">Ratings</a></h1>
 
   {% with rooms=top link='/rooms/top' header='Top rooms' %}
     {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
@@ -29,6 +34,34 @@
   {% with rooms=most_expanding link='/top/rel/monthly/' header='Becoming popular for 30 days' %}
     {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
   {% endwith %}
+
+
+    <h1><a href="{% url 'categories' %}">Categories</a></h1>
+
+  <section>
+    <div class="widget category-widget">
+      <div class="widget-header">
+        Categories
+        <a href="{% url 'categories' %}">Get more</a>
+      </div>
+      <div class="category-block">
+        {% for category in categories %}
+        <a class="category-item"
+          draggable="false"
+          style="background-image: url('/static/{{ category.image.name }}');"
+          href="/category/{{ category.name }}"><span class="noselect">{{ category.name }}</span></a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <h1><a href="{% url 'tags' %}">Tags</a></h1>
+    {% for tag in tags %}
+      {% url 'rooms-with-tag' tag=tag.id as rooms_url %}
+      <a class="tag-cloud tag-bordered" href="{{ rooms_url }}" style="font-size: {{ tag.relative_size }}em;">#{{tag.id}}</a>
+    {% endfor %}
+      <a class="tag-cloud tag-bordered" href="{% url 'tags' %}" style="font-size: 0.8em;">...</a>
+
 
   <section>
     <header>
@@ -65,19 +98,6 @@
       </li>
     </ul>
   </section>
-
-  <section>
-    <div class="category-block">
-      <div class="category-header">Categories</div>
-      {% for category in categories %}
-      <a class="category-item"
-        draggable="false"
-        style="background-image: url('/static/{{ category.image.name }}');"
-        href="/category/{{ category.name }}"><span class="noselect">{{ category.name }}</span></a>
-      {% endfor %}
-    </div>
-  </section>
-
 
   <!-- Development in progress :) -->
 

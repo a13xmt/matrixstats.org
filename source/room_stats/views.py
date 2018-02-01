@@ -136,19 +136,24 @@ def list_rooms_with_tag(request, tag):
     }
     return render_rooms_paginated(request, rooms, context)
 
-def list_tags(request):
-    show_all = request.GET.get('all', None)
+def get_tags(show_all=False, limit=None):
     if show_all:
         tags = Tag.objects.annotate(Count('rooms'))
     else:
-        tags = Tag.objects.exclude(id__iregex='(anal|blowjobs|porn|sex|kink|adult)').annotate(Count('rooms'))
+        tags = Tag.objects.exclude(id__iregex='(anal|blowjobs|porn|sex|kink|adult|piss)').annotate(Count('rooms'))
+    if limit:
+        tags = tags.order_by('?')[:limit]
     sizes = [tag.rooms__count for tag in tags]
     clamp = lambda n, minn, maxn: max(min(maxn, n), minn)
     smin, smax = min(sizes), max(sizes)
     for tag in tags:
         tag.relative_size = (clamp(tag.rooms__count, 1, 6) / 5) + 0.6
+    return tags
+
+def list_tags(request):
+    show_all = request.GET.get('all', None)
     context = {
-        'tags': tags,
+        'tags': get_tags(show_all),
         'show_all': show_all
     }
     return render(request, 'room_stats/tag_list.html', context)
@@ -235,16 +240,27 @@ def set_room_category(request, room_id, category_id):
 
 
 def list_rooms(request):
-    categories = Category.objects.all()
+    categories = Category.objects.order_by('?')
     top = Room.objects.order_by('-members_count')[:20]
     random = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
     most_joinable = get_most_joinable_rooms(delta=30, rating='absolute', limit=20)
     most_expanding = get_most_joinable_rooms(delta=30, rating='relative', limit=20)
+    tags = get_tags(limit=100)
     context = {
         'categories': categories,
         'top': top,
         'random': random,
         'most_joinable': most_joinable,
-        'most_expanding': most_expanding
+        'most_expanding': most_expanding,
+        'tags': tags
     }
     return render(request, 'room_stats/index.html', context)
+
+def list_categories(request):
+    pass
+
+def list_ratings(request):
+    pass
+
+def promote_room(request):
+    pass

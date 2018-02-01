@@ -45,6 +45,11 @@ urlpatterns = [
     url(r'^top/rel/monthly/$', views.list_most_joinable_rooms, kwargs={
         'delta': 30, 'rating': 'relative'}, name='top-rel-monthly'),
 
+
+    url(r'^ratings/$', views.list_ratings, name='ratings'),
+    url(r'^categories/$', views.list_categories, name='categories'),
+    url(r'^promote/$', views.promote_room, name='promote'),
+
     url(r'^rooms/top/$', views.list_rooms_by_members_count),
 
     url(r'^rooms/random/', views.list_rooms_by_random, name='random'),
