@@ -27,10 +27,10 @@
       <div class="nav-header">Matrix Stats</div>
       <div class="nav-links">
         <a itemprop="url" href="/">Home</a>
-        <a itemprop="url" href="/page1/">Ratings</a>
-        <a itemprop="url" href="/page2/">Categories</a>
+        <a itemprop="url" href="{% url 'ratings' %}">Ratings</a>
+        <a itemprop="url" href="{% url 'categories' %}">Categories</a>
         <a itemprop="url" href="{% url 'tags' %}">Tags</a>
-        <a itemprop="url" href="/page2/">About</a>
+        <a itemprop="url" href="{% url 'about' %}">About</a>
       </div>
     </nav>
 

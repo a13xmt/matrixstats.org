@@ -1,0 +1,24 @@
+{% extends 'room_stats/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+  Matrix Stats: Categories
+{% endblock %}
+
+{% block content %}
+
+  <h1>Categories</h1>
+  <section>
+    <div class="widget category-widget">
+      <div class="category-block">
+        {% for category in categories %}
+        <a class="category-item"
+          draggable="false"
+          style="background-image: url('/static/{{ category.image.name }}');"
+          href="/category/{{ category.name }}"><span class="noselect">{{ category.name }}</span></a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

@@ -177,7 +177,8 @@ def list_rooms_by_search_term(request, term):
         search=SearchVector('name', 'aliases', 'topic'),
     ).filter(search=term)
     context = {
-        'title': "Matrix Search: %s" % term
+        'title': "Matrix Search: %s" % term,
+        'header': "Search"
     }
     return render_rooms_paginated(request, rooms, context)
 
@@ -257,10 +258,26 @@ def list_rooms(request):
     return render(request, 'room_stats/index.html', context)
 
 def list_categories(request):
-    pass
+    categories = Category.objects.order_by('?')
+    context = {'categories': categories}
+    return render(request, 'room_stats/categories.html', context)
 
 def list_ratings(request):
-    pass
+    context = {}
+    return render(request, 'room_stats/ratings.html', context)
+
 
 def promote_room(request):
-    pass
+    context = {}
+    return render(request, 'room_stats/promote_room.html', context)
+
+def list_promoted_rooms(request, members_limit=None):
+    context = {}
+    return render(request, 'room_stats/promoted_rooms.html', context)
+
+
+def index_simple(request):
+    return render(request, 'room_stats/index_simple.html')
+
+def about(request):
+    return render(request, 'room_stats/about.html')

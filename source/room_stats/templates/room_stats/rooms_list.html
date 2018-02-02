@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block content %}
+
+  {% if header %}
+    <h1>{{ header }}</h1>
+  {% endif %}
+
   <div itemscope itemtype="https://schema.org/BreadcrumbList">
   {% for room in rooms %}
     {% url 'room-stats' room_id=room.id as room_url %}

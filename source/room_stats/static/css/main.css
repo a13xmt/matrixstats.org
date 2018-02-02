@@ -161,12 +161,18 @@ a:visited.room-title{
  *
  */
 
+
+.category-widget {
+  max-width: 1000px;
+  /* margin: 0 auto; */
+}
+
 .category-block {
   font-size: 0;
   /* max-width: 600px; */
   margin: 0 auto;
   /* display: inline-block; */
-  max-width: 750px;
+  max-width: 1000px;
   /* max-width: 562.5px; */
 }
 
@@ -211,6 +217,7 @@ a:visited.room-title{
 .category-item:focus {
   outline: none;
 }
+
 
 
 
@@ -388,12 +395,6 @@ a.tag-cloud:hover {
   right: 10px;
   top: 8px;
 }
-
-.category-widget {
-  max-width: 750px;
-  margin: 0 auto;
-}
-
 
 /*
  *

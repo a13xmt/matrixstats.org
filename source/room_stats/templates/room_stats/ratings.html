@@ -1,0 +1,62 @@
+{% extends 'room_stats/base.html' %}
+{% load staticfiles %}
+
+{% block additional_imports %}
+    <link rel="stylesheet" href='{% static "css/scroll_widget.css" %}'>
+    <script src='{% static "vendor/iscroll.js" %}' type="text/javascript" ></script>
+    <script src='{% static "js/scroll_widget.js" %}' type="text/javascript" ></script>
+{% endblock %}
+
+{% block title %}
+  Matrix Stats: Ratings
+{% endblock %}
+
+{% block content %}
+
+    <h1>Ratings</h1>
+
+    <ul>
+
+      <li>Top rooms:
+        <a href="/rooms/top">All</a>,
+        <a href="/rooms/public">Public</a>
+      </li>
+
+      <li>Most joinable:
+        <a href="{% url 'top-abs-weekly' %}">7d</a>,
+        <a href="{% url 'top-abs-monthly' %}">30d</a>,
+        <a href="{% url 'top-abs-quarterly' %}">90d</a>
+      </li>
+      <li>Becoming popular:
+        <a href="{% url 'top-rel-weekly' %}">7d</a>,
+        <a href="{% url 'top-rel-monthly' %}">30d</a>,
+        <a href="{% url 'top-rel-quarterly' %}">90d</a>
+      </li>
+
+      <li>New rooms:
+        <a href="{% url 'new-3d' %}">3d</a>,
+        <a href="{% url 'new-weekly' %}">7d</a>,
+        <a href="{% url 'new-monthly' %}">30d</a>
+
+      </li>
+
+      <li>Promoted rooms:
+        <a href="{% url 'promoted-small' %}">small(5-50)</a>,
+        <a href="{% url 'promoted-medium' %}">medium(50+)</a>
+      </li>
+
+      <br>
+
+      <li><a href="/rooms/random">Random rooms</a></li>
+      <li><a href="/rooms/cyrillic">Cyrillic rooms</a></li>
+
+      <br>
+      <br>
+
+      <li>
+        <input placeholder="Search" id="search_term" onkeypress="return search_text_changed(event);" />
+        <input type="submit" value="Search" onclick="search_by_term();" />
+      </li>
+    </ul>
+
+{% endblock %}
