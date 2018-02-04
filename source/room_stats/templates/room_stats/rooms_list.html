@@ -31,7 +31,7 @@
 
         <div class="room-side-container">
           <div class="room-header" itemprop="name">
-            {{ room.name }}
+            {{ room.name | slice:":60"}}
           </div>
 
           <div class="room-description" itemprop="description">
