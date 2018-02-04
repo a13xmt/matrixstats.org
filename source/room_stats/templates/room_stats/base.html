@@ -15,6 +15,15 @@
 
     <link rel="stylesheet" href='{% static "css/main.css" %}'>
 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-103796347-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-103796347-2');
+    </script>
+
     <script src='{% static "vendor/Chart.bundle.min.js" %}' type="text/javascript" ></script>
     {% block additional_imports %}
     {% endblock additional_imports %}

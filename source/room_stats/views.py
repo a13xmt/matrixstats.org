@@ -241,7 +241,7 @@ def set_room_category(request, room_id, category_id):
 
 
 def list_rooms(request):
-    categories = Category.objects.order_by('?')
+    categories = Category.objects.order_by('?')[0:8]
     top = Room.objects.order_by('-members_count')[:20]
     random = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
     most_joinable = get_most_joinable_rooms(delta=30, rating='absolute', limit=20)
