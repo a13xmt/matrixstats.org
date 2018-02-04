@@ -140,7 +140,7 @@ def get_tags(show_all=False, limit=None):
     if show_all:
         tags = Tag.objects.annotate(Count('rooms'))
     else:
-        tags = Tag.objects.exclude(id__iregex='(anal|blowjobs|porn|sex|kink|adult|piss)').annotate(Count('rooms'))
+        tags = Tag.objects.exclude(id__iregex='(anal|blowjobs|porn|sex|kink|adult|piss|amateur)').annotate(Count('rooms'))
     if limit:
         tags = tags.order_by('?')[:limit]
     sizes = [tag.rooms__count for tag in tags]
