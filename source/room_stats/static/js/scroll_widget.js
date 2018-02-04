@@ -1,4 +1,5 @@
 function InitScrollWidget() {
+  var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
   wrappers = document.querySelectorAll('.scroll-wrapper');
   wrappers.forEach(function(e){
 	  scroll = new IScroll(e, {
@@ -9,6 +10,7 @@ function InitScrollWidget() {
 		  snapSpeed: 400,
 		  keyBindings: true,
       mouseWheel: true,
+      startX: (width < 1000) ? 0 : -300
 	  });
   })
 }
