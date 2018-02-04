@@ -9,7 +9,7 @@ from room_stats.models import Category
 from django.template.loader import render_to_string
 
 class RoomAdmin(admin.ModelAdmin):
-    all_categories = Category.objects.all()
+    all_categories = Category.objects.order_by('name')
     def category_widget(self, obj):
         context = {
             'room': obj,
