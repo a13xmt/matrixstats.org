@@ -165,7 +165,7 @@ def all_rooms_view(request):
     return render(request, 'room_stats/rooms_list.html', context)
 
 def list_rooms_by_lang_ru(request):
-    rooms = Room.objects.filter(topic__iregex=r'[а-яА-ЯёЁ]+') #.order_by('?')[:20]
+    rooms = Room.objects.filter(topic__iregex=r'[а-яА-ЯёЁ]+').order_by('-members_count')
     context = {
         'title': 'Matrix Rooms: Cyrillic | Русскоязычные комнаты Matrix'
     }
