@@ -79,7 +79,7 @@ def room_stats_view(request, room_id):
 def list_rooms_by_category(request, category_name):
     category = Category.objects.filter(name=category_name).first()
     if not category: return
-    rooms = Room.objects.filter(category=category)
+    rooms = Room.objects.filter(category=category).order_by('-members_count')
     return render_rooms_paginated(request, rooms)
 
 # FIXME optimize query and add daily/weekly/monthly stats
