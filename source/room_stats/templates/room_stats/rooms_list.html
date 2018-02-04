@@ -1,4 +1,5 @@
 {% extends 'room_stats/base.html' %}
+{% load custom_filters %}
 
 {% block title %}
   {{ title }}
@@ -11,53 +12,69 @@
   {% endif %}
 
   <div itemscope itemtype="https://schema.org/BreadcrumbList">
+
+
   {% for room in rooms %}
     {% url 'room-stats' room_id=room.id as room_url %}
 
     <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
 
-      <a class="room-container {% if room.is_public_readable %}room-public{% endif %}"
-        href="{% url 'room-stats' room_id=room.id %}" itemprop="item">
+      <a class="room-container" href="{% url 'room-stats' room_id=room.id %}" itemprop="item">
         <meta itemprop="position" content="{{ forloop.counter }}" />
         <meta itemprop="name" content="{{ room.name }}" />
         <meta itemprop="alternateName" content="{{ room.id }}" />
         <meta itemprop="identifier" content="{{ room.id }}" />
 
-        <h1 class="room-name">{{ room.name }}</h1>
-
-        <div class="room-description">
-          {% if room.topic %}
-            <span itemprop="description">{{ room.topic }}</span>
-          {% else %}
-            <i class="room-desc-empty">No description is provided</i>
-          {% endif %}
+        <div class="room-logo">
+          <img src="{{ room.get_logo_url }}" itemprop="image" />
         </div>
 
-        <div class="room-members-stats">
-
-          <div class="room-members-count">
-            {{ room.members_count }}
+        <div class="room-side-container">
+          <div class="room-header" itemprop="name">
+            {{ room.name }}
           </div>
 
-          <div class="room-members-modifier">
-            {% if rating %}
-              {% if rating == 'absolute' %}
-                {{ room.delta|stringformat:"+d" }}
-              {% endif %}
-              {% if rating == 'relative' %}
-                {% if room.members_from == 0 or room.percentage > 300 %}
-                  New
-                {% else %}
-                  {% if room.percentage > 0 %}+{% else %}-{% endif %}{{ room.percentage|floatformat:"2" }}&#37;
-                {% endif %}
-              {% endif %}
+          <div class="room-description" itemprop="description">
+
+            {% if room.topic %}
+              {{ room.topic | format_lines | linebreaks }}
+            {% else %}
+            <span class="blur">There is no topic available. Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br/>
+              Aliquam sagittis augue quis velit hendrerit volutpat. Maecenas imperdiet augue libero, laoreet malesuada.<br/>
+              Pellentesque sit amet turpis non lacus auctor ultricies in eget odio velit.</span>
             {% endif %}
           </div>
 
+          <div class="room-details">
+
+            <div class="room-members">
+              {{ room.members_count }}
+
+              <div class="room-members-modifier">
+                {% if rating %}
+                  {% if rating == 'absolute' %}
+                    {{ room.delta|stringformat:"+d" }}
+                  {% endif %}
+                  {% if rating == 'relative' %}
+                    {% if room.members_from == 0 or room.percentage > 300 %}
+                      New
+                    {% else %}
+                      {% if room.percentage > 0 %}+{% else %}-{% endif %}{{ room.percentage|floatformat:"2" }}&#37;
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="room-category">
+              {{ room.category.name }}
+            </div>
+
+          </div>
         </div>
 
+
       </a>
-    </div>
 
   {% endfor %}
 

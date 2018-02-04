@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.templatetags.static import static
 
 import re
 
@@ -46,6 +47,16 @@ class Room(models.Model):
             tw = t[0:max_len].split(' ')
             return ' '.join(tw[:-1]) if len(tw) > 1 else tw[0]
             # return ' '.join(self.name[:max_len+1].split(' ')[0:-1]) + '...'
+
+    def get_logo_url(self):
+        if self.avatar_url:
+            return "https://matrix.org/_matrix/media/r0/thumbnail/%s?width=128&height=128" % self.avatar_url[6:]
+        else:
+            return static('img/no-logo.png')
+
+    def topic_split(self):
+        return re.sub(r" [\|•]{1,2} ", "\n\n", self.topic)
+
 
 class DailyMembers(models.Model):
     id = models.CharField(max_length=511, primary_key=True, editable=False)
