@@ -163,69 +163,6 @@ nav a:hover {
   flex: 1 1 50%;
   text-align: right;
 }
-/* .room-container { */
-/*   border: 1px grey solid; */
-/*   margin-bottom: 5px; */
-/*   padding: 10px; */
-/*   cursor: pointer; */
-/*   background-color: rgb(245,245,245); */
-/*   border-radius: 2px; */
-
-/*   display: flex; */
-/*   align-items: center; */
-/*   flex-wrap: wrap; */
-/*   text-decoration: none; */
-/*   color: inherit; */
-
-/* } */
-
-/* .room-name { */
-/*   font-size: 16px; */
-/*   margin: 0 0 10px 0; */
-/*   flex: 1 100%; */
-/*   color: rgb(119,119,119); */
-/* } */
-
-/* a.room-title, */
-/* a:visited.room-title{ */
-/*   text-decoration: none; */
-/*   color: rgb(119,119,119); */
-/* } */
-
-/* .room-public { */
-/*   border-right: 1px grey dashed ; */
-/* } */
-
-/* .room-description { */
-/*   flex: 1; */
-/*   font-size: 0.6em; */
-/* } */
-
-/* .room-members-stats { */
-/*   padding-left: 10px; */
-/*   flex: 0; */
-/*   display: flex; */
-/*   flex-direction: left; */
-/*   flex-wrap: wrap; */
-/* } */
-
-/* .room-members-count { */
-/*   font-size: 0.8em; */
-/*   flex: 1 100%; */
-/*   margin-bottom: 5px; */
-/*   text-align: right; */
-/* } */
-
-/* .room-members-modifier { */
-/*   font-size: 0.6em; */
-/*   flex: 1 100%; */
-/*   text-align: right; */
-/*   color: rgb(119,119,119); */
-/* } */
-
-/* .room-desc-empty { */
-/*   color: rgb(90,90,90); */
-/* } */
 
 
 /*
@@ -237,16 +174,6 @@ nav a:hover {
 
 .category-widget {
   max-width: 1000px;
-  /* margin: 0 auto; */
-}
-
-.category-block {
-  font-size: 0;
-  /* max-width: 600px; */
-  margin: 0 auto;
-  /* display: inline-block; */
-  max-width: 1000px;
-  /* max-width: 562.5px; */
 }
 
 .category-header {
@@ -257,6 +184,15 @@ nav a:hover {
   color: white;
   text-align: center;
   word-break: break-all;
+  flex: 1 1 100%;
+}
+
+.category-block {
+  font-size: 0;
+  margin: 0 auto;
+  max-width: 1000px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .category-item {
@@ -268,6 +204,12 @@ nav a:hover {
   display: inline-block;
   opacity: 0.9;
   transition: opacity 1s;
+}
+
+@media (max-width: 999px){
+  .category-item {
+    flex: 1 1 300px;
+  }
 }
 
 .category-item > span {
