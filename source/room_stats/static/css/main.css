@@ -94,7 +94,7 @@ nav a:hover {
 
 .room-container {
   display: flex;
-  width: 550px;
+  max-width: 550px;
   text-decoration: none;
   margin: 5px auto;
   color: black;
