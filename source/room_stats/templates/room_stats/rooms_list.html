@@ -65,9 +65,11 @@
               </div>
             </div>
 
-            <a class="room-category" href="{% url 'rooms-by-category' category_name=room.category.name %}">
-              {{ room.category.name }}
-            </a>
+            {% if room.category %}
+              <a class="room-category" href="{% url 'rooms-by-category' category_name=room.category.name %}">
+                {{ room.category.name }}
+              </a>
+            {% endif %}
 
           </div>
         </div>
