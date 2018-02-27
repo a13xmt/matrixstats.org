@@ -143,8 +143,8 @@ nav a:hover {
 .room-description {
   flex: 1 1 100%;
   font-size: 12px;
-  min-height: 54px;
-  max-height: 54px;
+  min-height: 56px;
+  max-height: 56px;
   overflow: hidden;
   max-width: 80%;
 
