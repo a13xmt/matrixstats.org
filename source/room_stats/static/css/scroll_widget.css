@@ -9,6 +9,11 @@
 	overflow: hidden;
 
 	margin: 0 auto;
+  transition: height 1s ease;
+}
+
+.scroll-viewport:hover {
+  height: 240px;
 }
 
 .scroll-wrapper {
@@ -60,7 +65,6 @@
   text-decoration: none;
   color: inherit;
 }
-
 
 .room-widget-top {
   display: flex;
