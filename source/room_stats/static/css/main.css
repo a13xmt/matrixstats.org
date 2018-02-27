@@ -105,7 +105,7 @@ nav a:hover {
 }
 
 
-.room-container:hover .room-side-container .room-description {
+.room-description:hover {
   max-height: 200px;
   transition: max-height 1s ease;
   transition-delay: 0.2s;
@@ -138,6 +138,7 @@ nav a:hover {
   max-height: 18px;
   overflow: hidden;
   margin-bottom: 5px;
+  text-decoration: none;
 }
 
 .room-description {
@@ -173,6 +174,7 @@ nav a:hover {
 .room-category {
   flex: 1 1 50%;
   text-align: right;
+  text-decoration: none;
 }
 
 

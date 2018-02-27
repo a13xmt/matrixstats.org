@@ -18,20 +18,20 @@
 
     <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
 
-      <a class="room-container" href="{% url 'room-stats' room_id=room.id %}" itemprop="item">
+      <div class="room-container" href="{% url 'room-stats' room_id=room.id %}" itemprop="item">
         <meta itemprop="position" content="{{ forloop.counter }}" />
         <meta itemprop="name" content="{{ room.name }}" />
         <meta itemprop="alternateName" content="{{ room.id }}" />
         <meta itemprop="identifier" content="{{ room.id }}" />
 
-        <div class="room-logo">
+        <a class="room-logo" href="{% url 'room-stats' room_id=room.id %}">
           <img src="{{ room.get_logo_url }}" itemprop="image" />
-        </div>
+        </a>
 
         <div class="room-side-container">
-          <div class="room-header" itemprop="name">
+          <a class="room-header" itemprop="name" href="{% url 'room-stats' room_id=room.id %}">
             {{ room.name | slice:":60"}}
-          </div>
+          </a>
 
           <div class="room-description" itemprop="description">
 
@@ -65,15 +65,15 @@
               </div>
             </div>
 
-            <div class="room-category">
+            <a class="room-category" href="{% url 'rooms-by-category' category_name=room.category.name %}">
               {{ room.category.name }}
-            </div>
+            </a>
 
           </div>
         </div>
 
 
-      </a>
+      </div>
 
   </div>
 
