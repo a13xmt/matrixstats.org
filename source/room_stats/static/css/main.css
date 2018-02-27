@@ -148,6 +148,7 @@ nav a:hover {
   max-height: 56px;
   overflow: hidden;
   max-width: 80%;
+  cursor: default;
 
   transition: max-height 1s ease;
 }
@@ -169,6 +170,7 @@ nav a:hover {
   font-weight: bold;
   text-align: left;
   color: #999;
+  cursor: default;
 }
 
 .room-category {
