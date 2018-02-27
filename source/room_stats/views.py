@@ -80,7 +80,11 @@ def list_rooms_by_category(request, category_name):
     category = Category.objects.filter(name=category_name).first()
     if not category: return
     rooms = Room.objects.filter(category=category).order_by('-members_count')
-    return render_rooms_paginated(request, rooms)
+    context = {
+        'title': 'Rooms by category: %s' % category.name,
+        'header': 'Rooms by category: %s' % category.name
+    }
+    return render_rooms_paginated(request, rooms, context)
 
 # FIXME optimize query and add daily/weekly/monthly stats
 def list_server_stats(request, server):
@@ -113,7 +117,8 @@ def list_rooms_by_random(request):
     rooms = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
     context = {
         'rooms': rooms,
-        'title': "Matrix Rooms: Random"
+        'title': "Matrix Rooms: Random",
+        'header': 'Random rooms'
     }
     return render(request, 'room_stats/rooms_list.html', context)
 
@@ -123,7 +128,8 @@ def list_rooms_by_members_count(request):
     # context = {'rooms': rooms}
     # return render(request, 'room_stats/rooms_list.html', context)
     context = {
-        'title': 'Matrix Rooms: Top by members'
+        'title': 'Matrix Rooms: Top by members',
+        'header': 'Top rooms by members'
     }
     rooms = Room.objects.filter(
         members_count__gt=5).order_by('-members_count')
@@ -132,7 +138,8 @@ def list_rooms_by_members_count(request):
 def list_rooms_with_tag(request, tag):
     rooms = Room.objects.filter(topic__iregex='#%s' % tag)
     context = {
-        'title': 'Matrix Rooms: by #%s tag' % tag
+        'title': 'Matrix Rooms: by #%s tag' % tag,
+        'header': 'Rooms by #%s tag' % tag
     }
     return render_rooms_paginated(request, rooms, context)
 
@@ -167,7 +174,8 @@ def all_rooms_view(request):
 def list_rooms_by_lang_ru(request):
     rooms = Room.objects.filter(topic__iregex=r'[а-яА-ЯёЁ]+').order_by('-members_count')
     context = {
-        'title': 'Matrix Rooms: Cyrillic | Русскоязычные комнаты Matrix'
+        'title': 'Matrix Rooms: Cyrillic | Русскоязычные комнаты Matrix',
+        'header': 'Русскоязычные комнаты'
     }
     return render_rooms_paginated(request, rooms, context)
 
@@ -205,10 +213,13 @@ def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
 
     title = "Matrix Trends: Most %s rooms for last %s days" % (
         'joinable' if rating == 'absolute' else 'expansive', delta)
+    header = "Most %s rooms (for last %s days)" % (
+        'joinable' if rating == 'absolute' else 'expansive', delta)
 
     context = {
         'rating': rating,
-        'title': title
+        'title': title,
+        'header': header
     }
     return render_rooms_paginated(request, rooms, context=context)
 
@@ -218,7 +229,8 @@ def list_new_rooms(request, delta=3):
         NEW_ROOMS_FOR_LAST_N_DAYS_QUERY % delta
     )[:]
     context = {
-        'title': "Matrix Trends: New rooms for last %s days" % delta
+        'title': "Matrix Trends: New rooms for last %s days" % delta,
+        'header': "New rooms (for last %s days)" % delta
     }
     return render_rooms_paginated(request, rooms, context)
 
@@ -227,7 +239,8 @@ def list_public_rooms(request):
     rooms = Room.objects.filter(
         is_public_readable=True).order_by('-members_count')
     context = {
-        'title': 'Matrix Rooms: Top by members (Public)'
+        'title': 'Matrix Rooms: Top by members (Public)',
+        'header': 'Top rooms by members (public)'
     }
     return render_rooms_paginated(request, rooms, context)
 
