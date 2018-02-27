@@ -2,6 +2,10 @@
   max-width: 1000px;
 }
 
+.scrollable-room-widget:hover .scroll-viewport {
+  height: 240px;
+}
+
 .scroll-viewport {
 	position: relative;
   width: 100%;
@@ -10,10 +14,6 @@
 
 	margin: 0 auto;
   transition: height 1s ease;
-}
-
-.scroll-viewport:hover {
-  height: 240px;
 }
 
 .scroll-wrapper {
