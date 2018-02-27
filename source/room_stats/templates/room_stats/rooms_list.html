@@ -13,7 +13,6 @@
 
   <div itemscope itemtype="https://schema.org/BreadcrumbList">
 
-
   {% for room in rooms %}
     {% url 'room-stats' room_id=room.id as room_url %}
 
@@ -75,6 +74,8 @@
 
 
       </a>
+
+  </div>
 
   {% endfor %}
 
