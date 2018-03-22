@@ -120,7 +120,7 @@ nav a:hover {
 }
 
 
-.room-description:hover {
+.room-container:hover .room-description {
   max-height: 200px;
   transition: max-height 1s ease;
 }
