@@ -114,8 +114,7 @@ nav a:hover {
   margin: 5px auto;
   color: black;
   border: 1px #ddd solid;
-  box-shadow: 0 0 5px #eee;
-  background-color: #fcfcfc;
+  box-shadow: 0 0 3px #eee;
   color: #111;
 }
 
