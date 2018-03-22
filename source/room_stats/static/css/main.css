@@ -126,13 +126,13 @@ nav a:hover {
 }
 
 .room-logo {
-  min-height: 75px;
-  min-width: 75px;
-  height: 75px;
-  width: 75px;
+  min-height: 80px;
+  min-width: 80px;
+  height: 80px;
+  width: 80px;
   align-self: center;
   padding: 0px 5px;
-  margin: 0 15px;
+  margin: 0 10px;
 }
 
 .room-logo > img {
