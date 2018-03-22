@@ -36,6 +36,9 @@
     <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank" itemprop="sameAs">
       open in Riot
     </a>
+    <a href="#" data-id="{{ room.id }}" onclick="copy_room_id(this)">
+      copy room id
+    </a>
     {% if room.is_public_readable %}
       <a href="https://view.matrix.org/room/{{ room.id }}/" target="blank" itemprop="sameAs">
         Preview

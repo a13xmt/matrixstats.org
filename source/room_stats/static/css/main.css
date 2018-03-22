@@ -118,12 +118,6 @@ nav a:hover {
   color: #111;
 }
 
-
-.room-container:hover .room-description {
-  max-height: 200px;
-  transition: max-height 1s ease;
-}
-
 .room-logo {
   min-height: 80px;
   min-width: 80px;
@@ -132,6 +126,18 @@ nav a:hover {
   align-self: center;
   padding: 0px 5px;
   margin: 0 10px;
+}
+
+@media screen and (max-width: 640px){
+  .room-logo {
+    min-height: 60px;
+    min-width: 60px;
+    height: 60px;
+    width: 60px;
+    align-self: center;
+    /* padding: 0px 5px; */
+    margin: 0 5px;
+  }
 }
 
 .room-logo > img {
@@ -160,13 +166,25 @@ nav a:hover {
 .room-description {
   flex: 1 1 100%;
   font-size: 12px;
-  min-height: 56px;
-  max-height: 56px;
+  height: 56px;
   overflow: hidden;
+  min-width: 200px;
   max-width: 80%;
   cursor: default;
+}
 
-  transition: max-height 1s ease;
+@media screen and (max-width: 640px){
+  .room-description > p {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
 }
 
 .room-description > p {
@@ -182,7 +200,7 @@ nav a:hover {
 }
 
 .room-members {
-  flex: 1 1 50%;
+  flex: 1 1 10%;
   font-weight: bold;
   text-align: left;
   color: #999;
@@ -190,7 +208,7 @@ nav a:hover {
 }
 
 .room-category {
-  flex: 1 1 50%;
+  flex: 1 1 90%;
   text-align: right;
   text-decoration: none;
 }
@@ -214,7 +232,6 @@ nav a:hover {
   background-color: #444;
   color: white;
   text-align: center;
-  word-break: break-all;
   flex: 1 1 100%;
 }
 
