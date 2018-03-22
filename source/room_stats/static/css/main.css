@@ -123,7 +123,6 @@ nav a:hover {
 .room-description:hover {
   max-height: 200px;
   transition: max-height 1s ease;
-  transition-delay: 0.2s;
 }
 
 .room-logo {
@@ -133,6 +132,7 @@ nav a:hover {
   width: 75px;
   align-self: center;
   padding: 0px 5px;
+  margin: 0 15px;
 }
 
 .room-logo > img {
