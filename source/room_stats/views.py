@@ -1,11 +1,35 @@
+import requests
 from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.conf import settings
 
-from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category
+from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category, PromotionRequest
+
+def check_recaptcha(function):
+    def wrap(request, *args, **kwargs):
+        request.recaptcha_is_valid = None
+        if request.method == 'POST':
+            recaptcha_response = request.POST.get('g-recaptcha-response')
+            data = {
+                'secret': settings.RECAPTCHA_SECRET_KEY,
+                'response': recaptcha_response
+            }
+            r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+            result = r.json()
+            if result['success']:
+                request.recaptcha_is_valid = True
+            else:
+                request.recaptcha_is_valid = False
+                # messages.error(request, 'Invalid reCAPTCHA. Please try again.')
+        return function(request, *args, **kwargs)
+
+    wrap.__doc__ = function.__doc__
+    wrap.__name__ = function.__name__
+    return wrap
 
 
 def render_rooms_paginated(request, queryset, context={}, page_size=20):
@@ -73,6 +97,10 @@ def room_stats_view(request, room_id):
         last_month_members = 0
     context['members_weekly_diff'] = current_members - last_week_members
     context['members_monthly_diff'] = current_members - last_month_members
+    pr = room.promotionrequest_set.first()
+    context['already_promoted'] = True if pr else False
+    context['promotion_date'] = pr.remove_at if pr else None
+    context['promotion_available'] = room.members_count < 500
 
     return render(request, 'room_stats/room_details.html', context)
 
@@ -280,13 +308,45 @@ def list_ratings(request):
     return render(request, 'room_stats/ratings.html', context)
 
 
+@check_recaptcha
 def promote_room(request):
-    context = {}
-    return render(request, 'room_stats/promote_room.html', context)
+    if request.recaptcha_is_valid:
+        description = request.POST.get('description')
+        room_id = request.POST.get('room_id')
+        room = Room.objects.get(pk=room_id)
+        pr = PromotionRequest.objects.filter(room=room).first()
+        if pr:
+            response = {
+                'success': False,
+                'message': 'ALREADY_PROMOTED'
+            }
+        else:
+            size = 's' if room.members_count <= 50 else 'm'
+            pr = PromotionRequest(
+                room=room,
+                description=description,
+                size=size,
+                active= True if len(description) < 0 else False,
+                remove_at=datetime.now() + timedelta(days=7 if size == 's' else 14)
+            )
+            pr.save()
+            response = {
+                'success': True,
+                'premoderation': True if description else False
+            }
+        return JsonResponse(response)
+    else:
+        return JsonResponse({ 'success': False, 'message': 'INVALID_CAPTCHA'}, status=403)
 
-def list_promoted_rooms(request, members_limit=None):
-    context = {}
-    return render(request, 'room_stats/promoted_rooms.html', context)
+def list_promoted_rooms(request, size=None):
+    promotions = PromotionRequest.objects.filter(size=size, active=True)
+    rooms = Room.objects.filter(pk__in=[p.room.id for p in promotions])
+    print(promotions)
+    print(rooms)
+    context = {
+    }
+    # return render(request, 'room_stats/promoted_rooms.html', context)
+    return render_rooms_paginated(request, rooms, context)
 
 
 def index_simple(request):

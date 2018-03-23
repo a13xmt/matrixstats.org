@@ -126,3 +126,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 
 MEDIA_ROOT = os.environ.get('APP_MEDIA_DIR')
+
+
+RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')

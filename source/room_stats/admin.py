@@ -6,6 +6,7 @@ from room_stats.models import Tag
 from room_stats.models import DailyMembers
 from room_stats.models import ServerStats
 from room_stats.models import Category
+from room_stats.models import PromotionRequest
 from django.template.loader import render_to_string
 
 class RoomAdmin(admin.ModelAdmin):
@@ -66,9 +67,13 @@ class CategoryAdmin(admin.ModelAdmin):
 
     list_display = ('image_preview', 'name', 'rooms_count')
 
+class PromotionRequestAdmin(admin.ModelAdmin):
+    list_display = ('room', 'description', 'size', 'active', 'created_at', 'remove_at')
+
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(DailyMembers, DailyMembersAdmin)
 admin.site.register(ServerStats, ServerStatsAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(PromotionRequest, PromotionRequestAdmin)
 

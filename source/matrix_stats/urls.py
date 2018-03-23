@@ -51,9 +51,9 @@ urlpatterns = [
         'delta': 90, 'rating': 'relative'}, name='top-rel-quarterly'),
 
     url(r'^promoted/small/$', views.list_promoted_rooms, kwargs={
-        'members_limit': 50 }, name='promoted-small'),
+        'size': 's' }, name='promoted-small'),
     url(r'^promoted/medium/$', views.list_promoted_rooms, kwargs={
-        'members_limit': 0 }, name='promoted-medium'),
+        'size': 'm' }, name='promoted-medium'),
 
 
     url(r'^simple/$', views.index_simple, name='simple'),

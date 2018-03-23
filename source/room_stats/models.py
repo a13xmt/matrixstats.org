@@ -58,6 +58,15 @@ class Room(models.Model):
         return re.sub(r" [\|•]{1,2} ", "\n\n", self.topic)
 
 
+class PromotionRequest(models.Model):
+    SIZE_CHOICES = (('s', 'small'), ('m', 'medium'))
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    description = models.TextField(max_length=1024, blank=True, null=True)
+    size = models.CharField(max_length=1, choices=SIZE_CHOICES)
+    active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    remove_at = models.DateTimeField()
+
 class DailyMembers(models.Model):
     id = models.CharField(max_length=511, primary_key=True, editable=False)
     room_id = models.CharField(max_length=511, db_index=True)

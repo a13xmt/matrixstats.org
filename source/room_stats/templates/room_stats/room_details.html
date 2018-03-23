@@ -2,6 +2,10 @@
 {% load staticfiles %}
 {% load custom_filters %}
 
+{% block additional_imports %}
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+
 {% block title %}
   Matrix Room: {{ room.name }}
 {% endblock %}
@@ -44,6 +48,16 @@
         Preview
       </a>
     {% endif %}
+
+      <hr>
+      {% if already_promoted %}
+        <span class="caption">Promoted till {{ promotion_date | date:"F j, Y" }}</span>
+      {% elif promotion_available %}
+        <a href="#" onclick="open_modal()">Promote</a>
+      {% else %}
+        <span class="caption">Too big for promotion</span>
+      {% endif %}
+
   </div>
 
   <div class="room-details-links">
@@ -117,4 +131,7 @@
     var chart = new Chart(ctx, cfg);
   </script>
 
+  {% include 'room_stats/widgets/modal_promote_room.html' %}
+
 {% endblock content %}
+
