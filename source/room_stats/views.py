@@ -40,7 +40,7 @@ def render_rooms_paginated(request, queryset, context={}, page_size=30):
     except EmptyPage:
         rooms = paginator.page(paginator.num_pages)
     context['rooms'] = rooms
-    return render(request, 'room_stats/rooms_list2.html', context)
+    return render(request, 'room_stats/rooms_list.html', context)
 
 
 def get_daily_members_stats(request, room_id, days=30):
@@ -142,11 +142,12 @@ def list_server_stats(request, server):
     return render(request, 'room_stats/server_stats.html', context)
 
 def list_rooms_by_random(request):
-    rooms = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
+    rooms = Room.objects.filter(members_count__gt=5).order_by('?')[:30]
     context = {
         'rooms': rooms,
         'title': "Matrix Rooms: Random",
-        'header': 'Random rooms'
+        'header': 'Random rooms',
+        'random_rooms_rating': True
     }
     return render(request, 'room_stats/rooms_list.html', context)
 
@@ -192,12 +193,6 @@ def list_tags(request):
         'show_all': show_all
     }
     return render(request, 'room_stats/tag_list.html', context)
-
-
-def all_rooms_view(request):
-    rooms = Room.objects.filter(members_count__gt=5).order_by('?')[:20] # order_by('-members_count')[:20]
-    context = {'rooms': rooms}
-    return render(request, 'room_stats/rooms_list.html', context)
 
 def list_rooms_by_lang_ru(request):
     rooms = Room.objects.filter(topic__iregex=r'[а-яА-ЯёЁ]+').order_by('-members_count')

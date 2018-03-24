@@ -1,100 +1,69 @@
 {% extends 'room_stats/base.html' %}
+{% load staticfiles %}
 {% load custom_filters %}
+
+{% block additional_imports %}
+  <script src="{% static 'vendor/infinite-scroll.pkgd.min.js' %}"></script>
+{% endblock %}
 
 {% block title %}
   {{ title }}
 {% endblock %}
 
+{% block content_class %}rlist{% endblock %}
+
 {% block content %}
 
   {% if header %}
-    <h1 class="rooms-header">{{ header }}</h1>
+    <h1 class="rlist-header">{{ header }}</h1>
   {% endif %}
 
-  <div itemscope itemtype="https://schema.org/BreadcrumbList">
+  <div class="rlist-infinite">
 
   {% for room in rooms %}
-    {% url 'room-stats' room_id=room.id as room_url %}
-
-    <div itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-
-      <div class="room-container" href="{% url 'room-stats' room_id=room.id %}" itemprop="item">
-        <meta itemprop="position" content="{{ forloop.counter }}" />
-        <meta itemprop="name" content="{{ room.name }}" />
-        <meta itemprop="alternateName" content="{{ room.id }}" />
-        <meta itemprop="identifier" content="{{ room.id }}" />
-
-        <a class="room-logo" href="{% url 'room-stats' room_id=room.id %}">
-          <img src="{{ room.get_logo_url }}" itemprop="image" />
+  <div class="rlist-item">
+      <div class="rlist-item-top">
+        <a class="rlist-item-logo" href="{% url 'room-stats' room_id=room.id %}">
+        {% if room.avatar_url %}
+          <img src="https://matrix.org/_matrix/media/r0/thumbnail/{{ room.avatar_url | slice:'6:' }}?width=128&height=128"/>
+        {% else %}
+          <img src="{% static 'img/no-logo.png' %}"/>
+        {% endif %}
         </a>
-
-        <div class="room-side-container">
-          <a class="room-header" itemprop="name" href="{% url 'room-stats' room_id=room.id %}">
-            {{ room.name | slice:":60"}}
-          </a>
-
-          <div class="room-description" itemprop="description">
-
-            {% if room.topic %}
-              {{ room.topic | format_lines | linebreaks }}
-            {% else %}
-            <span class="blur">There is no topic available. Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br/>
-              Aliquam sagittis augue quis velit hendrerit volutpat. Maecenas imperdiet augue libero, laoreet malesuada.<br/>
-              Pellentesque sit amet turpis non lacus auctor ultricies in eget odio velit.</span>
-            {% endif %}
-          </div>
-
-          <div class="room-details">
-
-            <div class="room-members">
-              {{ room.members_count }}
-
-              <div class="room-members-modifier">
-                {% if rating %}
-                  {% if rating == 'absolute' %}
-                    {{ room.delta|stringformat:"+d" }}
-                  {% endif %}
-                  {% if rating == 'relative' %}
-                    {% if room.members_from == 0 or room.percentage > 300 %}
-                      New
-                    {% else %}
-                      {% if room.percentage > 0 %}+{% else %}-{% endif %}{{ room.percentage|floatformat:"2" }}&#37;
-                    {% endif %}
-                  {% endif %}
-                {% endif %}
-              </div>
-            </div>
-
-            {% if room.category %}
-              <a class="room-category" href="{% url 'rooms-by-category' category_name=room.category.name %}">
-                {{ room.category.name }}
-              </a>
-            {% endif %}
-
-          </div>
-        </div>
-
-
+        <a class="rlist-item-header" href="{% url 'room-stats' room_id=room.id %}">
+          {{ room.get_short_name }}
+          <span class="rlist-item-header-badge">{{ room.members_count }}</span>
+        </a>
       </div>
+      <div class="rlist-item-content">
+        {% if room.topic %}
+          {{ room.topic }}
+        {% else %}
+          <span class="blur">There is no topic available. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sagittis augue quis velit hendrerit volutpat. Maecenas imperdiet augue libero, laoreet malesuada massa dignissim a. Pellentesque sit amet turpis non lacus auctor ultricies in eget odio.No topic available</span>
+        {% endif %}
+      </div>
+  </div>
+  {% endfor %}
 
   </div>
 
-  {% endfor %}
-
   {% if rooms.has_other_pages %}
-    <div class="pagination">
+    <div class="rlist-pagination">
       {% if rooms.has_previous %}
-        <a href="?page={{ rooms.previous_page_number }}">&laquo;</a>
+        <a class="pagination__prev rlist-pagination-link" href="?page={{ rooms.previous_page_number }}">&laquo;</a>
       {% endif %}
 
       <a class="active">{{ rooms.number }} / {{ rooms.paginator.num_pages}}</a>
 
       {% if rooms.has_next %}
-        <a href="?page={{ rooms.next_page_number }}">&raquo;</a>
+        <a class="pagination__next rlist-pagination-link" href="?page={{ rooms.next_page_number }}">&raquo;</a>
       {% endif %}
+    </div>
+
+  {% elif random_rooms_rating %}
+    <div class="rlist-pagination">
+      <a class="pagination__next rlist-pagination-link" href="?page=0" style="width: 100px;">Load more</a>
     </div>
   {% endif %}
 
-
-  </div>
 {% endblock content %}

@@ -30,7 +30,7 @@ urlpatterns = [
     ),
     url(r'^$', views.list_rooms),
     url(r'^server/(?P<server>[a-zA-Z0-9\.]+)', views.list_server_stats, name='server-stats'),
-    url(r'^category/(?P<category_name>[a-zA-Z0-9\.\s]+)', views.list_rooms_by_category, name='rooms-by-category'),
+    url(r'^category/(?P<category_name>[a-zA-Z0-9\.\s]+)/', views.list_rooms_by_category, name='rooms-by-category'),
 
     url(r'^new/1d/$', views.list_new_rooms, kwargs={'delta': 1}, name='new-1d'),
     url(r'^new/3d/$', views.list_new_rooms, kwargs={'delta': 3}, name='new-3d'),
