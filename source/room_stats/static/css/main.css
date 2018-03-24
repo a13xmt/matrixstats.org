@@ -229,7 +229,7 @@ nav a:hover {
 .rlist-header {
   flex: 1 1 100%;
   text-align: center;
-  padding-bottom: 20px;
+  color: #444;
 }
 
 .rlist-item{
@@ -238,7 +238,10 @@ nav a:hover {
   max-height: 160px;
   overflow: hidden;
   padding: 5px 5px 0 5px;
-  margin-bottom: 5px;
+
+  border: 1px #ddd solid;
+  box-shadow: 0 0 3px #eee;
+  margin: 2px;
 
 }
 
@@ -256,7 +259,6 @@ nav a:hover {
   width: 100%;
   height: 70px;
   display: flex;
-  max-height: 70px;
   position: relative;
 }
 
@@ -277,7 +279,7 @@ nav a:hover {
   font-size: 22px;
   font-weight: bold;
   margin-left: 10px;
-  color: #000;
+  color: #444;
   text-decoration: none;
 }
 
@@ -293,9 +295,9 @@ nav a:hover {
 }
 
 .rlist-item-content{
-  width: 100%;
   font-size: 12px;
-  padding: 5px 0;
+  padding: 5px;
+  color: #111;
   /* background-color: yellow; */
 }
 
