@@ -1,0 +1,19 @@
+<div class="modal">
+  <div class="modal-window">
+    <div class="modal-header">Promote room</div>
+    <div class="modal-content">
+      <form id="promote-form">
+      {% csrf_token %}
+      <input type="hidden" name="room_id" value="{{ room.id }}" />
+      <span class="caption">We can help to promote the room and spread the word about it. The room will be placed to community catalog and become visible on the main page periodically.</span>
+
+      <span class="caption">Depending on the room size, it would be placed to either small (5-50) or medium (50-500) catalog. We promote small rooms for 7 days and medium for 14 days. You can refresh the promotion any time after the expiration.</span>
+
+      <span class="caption">You can add an additional room description in the field below. This will make the room more noticeable. Please, note that premoderation will required in this case. We need to ensure there're no bad things included.</span>
+      <textarea name="description"></textarea>
+
+      <button class="g-recaptcha ureset-button" data-badge="inline" data-theme="dark" data-sitekey="6LegaE4UAAAAAL74MnoU4CR9xRTNsKfeMu1z3BxT" data-callback="reSubmit">Promote</button>
+      </form>
+    </div>
+  </div>
+</div>
