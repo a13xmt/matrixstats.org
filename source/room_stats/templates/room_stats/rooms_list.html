@@ -53,7 +53,7 @@
         <a class="pagination__prev rlist-pagination-link" href="?page={{ rooms.previous_page_number }}">&laquo;</a>
       {% endif %}
 
-      <a class="active">{{ rooms.number }} / {{ rooms.paginator.num_pages}}</a>
+        <a class="active"><span class="pagination__current">{{ rooms.number }}</span> / {{ rooms.paginator.num_pages}}</a>
 
       {% if rooms.has_next %}
         <a class="pagination__next rlist-pagination-link" href="?page={{ rooms.next_page_number }}">&raquo;</a>

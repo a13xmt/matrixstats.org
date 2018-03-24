@@ -625,9 +625,8 @@ a.tag-cloud:hover {
 }
 
 .modal-content {
-  width: 460px;
   margin: 15px auto;
-  padding-bottom: 15px;
+  padding: 0px 15px 15px 15px;
 }
 
 .modal .caption {

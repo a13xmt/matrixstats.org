@@ -88,4 +88,8 @@ if($('.rlist-infinite').length){
     append: '.rlist-item',
     history: 'replace',
   });
+  $('.rlist-infinite').on('append.infiniteScroll', function(event, response, path, items){
+    var current = $('.pagination__current').text()
+    $('.pagination__current').text(parseInt(current) + 1)
+  })
 };
