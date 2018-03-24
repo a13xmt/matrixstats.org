@@ -32,7 +32,7 @@ def check_recaptcha(function):
     return wrap
 
 
-def render_rooms_paginated(request, queryset, context={}, page_size=20):
+def render_rooms_paginated(request, queryset, context={}, page_size=30):
     page = request.GET.get('page', 1)
     paginator = Paginator(queryset, page_size)
     try:
@@ -40,7 +40,7 @@ def render_rooms_paginated(request, queryset, context={}, page_size=20):
     except EmptyPage:
         rooms = paginator.page(paginator.num_pages)
     context['rooms'] = rooms
-    return render(request, 'room_stats/rooms_list.html', context)
+    return render(request, 'room_stats/rooms_list2.html', context)
 
 
 def get_daily_members_stats(request, room_id, days=30):

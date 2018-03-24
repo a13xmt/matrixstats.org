@@ -213,6 +213,104 @@ nav a:hover {
   text-decoration: none;
 }
 
+/*
+ *
+ * Room list (alternative)
+ *
+ */
+
+.rlist {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.rlist-header {
+  flex: 1 1 100%;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.rlist-item{
+
+  flex: 0 0 300px;
+  max-height: 160px;
+  overflow: hidden;
+  padding: 5px 5px 0 5px;
+  margin-bottom: 5px;
+
+}
+
+.rlist-item:hover{
+  overflow: initial;
+  z-index: 10;
+}
+
+.rlist-item:hover .rlist-item-content{
+  background-color: white;
+  height: auto;
+}
+
+.rlist-item-top{
+  width: 100%;
+  height: 70px;
+  display: flex;
+  max-height: 70px;
+  position: relative;
+}
+
+.rlist-item-logo{
+  /* background-color: green; */
+}
+
+.rlist-item-logo > img {
+  height: 70px;
+  width: 70px;
+}
+
+.rlist-item-header{
+  /* background-color: red; */
+  display: flex;
+  flex: 1 1 100%;
+  align-items: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-left: 10px;
+  color: #000;
+  text-decoration: none;
+}
+
+.rlist-item-header-badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 12px;
+  font-weight: normal;
+  color: #aaa;
+  padding: 5px;
+  z-index: 5;
+}
+
+.rlist-item-content{
+  width: 100%;
+  font-size: 12px;
+  padding: 5px 0;
+  /* background-color: yellow; */
+}
+
+.rlist-pagination {
+  display: flex;
+  justify-content: center;
+  flex: 1 1 100%;
+  margin-top: 20px;
+}
+
+.rlist-pagination a {
+  padding: 4px;
+  text-decoration: none;
+  color: rgb(80,80,80);
+}
 
 /*
  *
