@@ -222,8 +222,6 @@ nav a:hover {
 .rlist {
   display: flex;
   flex-wrap: wrap;
-  margin: 0 auto;
-  justify-content: center;
 }
 
 .rlist-header {
@@ -232,9 +230,17 @@ nav a:hover {
   color: #444;
 }
 
+.rlist-infinite{
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+}
+
 .rlist-item{
 
-  flex: 0 0 300px;
+  flex: 0 0 295px;
   max-height: 160px;
   overflow: hidden;
   padding: 5px 5px 0 5px;
@@ -299,6 +305,16 @@ nav a:hover {
   padding: 5px;
   color: #111;
   /* background-color: yellow; */
+
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 
 .rlist-pagination {
@@ -306,12 +322,19 @@ nav a:hover {
   justify-content: center;
   flex: 1 1 100%;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .rlist-pagination a {
   padding: 4px;
   text-decoration: none;
   color: rgb(80,80,80);
+}
+
+.rlist-pagination-link {
+  padding: 2px 5px;
+  width: 50px;
+  text-align: center;
 }
 
 /*

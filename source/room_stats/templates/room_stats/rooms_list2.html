@@ -2,6 +2,10 @@
 {% load staticfiles %}
 {% load custom_filters %}
 
+{% block additional_imports %}
+  <script src="{% static 'vendor/infinite-scroll.pkgd.min.js' %}"></script>
+{% endblock %}
+
 {% block title %}
   {{ title }}
 {% endblock %}
@@ -14,9 +18,10 @@
     <h1 class="rlist-header">{{ header }}</h1>
   {% endif %}
 
+  <div class="rlist-infinite">
+
   {% for room in rooms %}
   <div class="rlist-item">
-    <!-- <a class="room-widget" href="{% url 'room-stats' room_id=room.id %}"> -->
       <div class="rlist-item-top">
         <a class="rlist-item-logo" href="{% url 'room-stats' room_id=room.id %}">
         {% if room.avatar_url %}
@@ -37,20 +42,21 @@
           <span class="blur">There is no topic available. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sagittis augue quis velit hendrerit volutpat. Maecenas imperdiet augue libero, laoreet malesuada massa dignissim a. Pellentesque sit amet turpis non lacus auctor ultricies in eget odio.No topic available</span>
         {% endif %}
       </div>
-      <!-- </a> -->
   </div>
   {% endfor %}
+
+  </div>
 
   {% if rooms.has_other_pages %}
     <div class="rlist-pagination">
       {% if rooms.has_previous %}
-        <a href="?page={{ rooms.previous_page_number }}">&laquo;</a>
+        <a class="pagination__prev rlist-pagination-link" href="?page={{ rooms.previous_page_number }}">&laquo;</a>
       {% endif %}
 
       <a class="active">{{ rooms.number }} / {{ rooms.paginator.num_pages}}</a>
 
       {% if rooms.has_next %}
-        <a href="?page={{ rooms.next_page_number }}">&raquo;</a>
+        <a class="pagination__next rlist-pagination-link" href="?page={{ rooms.next_page_number }}">&raquo;</a>
       {% endif %}
     </div>
   {% endif %}

@@ -75,3 +75,17 @@ function reSubmit(response){
     error: promotion_error
   })
 }
+
+/*
+ *
+ * Endless scroll for room list
+ *
+ */
+
+if($('.rlist-infinite').length){
+  $('.rlist-infinite').infiniteScroll({
+    path: '.pagination__next',
+    append: '.rlist-item',
+    history: 'replace',
+  });
+};
