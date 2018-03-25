@@ -25,7 +25,7 @@ Clone the repository:
 
 Install all the project requirements via pip:
 
-```pip install source/requirements.pip```
+```pip install -r source/requirements.pip```
 
 (optional) use virtualenv and python-virtualenvwrapper for installation
 
@@ -64,7 +64,7 @@ python manage.py migrate
 
 ### 6. Run dev server
 
-Run development server, listening on http://127.0.0.1:8000:
+Run development server, listening on http://127.0.0.1:8000
 
 ```python manage.py runserver```
 
