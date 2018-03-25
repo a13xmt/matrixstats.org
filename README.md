@@ -5,9 +5,8 @@ Website: https://matrixstats.org
 
 Screenshots:
 
-![Matrixstats screenshot 1](https://s3.amazonaws.com/matrixstats/matrixstats-1.png)
-
-![Matrixstats screenshot 2](https://s3.amazonaws.com/matrixstats/matrixstats-2.png)
+![Matrixstats screenshot 1](https://s3.amazonaws.com/matrixstats/matrixstats-01.png)
+![Matrixstats screenshot 2](https://s3.amazonaws.com/matrixstats/matrixstats-02.png)
 
 ## Installation (dev version)
 
