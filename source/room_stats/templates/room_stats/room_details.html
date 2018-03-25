@@ -49,6 +49,7 @@
       </a>
     {% endif %}
 
+      {% comment %}
       <hr>
       {% if already_promoted %}
         <span class="caption">Promoted till {{ promotion_date | date:"F j, Y" }}</span>
@@ -57,6 +58,7 @@
       {% else %}
         <span class="caption">Too big for promotion</span>
       {% endif %}
+      {% endcomment %}
 
   </div>
 
