@@ -1,6 +1,6 @@
 # Matrix Stats
 
-First public catalog for matrix rooms. There you can find a lot of rooms grouped by ratings or categories. Feel free to explore new things.
+The first public catalog for matrix rooms. There you can find a lot of rooms grouped by ratings or categories. Feel free to explore new things.
 
 Website: https://matrixstats.org
 
