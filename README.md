@@ -1,7 +1,5 @@
 # Matrix Stats
 
-The first public catalog for matrix rooms. There you can find a lot of rooms grouped by ratings or categories. Feel free to explore new things.
-
 Website: https://matrixstats.org
 
 Matrix room: [#matrixstats:matrix.org](https://riot.im/app/#/room/#matrixstats:matrix.org)
