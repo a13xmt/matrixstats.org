@@ -3,6 +3,8 @@ First public catalog for matrix rooms, grouped by ratings or categories.
 
 Website: https://matrixstats.org
 
+Matrix room: [#matrixstats:matrix.org](https://riot.im/app/#/room/#matrixstats:matrix.org)
+
 Screenshots:
 
 ![Matrixstats screenshot 1](https://s3.amazonaws.com/matrixstats/matrixstats-01.png)
