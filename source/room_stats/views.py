@@ -284,10 +284,6 @@ def set_room_categories(request, room_id):
     room.categories.clear()
     room.categories.add(*category_ids)
     room.save()
-    # room = Room.objects.get(id=room_id)
-    # category = None if int(category_id) == 0 else Category.objects.get(id=category_id)
-    # room.category = category
-    # room.save()
     return JsonResponse({'status': 'ok'})
 
 
