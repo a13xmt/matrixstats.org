@@ -19,6 +19,14 @@ class RoomAdmin(admin.ModelAdmin):
         return render_to_string('admin/widgets/category_widget.html', context)
     category_widget.short_description = "category"
 
+    def categories_widget(self, obj):
+        context = {
+            'room': obj,
+            'categories': RoomAdmin.all_categories
+        }
+        return render_to_string('admin/widgets/categories_widget.html', context)
+    categories_widget.short_description = "categories"
+
     def logo(self, obj):
         if obj.avatar_url is '':
             return ""
@@ -33,17 +41,19 @@ class RoomAdmin(admin.ModelAdmin):
     logo.short_description = "logo"
 
 
-    list_display = ('logo', 'members_count', 'name', 'topic', 'category_widget', 'is_public_readable', 'is_guest_writeable', 'updated_at')
+    list_display = ('logo', 'members_count', 'name', 'topic', 'category_widget', 'categories_widget', 'is_public_readable', 'is_guest_writeable', 'updated_at')
     ordering = ('-members_count', )
 
     class Media:
         js = (
             'vendor/jquery-3.3.1.min.js',
+            'vendor/jquery-ui.min.js',
+            'vendor/jquery.multiselect.min.js',
             'vendor/toastr.min.js',
             'js/category_widget.js',
         )
         css = {
-            'all': ('vendor/toastr.min.css',)
+            'all': ('vendor/toastr.min.css', 'vendor/jquery.multiselect.css', 'vendor/jquery-ui.min.css')
         }
 
 

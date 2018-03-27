@@ -24,7 +24,8 @@ class CategoryRequest(models.Model):
 class Room(models.Model):
     id = models.CharField(max_length=511, primary_key=True)
     name = models.TextField(blank=True, null=True)
-    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL, related_name='%(class)s_old')
+    categories = models.ManyToManyField(Category, blank=True)
     aliases = models.TextField(blank=True, null=True)
     topic = models.TextField(blank=True, null=True)
     members_count = models.IntegerField()

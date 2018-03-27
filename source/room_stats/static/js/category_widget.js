@@ -39,3 +39,8 @@ $('document').ready(function(){
     change_room_category(room_id, category_id)
   })
 });
+
+
+$(document).ready(function(){
+  $(".multiselect").multiselect({header: false});
+});
