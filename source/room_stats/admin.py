@@ -44,6 +44,10 @@ class RoomAdmin(admin.ModelAdmin):
     list_display = ('logo', 'members_count', 'name', 'topic', 'category_widget', 'categories_widget', 'is_public_readable', 'is_guest_writeable', 'updated_at')
     ordering = ('-members_count', )
 
+    def get_queryset(self, request):
+        queryset = super(RoomAdmin, self).get_queryset(request)
+        return queryset.prefetch_related('categories')
+
     class Media:
         js = (
             'vendor/jquery-3.3.1.min.js',

@@ -1,4 +1,5 @@
 import requests
+import json
 from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http.response import JsonResponse
@@ -273,6 +274,20 @@ def set_room_category(request, room_id, category_id):
     category = None if int(category_id) == 0 else Category.objects.get(id=category_id)
     room.category = category
     room.save()
+    return JsonResponse({'status': 'ok'})
+
+@login_required
+def set_room_categories(request, room_id):
+    data = json.loads(request.body)
+    category_ids = [int(val) for val in data]
+    room = Room.objects.get(pk=room_id)
+    room.categories.clear()
+    room.categories.add(*category_ids)
+    room.save()
+    # room = Room.objects.get(id=room_id)
+    # category = None if int(category_id) == 0 else Category.objects.get(id=category_id)
+    # room.category = category
+    # room.save()
     return JsonResponse({'status': 'ok'})
 
 

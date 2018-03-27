@@ -1,5 +1,5 @@
 <select id="{{ room.id }}" class="multiselect" multiple="multiple">
   {% for category in categories %}
-  <option value="{{ category.id}}" {% if room.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+  <option value="{{ category.id}}" {% if category in room.categories.all %}selected{% endif %}>{{ category.name }}</option>
   {% endfor %}
 </select>

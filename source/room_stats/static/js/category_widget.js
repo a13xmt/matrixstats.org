@@ -40,7 +40,36 @@ $('document').ready(function(){
   })
 });
 
+function set_room_categories(room_id, categories_ids){
+  $.ajax({
+    type: "POST",
+    url: "/admin/room/" + room_id + "/setcategories/",
+    beforeSend: function(xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    },
+    data: JSON.stringify(categories_ids),
+    success: function(){
+      toastr.success('Category changed')
+    },
+    error: function(e, status, error){
+      toastr.error(status, error)
+    }
+  });
+}
+
 
 $(document).ready(function(){
-  $(".multiselect").multiselect({header: false});
+  $(".multiselect").multiselect({
+    header: false,
+    selectedList: 10,
+    close: function(){
+      room_id = $(this).prop('id')
+      checked = $(this).multiselect('getChecked')
+      categories_ids = []
+      for(var i=0; i < checked.length; i++){
+        categories_ids.push(checked[i].value)
+      }
+      set_room_categories(room_id, categories_ids)
+    }
+  });
 });
