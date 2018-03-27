@@ -62,6 +62,7 @@ $(document).ready(function(){
   $(".multiselect").multiselect({
     header: false,
     selectedList: 10,
+    buttonWidth: 400,
     close: function(){
       room_id = $(this).prop('id')
       checked = $(this).multiselect('getChecked')

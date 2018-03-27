@@ -22,7 +22,8 @@ class RoomAdmin(admin.ModelAdmin):
     def categories_widget(self, obj):
         context = {
             'room': obj,
-            'categories': RoomAdmin.all_categories
+            # FIXME huge performance drop in exchange for realtime categories
+            'categories': Category.objects.order_by('name')
         }
         return render_to_string('admin/widgets/categories_widget.html', context)
     categories_widget.short_description = "categories"
