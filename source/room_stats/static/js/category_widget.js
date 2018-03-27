@@ -59,18 +59,23 @@ function set_room_categories(room_id, categories_ids){
 
 
 $(document).ready(function(){
-  $(".multiselect").multiselect({
+  $(".categories-multiselect").multiselect({
     header: false,
     selectedList: 10,
     buttonWidth: 400,
+    click: function(e, ui){
+      $(this).data('changed', true)
+    },
     close: function(){
-      room_id = $(this).prop('id')
-      checked = $(this).multiselect('getChecked')
-      categories_ids = []
-      for(var i=0; i < checked.length; i++){
-        categories_ids.push(checked[i].value)
+      if ($(this).data('changed')){
+        room_id = $(this).prop('id')
+        checked = $(this).multiselect('getChecked')
+        categories_ids = []
+        for(var i=0; i < checked.length; i++){
+          categories_ids.push(checked[i].value)
+        }
+        set_room_categories(room_id, categories_ids)
       }
-      set_room_categories(room_id, categories_ids)
     }
   });
 });
