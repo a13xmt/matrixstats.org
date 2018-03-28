@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.conf import settings
 from django.http import Http404
+from random import shuffle
 
 from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category, PromotionRequest
 
@@ -307,7 +308,8 @@ def list_rooms(request):
     return render(request, 'room_stats/index.html', context)
 
 def list_categories(request):
-    categories = Category.objects.order_by('?')
+    categories = list(Category.objects.annotate(Count('room'))[:])
+    shuffle(categories) # order_by('?') doesn't work with annotations
     context = {'categories': categories}
     return render(request, 'room_stats/categories.html', context)
 

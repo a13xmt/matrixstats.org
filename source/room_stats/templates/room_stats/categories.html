@@ -15,7 +15,9 @@
         <a class="category-item"
           draggable="false"
           style="background-image: url('/static/{{ category.image.name }}');"
-          href="/category/{{ category.name }}"><span class="noselect">{{ category.name }}</span></a>
+          href="/category/{{ category.name }}"><span class="noselect">{{ category.name }}
+            <span class="category-item-count">{{ category.room__count }}</span>
+          </span></a>
         {% endfor %}
       </div>
     </div>

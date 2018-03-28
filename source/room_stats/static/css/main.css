@@ -396,6 +396,14 @@ nav a:hover {
   padding: 8px 4px;
 }
 
+.category-item-count {
+  position: absolute;
+  font-size: 10px;
+  color: grey;
+  top: 12px;
+  right: 10px;
+}
+
 .category-item:hover {
   opacity: 1;
 }
