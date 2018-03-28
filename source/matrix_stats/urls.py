@@ -20,8 +20,8 @@ from room_stats import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/setcategory/(?P<category_id>[0-9]*)', views.set_room_category),
-    url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/setcategories/', views.set_room_categories),
+    url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/setcategory/(?P<category_id>[0-9]*)', views.set_room_category),
+    url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/setcategories/', views.set_room_categories),
 
     url(r'^stats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/(?P<days>[0-9]*)$',
         views.get_daily_members_stats
