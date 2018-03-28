@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.conf import settings
+from django.http import Http404
 
 from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category, PromotionRequest
 
@@ -107,7 +108,8 @@ def room_stats_view(request, room_id):
 
 def list_rooms_by_category(request, category_name):
     category = Category.objects.filter(name=category_name).first()
-    if not category: return
+    if not category:
+        raise Http404("Category does not exist")
     rooms = Room.objects.filter(category=category).order_by('-members_count')
     context = {
         'title': 'Rooms by category: %s' % category.name,
