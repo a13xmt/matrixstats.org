@@ -110,7 +110,7 @@ def list_rooms_by_category(request, category_name):
     category = Category.objects.filter(name=category_name).first()
     if not category:
         raise Http404("Category does not exist")
-    rooms = Room.objects.filter(category=category).order_by('-members_count')
+    rooms = Room.objects.filter(categories__id=category.id).order_by('-members_count')
     context = {
         'title': 'Rooms by category: %s' % category.name,
         'header': 'Rooms by category: %s' % category.name
