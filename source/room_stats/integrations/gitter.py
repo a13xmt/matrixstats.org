@@ -23,7 +23,7 @@ def update_gitter_rooms(skip_inactive=True):
         rooms = Room.objects.filter(aliases__iregex="gitter_")
 
     for room in rooms:
-        sleep(5)
+        sleep(3)
         r = rs.get(room_endpoint % room.name)
         print (room.name, r.status_code)
         if r.status_code == 401:
