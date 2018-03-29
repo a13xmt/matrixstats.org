@@ -29,7 +29,7 @@ def update_gitter_rooms(skip_inactive=True):
         if r.status_code == 401:
             raise GitterException("Invalid API token")
         data = r.json().get('results', [])
-        data = [item for item in data if item['name'] == room.name ] # narrow search results using strict filter
+        data = [item for item in data if item['name'].lower() == room.name.lower() ] # narrow search results using strict filter
         if len(data) == 0:
             room.inactive = True
             room.save(update_fields=['inactive'])
