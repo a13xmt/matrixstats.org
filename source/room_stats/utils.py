@@ -144,12 +144,14 @@ def update_rooms_from_file(filename):
     date_now = datetime.now()
     for room in existing_rooms:
         r = rooms_dict.get(room.id)
+        topic = r.get('topic')
         avatar_path = r.get('avatar_url', '')[6:]
+        avatar_url = avatar_url_template % avatar_path if avatar_path else ''
         room.name = r.get('name', '')
         room.aliases = ", ".join(r.get('aliases', []))
-        room.topic = r.get('topic','')
+        room.topic = topic if topic else room.topic
         room.members_count = r.get('num_joined_members', 0)
-        room.avatar_url = avatar_url_template % avatar_path if avatar_path else ''
+        room.avatar_url = avatar_url if avatar_url else room.avatar_url
         room.is_public_readable = r.get('world_readable', False)
         room.is_guest_writeable = r.get('guest_can_join', False)
         room.updated_at = date_now
