@@ -32,6 +32,7 @@ class Room(models.Model):
     avatar_url = models.TextField(blank=True, null=True)
     is_public_readable = models.BooleanField()
     is_guest_writeable = models.BooleanField()
+    inactive = models.BooleanField(default=False)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 
@@ -51,7 +52,7 @@ class Room(models.Model):
 
     def get_logo_url(self):
         if self.avatar_url:
-            return "https://matrix.org/_matrix/media/r0/thumbnail/%s?width=128&height=128" % self.avatar_url[6:]
+            return self.avatar_url
         else:
             return static('img/no-logo.png')
 
