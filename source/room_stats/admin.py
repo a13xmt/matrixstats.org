@@ -31,11 +31,8 @@ class RoomAdmin(admin.ModelAdmin):
     def logo(self, obj):
         if obj.avatar_url is '':
             return ""
-        path = obj.avatar_url.replace(
-            'mxc://',
-            'https://matrix.org/_matrix/media/v1/thumbnail/'
-        )
-        img = "<img src='%s?method=crop&height=30&width=30'/>" % (
+        path = obj.get_logo_url()
+        img = "<img src='%s' style='height: 50px; width: 50px;'/>" % (
             path,
         )
         return mark_safe(img)

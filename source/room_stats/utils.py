@@ -140,14 +140,16 @@ def update_rooms_from_file(filename):
     new_room_ids = [id for id in room_ids if id not in existing_room_ids]
     print("new room ids: %s" % new_room_ids)
 
+    avatar_url_template = "https://matrix.org/_matrix/media/r0/thumbnail/%s?width=128&height=128"
     date_now = datetime.now()
     for room in existing_rooms:
         r = rooms_dict.get(room.id)
+        avatar_path = r.get('avatar_url', '')[6:]
         room.name = r.get('name', '')
         room.aliases = ", ".join(r.get('aliases', []))
         room.topic = r.get('topic','')
         room.members_count = r.get('num_joined_members', 0)
-        room.avatar_url = r.get('avatar_url', '')
+        room.avatar_url = avatar_url_template % avatar_path if avatar_path else ''
         room.is_public_readable = r.get('world_readable', False)
         room.is_guest_writeable = r.get('guest_can_join', False)
         room.updated_at = date_now

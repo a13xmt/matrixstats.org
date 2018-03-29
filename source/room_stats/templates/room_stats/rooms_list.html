@@ -24,11 +24,7 @@
   <div class="rlist-item">
       <div class="rlist-item-top">
         <a class="rlist-item-logo" href="{% url 'room-stats' room_id=room.id %}">
-        {% if room.avatar_url %}
-          <img src="https://matrix.org/_matrix/media/r0/thumbnail/{{ room.avatar_url | slice:'6:' }}?width=128&height=128"/>
-        {% else %}
-          <img src="{% static 'img/no-logo.png' %}"/>
-        {% endif %}
+          <img src="{{ room.get_logo_url }}" itemprop="image" />
         </a>
         <a class="rlist-item-header" href="{% url 'room-stats' room_id=room.id %}">
           {{ room.get_short_name }}

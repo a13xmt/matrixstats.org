@@ -14,11 +14,7 @@
             <a class="room-widget" href="{% url 'room-stats' room_id=room.id %}">
               <div class="room-widget-top">
                 <div class="room-widget-logo">
-                {% if room.avatar_url %}
-                  <img src="https://matrix.org/_matrix/media/r0/thumbnail/{{ room.avatar_url | slice:'6:' }}?width=128&height=128"/>
-                {% else %}
-                  <img src="{% static 'img/no-logo.png' %}"/>
-                {% endif %}
+                  <img src="{{ room.get_logo_url }}"/>
                 </div>
                 <div class="room-widget-header">
                   {{ room.get_short_name }}
