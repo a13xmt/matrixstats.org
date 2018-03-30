@@ -238,7 +238,7 @@ def get_most_joinable_rooms(delta, rating='absolute', limit=100):
     )[:limit]
     return rooms
 
-def list_most_joinable_rooms(request, delta, rating='absolute', limit=100):
+def list_most_joinable_rooms(request, delta, rating='absolute', limit=250):
     rooms = get_most_joinable_rooms(delta, rating, limit)
 
     title = "Matrix Trends: Most %s rooms for last %s days" % (
