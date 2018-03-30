@@ -87,6 +87,7 @@ if($('.rlist-infinite').length){
     path: '.pagination__next',
     append: '.rlist-item',
     history: 'replace',
+    prefill: true
   });
   $('.rlist-infinite').on('append.infiniteScroll', function(event, response, path, items){
     var current = $('.pagination__current').text()
