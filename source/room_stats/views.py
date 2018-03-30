@@ -84,7 +84,7 @@ def room_stats_view(request, room_id):
     }
 
     if request.user.id:
-        context['categories'] = Category.objects.all()
+        context['categories'] = Category.objects.order_by('name')
         context['admin'] = True
 
     # members delta
