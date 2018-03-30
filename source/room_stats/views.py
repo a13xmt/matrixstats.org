@@ -297,7 +297,7 @@ def list_rooms(request):
     categories = Category.objects.order_by('?')[0:8]
     new_ids = [r.id for r in Room.objects.raw(NEW_ROOMS_FOR_LAST_N_DAYS_QUERY % 30)[:]]
     new = Room.objects.filter(id__in=new_ids, members_count__gte=5).exclude(avatar_url__exact='').exclude(topic__exact='').order_by('?')[:20]
-    random = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
+    random = Room.objects.filter(members_count__gt=5).exclude(avatar_url__exact='').exclude(topic__exact='').order_by('?')[:20]
     most_joinable = get_most_joinable_rooms(delta=30, rating='absolute', limit=20)
     most_expanding = get_most_joinable_rooms(delta=30, rating='relative', limit=20)
     tags = get_tags(limit=100)
