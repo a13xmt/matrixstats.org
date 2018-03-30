@@ -28,7 +28,15 @@
         </a>
         <a class="rlist-item-header" href="{% url 'room-stats' room_id=room.id %}">
           {{ room.get_short_name }}
-          <span class="rlist-item-header-badge">{{ room.members_count }}</span>
+
+          <span class="rlist-item-header-badge">
+            {% if rating %}
+              {{ room | display_room_delta:rating }}
+            {% else %}
+              {{ room.members_count }}
+            {% endif %}
+          </span>
+
         </a>
       </div>
       <div class="rlist-item-content">
