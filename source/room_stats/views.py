@@ -83,6 +83,9 @@ def room_stats_view(request, room_id):
         'labels': labels,
     }
 
+    if request.user.id:
+        context['categories'] = Category.objects.all()
+        context['admin'] = True
 
     # members delta
     current_members = dm.last().members_count

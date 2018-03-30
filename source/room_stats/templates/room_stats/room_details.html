@@ -4,6 +4,11 @@
 
 {% block additional_imports %}
   <script src='https://www.google.com/recaptcha/api.js'></script>
+
+  {% if admin %}
+    {% include 'admin/imports.html' %}
+  {% endif %}
+
 {% endblock %}
 
 {% block title %}
@@ -76,6 +81,12 @@
 
 
 </div>
+
+  {% if admin %}
+    <div style="margin-left: 20px;">
+      {% include 'admin/widgets/categories_widget.html' %}
+    </div>
+  {% endif %}
 
   <div class="room-graph">
     <canvas id="dailyVisitorsChart" ></canvas>
