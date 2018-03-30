@@ -11,6 +11,7 @@ from django.http import Http404
 from random import shuffle
 
 from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category, PromotionRequest
+from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY
 
 def check_recaptcha(function):
     def wrap(request, *args, **kwargs):
@@ -253,7 +254,6 @@ def list_most_joinable_rooms(request, delta, rating='absolute', limit=250):
     }
     return render_rooms_paginated(request, rooms, context=context)
 
-from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY
 def list_new_rooms(request, delta=3):
     rooms = Room.objects.raw(
         NEW_ROOMS_FOR_LAST_N_DAYS_QUERY % delta
@@ -295,14 +295,15 @@ def set_room_categories(request, room_id):
 
 def list_rooms(request):
     categories = Category.objects.order_by('?')[0:8]
-    top = Room.objects.order_by('-members_count')[:20]
+    new_ids = [r.id for r in Room.objects.raw(NEW_ROOMS_FOR_LAST_N_DAYS_QUERY % 30)[:]]
+    new = Room.objects.filter(id__in=new_ids, members_count__gte=5).exclude(avatar_url__exact='').exclude(topic__exact='').order_by('?')[:20]
     random = Room.objects.filter(members_count__gt=5).order_by('?')[:20]
     most_joinable = get_most_joinable_rooms(delta=30, rating='absolute', limit=20)
     most_expanding = get_most_joinable_rooms(delta=30, rating='relative', limit=20)
     tags = get_tags(limit=100)
     context = {
         'categories': categories,
-        'top': top,
+        'new': new,
         'random': random,
         'most_joinable': most_joinable,
         'most_expanding': most_expanding,

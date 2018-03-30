@@ -19,7 +19,7 @@
 
     <h1><a href="{% url 'ratings' %}">Ratings</a></h1>
 
-  {% with rooms=top link='/rooms/top' header='Top rooms' %}
+  {% with rooms=new link='/new/monthly/' header='New rooms' %}
     {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
   {% endwith %}
 
