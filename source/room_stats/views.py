@@ -104,10 +104,18 @@ def room_stats_view(request, room_id):
         last_month_members = 0
     context['members_weekly_diff'] = current_members - last_week_members
     context['members_monthly_diff'] = current_members - last_month_members
+
+    # promotion details
     pr = room.promotionrequest_set.first()
-    context['already_promoted'] = True if pr else False
-    context['promotion_date'] = pr.remove_at if pr else None
-    context['promotion_available'] = room.members_count < 500
+    already_promoted = True if pr else False
+    promotion_pending = already_promoted and not pr.active
+    room_too_big = room.members_count > 500
+    promotion_available = not (already_promoted or promotion_pending or room_too_big) # all conditions should be false
+    promotion_reason = None
+    if already_promoted: promotion_reason = "active till %s" % pr.remove_at.strftime("%B %d, %Y")
+    if promotion_pending: promotion_reason = "pending review"
+    context['promotion_available'] = promotion_available
+    context['promotion_reason'] = promotion_reason
 
     return render(request, 'room_stats/room_details.html', context)
 
@@ -340,7 +348,7 @@ def promote_room(request):
                 room=room,
                 description=description,
                 size=size,
-                active= True if len(description) < 0 else False,
+                active= True if len(description) == 0 else False,
                 remove_at=datetime.now() + timedelta(days=7 if size == 's' else 14)
             )
             pr.save()
