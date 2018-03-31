@@ -39,27 +39,32 @@
 
   <div class="room-details-buttons">
     <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank" itemprop="sameAs">
+      <img src="{% static 'img/icon-riot.png' %}"/>
       open in Riot
     </a>
     <a href="#" data-id="{{ room.id }}" onclick="copy_room_id(this)">
+      <img src="{% static 'img/icon-copy.png' %}"/>
       copy room id
     </a>
     {% if room.is_public_readable %}
       <a href="https://view.matrix.org/room/{{ room.id }}/" target="blank" itemprop="sameAs">
+        <img src="{% static 'img/icon-preview.png' %}"/>
         Preview
       </a>
     {% endif %}
 
-      {% comment %}
-      <hr>
-      {% if already_promoted %}
-        <span class="caption">Promoted till {{ promotion_date | date:"F j, Y" }}</span>
-      {% elif promotion_available %}
-        <a href="#" onclick="open_modal()">Promote</a>
+      {% if promotion_available %}
+        <a href="#" onclick="open_modal()">
+          <img src="{% static 'img/icon-promotion.png' %}"/>
+          Promote
+        </a>
+      {% elif promotion_reason %}
+        <span class="promo-status noselect" title="promotion status"><img src={% static 'img/icon-promotion.png' %}/>
+          {{ promotion_reason }}
+        </span>
       {% else %}
-        <span class="caption">Too big for promotion</span>
+        {# Room is too big, don't display anything #}
       {% endif %}
-      {% endcomment %}
 
   </div>
 
