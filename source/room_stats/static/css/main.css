@@ -424,6 +424,7 @@ nav a:hover {
   display: flex;
   flex-wrap: wrap;
   padding: 10px;
+  align-items: flex-start;
 }
 
 .room-details-logo {
@@ -493,24 +494,61 @@ nav a:hover {
 }
 
 .room-details-buttons {
+  flex: 0 0 180px;
   margin: 5px 10px 5px 10px;
+  border: 1px #444 solid;
+  display: flex;
+  flex-wrap: wrap;
 
 }
 
 .room-details-buttons > a {
-  display: inline-block;
-  padding: 10px;
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  color: darkblue;
-  border: 1px darkblue solid;
+  padding: 10px;
 
+  color: #444;
+  background-color: white;
+  border-bottom: 1px #444 solid;
+}
+
+.room-details-buttons > a:last-child {
+  border-bottom: none;
+}
+
+.room-details-buttons > a > img {
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
 }
 
 .room-details-buttons > a:hover {
-  color: #4682B4;
-  border: 1px #4682B4 solid;
+  background-color: #444;
+  color: white;
 }
 
+
+.room-details-buttons > a:hover > img {
+  -webkit-filter: invert(1);
+  filter: invert(1);
+}
+
+.promo-status {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: default;
+  color: #444;
+}
+
+.promo-status > img {
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+}
 /*
  *
  * Tags
@@ -633,7 +671,7 @@ a.tag-cloud:hover {
 }
 
 .modal-content {
-  margin: 15px auto;
+  margin: 10px auto;
   padding: 0px 15px 15px 15px;
 }
 
