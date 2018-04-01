@@ -81,37 +81,6 @@ class MatrixClient:
         return rooms
 
 
-
-
-# @transaction.atomic
-# def update_rooms():
-#     date = datetime.now().strftime("%d%m%y")
-#     f = open('room_stats/matrix-rooms-%s.json' % date, 'r')
-#     rooms = json.loads(f.read())['chunk']
-#     print("Rooms found: %s" % len(rooms))
-#     for room in rooms:
-#         r = Room(
-#             id=room['room_id'],
-#             name=room.get('name',''),
-#             aliases=", ".join(room.get('aliases', [])),
-#             topic=room.get('topic',''),
-#             members_count=room['num_joined_members'],
-#             avatar_url=room.get('avatar_url', ''),
-#             is_public_readable=room['world_readable'],
-#             is_guest_writeable=room['guest_can_join']
-#         )
-#         r.save()
-
-
-# def daily_stats_to_file():
-#     TOKEN = os.environ.get("MATRIX_TOKEN", "")
-#     date = datetime.now().strftime("%d%m%y")
-#     c = MatrixClient("https://matrix.org/_matrix/client/r0", token=TOKEN)
-#     result = c.api("/publicRooms")
-#     f = open('room_stats/matrix-rooms-%s.json' % date, 'w')
-#     f.write(json.dumps(result))
-#     f.close()
-
 def get_all_rooms_to_file(filename, limit=None):
     rooms = []
     username = os.environ.get("MATRIX_USERNAME")
