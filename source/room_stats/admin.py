@@ -4,7 +4,6 @@ from django.utils.safestring import mark_safe
 from room_stats.models import Room
 from room_stats.models import Tag
 from room_stats.models import DailyMembers
-from room_stats.models import ServerStats
 from room_stats.models import Category
 from room_stats.models import PromotionRequest
 from django.template.loader import render_to_string
@@ -65,9 +64,6 @@ class DailyMembersAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'updated_at')
 
-class ServerStatsAdmin(admin.ModelAdmin):
-    list_display = ('latency', 'date')
-
 class CategoryAdmin(admin.ModelAdmin):
     def image_preview(self, obj):
         style = "max-width: 100px;"
@@ -85,7 +81,6 @@ class PromotionRequestAdmin(admin.ModelAdmin):
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(DailyMembers, DailyMembersAdmin)
-admin.site.register(ServerStats, ServerStatsAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(PromotionRequest, PromotionRequestAdmin)
 

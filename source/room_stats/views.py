@@ -10,7 +10,7 @@ from django.conf import settings
 from django.http import Http404
 from random import shuffle
 
-from room_stats.models import Room, DailyMembers, Tag, ServerStats, Category, PromotionRequest
+from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest
 from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY
 
 def check_recaptcha(function):
@@ -129,33 +129,6 @@ def list_rooms_by_category(request, category_name):
         'header': 'Rooms by category: %s' % category.name
     }
     return render_rooms_paginated(request, rooms, context)
-
-# FIXME optimize query and add daily/weekly/monthly stats
-def list_server_stats(request, server):
-    server_stats = reversed(ServerStats.objects.filter(server=server).order_by('-id')[:1800])
-    points = []
-
-    LATENCY_GROUP_SIZE = 6;
-    latency_group = []
-    for stat in server_stats:
-        latency_group.append(stat.latency)
-        if len(latency_group) == LATENCY_GROUP_SIZE:
-            points.append({
-                'x': stat.date.strftime("%H:%M %d-%m-%Y"),
-                'y': sum(latency_group) / LATENCY_GROUP_SIZE
-            })
-            latency_group = []
-        # points.append({
-        #     'x': stat.date.strftime("%H:%M %d-%m-%Y"),
-        #     'y': stat.latency
-        # })
-    labels = str([ point['x'] for point in points ])
-    context = {
-        'points': points,
-        'labels': labels,
-        'server': server
-    }
-    return render(request, 'room_stats/server_stats.html', context)
 
 def list_rooms_by_random(request):
     rooms = Room.objects.filter(members_count__gt=5).order_by('?')[:30]
