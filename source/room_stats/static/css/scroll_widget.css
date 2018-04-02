@@ -47,15 +47,10 @@
 
 .scroll-item {
   float: left;
-  /* height: 160px; */
-  /* height: 100%; */
   width: 300px;
 }
 
 .room-widget {
-  /* background-color: white; */
-  /* border: 1px black solid; */
-
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -88,11 +83,9 @@
 
   display: flex;
   align-items: center;
-  /* justify-content: center; */
 }
 
 .room-widget-content {
-  /* flex: 1 1 100%; */
   font-size: 12px;
   overflow: hidden;
   padding: 0 10px;
