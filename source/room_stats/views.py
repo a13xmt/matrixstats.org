@@ -70,12 +70,14 @@ def room_stats_view(request, room_id):
     current_members = DailyMembers.objects.filter(room_id=room_id).last().members_count
     try:
         last_week_members = DailyMembers.objects.filter(
+            room_id=room_id,
             date=datetime.now() - timedelta(days=7)
         ).first().members_count
     except AttributeError:
         last_week_members = 0
     try:
         last_month_members = DailyMembers.objects.filter(
+            room_id=room_id,
             date=datetime.now() - timedelta(days=30)
         ).first().members_count
     except AttributeError:
