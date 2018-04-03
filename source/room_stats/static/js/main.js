@@ -107,12 +107,13 @@ function display_members_graph(data){
 
   var svg = dimple.newSvg('.room-graph', '100%', 400);
   var chart = new dimple.chart(svg, data);
-  var x = chart.addTimeAxis('x', 'date', '%Y-%m-%d', '%Y-%m-%d');
+  var x = chart.addTimeAxis('x', 'date', '%Y-%m-%d', '%b, %Y');
   x.title = ""
   x.addOrderRule('Date');
   x.timePeriod = d3.timeMonth;
   x.timeInterval = 1;
   x.floatingBarWidth = 1;
+  x.showGridlines = true;
   var y = chart.addMeasureAxis('y', 'members_count');
   y.title = ""
   var s = chart.addSeries(null, dimple.plot.line);
