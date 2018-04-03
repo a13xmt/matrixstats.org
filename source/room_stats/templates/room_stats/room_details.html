@@ -75,13 +75,13 @@
     <div class="room-details-members-count">Members count:<br>{{ room.members_count }}</div>
     <div class="room-details-members-count">Monthly change:<br>
       <span class="{% if members_monthly_diff > 0 %}positive{% elif members_monthly_diff < 0 %}negative{% endif %}">
-        {% if members_monthly_diff == 0 %}—{% else %}
+        {% if members_monthly_diff == 0 %}+0{% else %}
         {{ members_monthly_diff | stringformat:"+d" }}{% endif %}
       </span>
     </div>
     <div class="room-details-members-count">Weekly change:<br>
       <span class="{% if members_weekly_diff > 0 %}positive{% elif members_weekly_diff < 0 %}negative{% endif %}">
-        {% if members_weekly_diff == 0 %}—{% else %}
+        {% if members_weekly_diff == 0 %}+0{% else %}
         {{ members_weekly_diff | stringformat:"+d" }}{% endif %}
       </span>
     </div>
