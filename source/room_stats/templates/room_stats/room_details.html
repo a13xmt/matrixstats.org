@@ -5,6 +5,9 @@
 {% block additional_imports %}
   <script src='https://www.google.com/recaptcha/api.js'></script>
 
+  <script src='{% static "vendor/d3.v4.min.js" %}'></script>
+  <script src='{% static "vendor/dimple.v2.3.0.min.js" %}'></script>
+
   {% if admin %}
     {% include 'admin/imports.html' %}
   {% endif %}
@@ -93,57 +96,8 @@
     </div>
   {% endif %}
 
-  <div class="room-graph">
-    <canvas id="dailyVisitorsChart" ></canvas>
+  <div class="room-graph" data-room-id="{{ room.id }}">
   </div>
-
-  <!-- <div style="height:200px; width:300px;"> -->
-  <script>
-    var ctx = document.getElementById("dailyVisitorsChart").getContext("2d");
-    var labels = {{ labels | safe }};
-    var cfg = {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Members total",
-          data: {{ points | safe }},
-          type: 'line',
-          pointRadius: 1,
-          fill: false,
-          lineTension: 0,
-          borderWidth: 2,
-          borderColor: 'green',
-        }]
-      },
-      options: {
-        scales: {
-          xAxes: [{
-            type: 'category',
-            /* distribution: 'series',*/
-            ticks: {
-              source: 'labels',
-            }
-          }],
-          yAxes: [{
-            scaleLabel: {
-              display: true,
-              type: 'linear',
-              /* labelString: 'Members',*/
-            },
-            ticks: {
-              userCallback: function(label, index, labels) {
-                if (Math.floor(label) === label) {
-                  return label;
-                }
-              },
-            }
-          }]
-        }
-      }
-    };
-    var chart = new Chart(ctx, cfg);
-  </script>
 
   {% include 'room_stats/widgets/modal_promote_room.html' %}
 

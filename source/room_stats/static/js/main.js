@@ -94,3 +94,43 @@ if($('.rlist-infinite').length){
     $('.pagination__current').text(parseInt(current) + 1)
   })
 };
+
+
+/*
+ *
+ * Room members statistics graph
+ *
+ */
+
+function display_members_graph(data){
+  data = data['result']
+
+  var svg = dimple.newSvg('.room-graph', '100%', 400);
+  var myChart = new dimple.chart(svg, data);
+  var x = myChart.addTimeAxis('x', 'date', undefined, '%Y-%m');
+  x.addOrderRule('Date');
+  x.timePeriod = d3.timeMonth;
+  x.timeInterval = 2;
+  x.floatingBarWidth = 1;
+  myChart.addMeasureAxis('y', 'members_count');
+  var s = myChart.addSeries(null, dimple.plot.line);
+  s.barGap = 0;
+  s.getTooltipText = function (e) {
+    return [
+      (new Date(e.x)),
+      e.y
+    ];
+  };
+  myChart.draw();
+  myChart.svg.selectAll('.dimple-bar, .dimple-legend-key')
+    .style('stroke', 'none')
+    .style('opacity', '1');
+}
+
+if($('.room-graph').length){
+  $.ajax({
+    url: '/stats/' + $('.room-graph').attr('data-room-id'),
+    success: display_members_graph,
+    error: function(error,text){ console.log(error,text)}
+  })
+};

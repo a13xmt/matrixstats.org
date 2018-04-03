@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/setcategory/(?P<category_id>[0-9]*)', views.set_room_category),
     url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/setcategories/', views.set_room_categories),
 
-    url(r'^stats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/(?P<days>[0-9]*)$',
+    url(r'^stats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/',
         views.get_daily_members_stats
     ),
     url(r'^room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)$',
@@ -71,7 +71,6 @@ urlpatterns = [
     url(r'^rooms/tag/(?P<tag>\w+)', views.list_rooms_with_tag, name='rooms-with-tag'),
 
     url(r'^rooms/search/(?P<term>\w+)', views.list_rooms_by_search_term, name='rooms-with-search-term'),
-
 
 
 ]

@@ -47,57 +47,35 @@ def render_rooms_paginated(request, queryset, context={}, page_size=30):
     return render(request, 'room_stats/rooms_list.html', context)
 
 
-def get_daily_members_stats(request, room_id, days=30):
-    from_date = datetime.now() - timedelta(days=int(days)-1)
-    dm = DailyMembers.objects.filter(
-        room_id=room_id,
-        date__gte=from_date,
-    )
-    result = []
-    for day in dm:
-        result.append({
-            'date': day.date,
-            'members_count': day.members_count
-        })
-    return JsonResponse({'result':result})
+def get_daily_members_stats(request, room_id):
+    stats = DailyMembers.objects.filter(room_id=room_id).order_by('date')
+    result = [{
+        'date': s.date,
+        'members_count': s.members_count
+        } for s in stats]
+    return JsonResponse({'result': result})
 
 def room_stats_view(request, room_id):
     room = Room.objects.get(id=room_id)
-
-    # graph
-    days = 30
-    from_date = datetime.now() - timedelta(days=int(days))
-    dm = DailyMembers.objects.filter(
-        room_id=room_id,
-        date__gte=from_date,
-    ).order_by('date')
-    points = []
-    for day in dm:
-        points.append({
-            'x': day.date.strftime("%d-%m-%Y"),
-            'y': day.members_count
-        })
-    labels = str([ point['x'] for point in points ])
     context = {
         'room': room,
-        'points': points,
-        'labels': labels,
     }
 
+    # category edit inline (admin)
     if request.user.id:
         context['categories'] = Category.objects.order_by('name')
         context['admin'] = True
 
     # members delta
-    current_members = dm.last().members_count
+    current_members = DailyMembers.objects.filter(room_id=room_id).last().members_count
     try:
-        last_week_members = dm.filter(
+        last_week_members = DailyMembers.objects.filter(
             date=datetime.now() - timedelta(days=7)
         ).first().members_count
     except AttributeError:
         last_week_members = 0
     try:
-        last_month_members = dm.filter(
+        last_month_members = DailyMembers.objects.filter(
             date=datetime.now() - timedelta(days=30)
         ).first().members_count
     except AttributeError:
