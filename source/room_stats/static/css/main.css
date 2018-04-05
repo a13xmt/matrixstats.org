@@ -482,16 +482,28 @@ nav a:hover {
   border-right: 1px grey solid;
 }
 
-.room-details-buttons {
+/* room details menu */
+
+.room-details-menu {
   flex: 0 0 180px;
   margin: 5px 10px 5px 10px;
-  border: 1px #444 solid;
   display: flex;
   flex-wrap: wrap;
-
+  position: relative;
 }
 
-.room-details-buttons > a {
+.room-details-submenu {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 14px;
+
+  position: absolute;
+  top: 40px;
+  z-index: 10;
+}
+
+.room-details-menu > a,
+.room-details-submenu > a {
   flex: 1 1 100%;
   display: flex;
   align-items: center;
@@ -500,26 +512,32 @@ nav a:hover {
 
   color: #444;
   background-color: white;
+  border-top: 1px #444 solid;
+  border-left: 1px #444 solid;
+  border-right: 1px #444 solid;
+}
+
+.room-details-menu > a:last-child,
+.room-details-submenu > a:last-child {
   border-bottom: 1px #444 solid;
 }
 
-.room-details-buttons > a:last-child {
-  border-bottom: none;
-}
 
-.room-details-buttons > a > img {
+.room-details-menu > a > img,
+.room-details-submenu > a > img {
   height: 20px;
   width: 20px;
   margin-right: 10px;
 }
 
-.room-details-buttons > a:hover {
+.room-details-menu > a:hover,
+.room-details-submenu > a:hover {
   background-color: #444;
   color: white;
 }
 
-
-.room-details-buttons > a:hover > img {
+.room-details-menu > a:hover > img,
+.room-details-submenu > a:hover > img {
   -webkit-filter: invert(1);
   filter: invert(1);
 }
@@ -538,6 +556,7 @@ nav a:hover {
   width: 20px;
   margin-right: 10px;
 }
+
 /*
  *
  * Tags

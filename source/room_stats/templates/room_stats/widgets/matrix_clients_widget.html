@@ -1,0 +1,44 @@
+{% load static %}
+
+<div class="room-details-submenu">
+<a class="room-details-subitem" href="https://riot.im/app/#/room/{{ room.id }}" target="blank">
+  <img src="{% static 'img/icon-m-riot.png' %}"/>
+    Riot
+</a>
+
+<a class="room-details-subitem" href="#">
+  <img src="{% static 'img/icon-m-quaternion.png' %}"/>
+  Quaternion
+</a>
+
+<a class="room-details-subitem" href="#">
+  <img src="{% static 'img/icon-m-nheko.png' %}"/>
+  Nheko
+</a>
+
+<a class="room-details-subitem" href="#">
+  <img src="{% static 'img/icon-m-weechat.png' %}"/>
+  Weechat
+</a>
+
+<a class="room-details-subitem" href="#">
+  <img src="{% static 'img/icon-m-tensor.png' %}"/>
+  Tensor
+</a>
+
+<a class="room-details-subitem" href="#">
+  <img src="{% static 'img/icon-m-nachat.svg' %}"/>
+  NaChat
+</a>
+
+<a class="room-details-subitem" href="#">
+  <img src="{% static 'img/icon-m-ircd.png' %}"/>
+  Matrix IRCd
+</a>
+
+<a class="room-details-subitem" href="https://view.matrix.org/room/{{ room.id }}/" target="blank">
+  <img src="{% static 'img/icon-m-mstatic.png' %}"/>
+  Matrix Static
+</a>
+
+</div>

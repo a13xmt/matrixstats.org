@@ -29,13 +29,43 @@ $(".room-container").each(function(){
   );
 })
 
-function copy_room_id(element){
+/*
+ *
+ * Copy room id / Open room in client
+ *
+ */
+
+function copy_to_clipboard(text){
   var $temp = $("<input>");
   $("body").append($temp);
-  $temp.val($(element).attr('data-id')).select();
+  $temp.val(text).select();
   document.execCommand("copy");
   $temp.remove();
 }
+
+function copy_room_id(element){
+  text = $(element).attr('data-id')
+  copy_to_clipboard(text)
+  toastr.info("Room id was copied to clipboard", "", {timeOut: 2000})
+}
+
+/* toggle submenu on click */
+$('#room-details-submenu').click(function(){
+  $('.room-details-subitem').slideToggle();
+})
+
+/* copy join command on click */
+$(".room-details-subitem").click(function(event){
+  $('.room-details-subitem').slideToggle();
+  if ($(event.target).attr('href') != "#") {
+    return
+  }
+  text = "/join " + $('#room-details-submenu').attr('data-alias')
+  copy_to_clipboard(text)
+  toastr.info("Command was copied to clipboard", "", {timeOut: 2000})
+})
+
+$('.room-details-subitem').hide();
 
 function open_modal(){
   $('.modal').fadeIn(300)

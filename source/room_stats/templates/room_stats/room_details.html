@@ -7,6 +7,8 @@
 
   <script src='{% static "vendor/d3.v4.min.js" %}'></script>
   <script src='{% static "vendor/dimple.v2.3.0.min.js" %}'></script>
+  <script src='{% static "vendor/toastr.min.js" %}'></script>
+  <link rel="stylesheet" href="{% static 'vendor/toastr.min.css' %}">
 
   {% if admin %}
     {% include 'admin/imports.html' %}
@@ -40,11 +42,12 @@
     <div class="room-details-aliases" itemprop="alternateName">{{ room.aliases }}</div>
   </div>
 
-  <div class="room-details-buttons">
-    <a href="https://riot.im/app/#/room/{{ room.id }}" target="blank" itemprop="sameAs">
-      <img src="{% static 'img/icon-riot.png' %}"/>
-      open in Riot
+  <div class="room-details-menu">
+    <a href="#" id="room-details-submenu" data-alias="{{ room.get_alias }}">
+      <img src="{% static 'img/icon-open.png' %}"/>
+      open with...
     </a>
+    {% include 'room_stats/widgets/matrix_clients_widget.html' %}
     <a href="#" data-id="{{ room.id }}" onclick="copy_room_id(this)">
       <img src="{% static 'img/icon-copy.png' %}"/>
       copy room id
@@ -62,14 +65,15 @@
           Promote
         </a>
       {% elif promotion_reason %}
-        <span class="promo-status noselect" title="promotion status"><img src="{% static 'img/icon-promotion.png' %}"/>
+        <a class="promo-status noselect" title="promotion status"><img src="{% static 'img/icon-promotion.png' %}"/>
           {{ promotion_reason }}
-        </span>
+        </a>
       {% else %}
         {# Room is too big, don't display anything #}
       {% endif %}
 
   </div>
+
 
   <div class="room-details-links">
     <div class="room-details-members-count">Members count:<br>{{ room.members_count }}</div>
