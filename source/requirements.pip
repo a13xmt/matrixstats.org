@@ -6,3 +6,4 @@ psycopg2
 requests
 django-bulk-update
 pillow
+redis
