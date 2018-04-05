@@ -53,6 +53,9 @@ class Room(models.Model):
             return ' '.join(tw[:-1]) if len(tw) > 1 else tw[0]
             # return ' '.join(self.name[:max_len+1].split(' ')[0:-1]) + '...'
 
+    def get_alias(self):
+        return self.aliases.split(', ')[0]
+
     def get_logo_url(self):
         if self.avatar_url:
             return self.avatar_url
