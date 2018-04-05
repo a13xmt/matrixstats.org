@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.templatetags.static import static
+from django.contrib.postgres.fields import JSONField
 
 import re
 
@@ -92,3 +93,19 @@ class Tag(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     rooms = models.ManyToManyField(Room)
     updated_at = models.DateTimeField(auto_now=True)
+
+class Server(models.Model):
+    STATUS_CHOICES = (
+        ('a', 'assumed'),
+        ('c', 'confirmed'),
+        ('p', 'captcha_required'),
+        ('r', 'registered'),
+        ('u', 'unknown'),
+    )
+    hostname = models.CharField(max_length=255)
+    port = models.IntegerField(default=80)
+    login = models.CharField(max_length=127, blank=True, null=True)
+    password = models.CharField(max_length=127, blank=True, null=True)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='a')
+    last_response_data = JSONField()
+    last_response_code = models.IntegerField(blank=True, null=True)
