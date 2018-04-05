@@ -107,5 +107,5 @@ class Server(models.Model):
     login = models.CharField(max_length=127, blank=True, null=True)
     password = models.CharField(max_length=127, blank=True, null=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='a')
-    last_response_data = JSONField()
+    last_response_data = JSONField(default=dict, blank=True, null=True)
     last_response_code = models.IntegerField(blank=True, null=True)
