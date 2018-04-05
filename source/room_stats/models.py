@@ -98,6 +98,7 @@ class Server(models.Model):
     STATUS_CHOICES = (
         ('a', 'assumed'),
         ('c', 'confirmed'),
+        ('n', 'not_exist'),
         ('p', 'captcha_required'),
         ('r', 'registered'),
         ('u', 'unknown'),
