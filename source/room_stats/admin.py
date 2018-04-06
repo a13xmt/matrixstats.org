@@ -79,8 +79,46 @@ class CategoryAdmin(admin.ModelAdmin):
 class PromotionRequestAdmin(admin.ModelAdmin):
     list_display = ('room', 'description', 'size', 'active', 'created_at', 'remove_at')
 
+
+import json
 class ServerAdmin(admin.ModelAdmin):
-    list_display = ('hostname', 'login', 'status', 'last_response_data', 'last_response_code' )
+
+    def prettify_data(self, obj):
+        return mark_safe("<pre style='max-width: 500px; overflow: hidden;'>%s</pre>" % json.dumps(obj.data, indent=4, sort_keys=True))
+    prettify_data.short_description = "data (prettifyed)"
+
+    def render_captcha(self, obj):
+        server_captcha_key = obj.data.get("params", {}).get("m.login.recaptcha", {}).get("public_key", None)
+        # captcha should be rendered only if it required
+        # so we need to ensure that server registration process
+        # was stuck at captcha point
+        reg_active_stage_index = obj.data.get("reg_active_stage_index")
+        reg_chosen_flow = obj.data.get("reg_chosen_flow")
+        reg_active_stage_progress = obj.data.get("reg_active_stage_progress")
+        recaptcha_stage_is_active = reg_chosen_flow[reg_active_stage_index] == "m.login.recaptcha"
+        user_action_required = reg_active_stage_progress == "USER_ACTION_REQUIRED"
+        html = ""
+        if user_action_required and recaptcha_stage_is_active and server_captcha_key:
+            context = {
+                'server_id': obj.id,
+                'server_captcha_key': server_captcha_key
+            }
+            html = render_to_string('admin/widgets/server_recaptcha.html', context)
+        return mark_safe(html)
+    render_captcha.short_description = "recaptcha"
+
+    list_display = ('hostname', 'login', 'status', 'prettify_data', 'last_response_data', 'last_response_code', 'render_captcha' )
+    class Media:
+        js = (
+            "https://www.google.com/recaptcha/api.js?onload=onloadCallback",
+            "vendor/jquery-3.3.1.min.js",
+            'vendor/toastr.min.js',
+            "js/admin_recaptcha_widget.js",
+        )
+        css = {
+            'all': ('vendor/toastr.min.css',)
+        }
+
 
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Tag, TagAdmin)
