@@ -8,23 +8,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "matrix_stats.settings.dev")
 django.setup()
 
 from matrix_bot.registration import continue_registration
+from matrix_bot.utils import serialize, critical
 from room_stats.models import Server
 from matrix_bot.resources import rs
-
-SERVER = "https://matrix.org"
-ENDPOINT = "/_matrix/client/r0"
-
-def critical(msg):
-    # FIXME send notification
-    print(msg)
-
-def serialize(ex):
-    strace = traceback.format_exc()
-    return json.dumps({
-        'type': ex.__class__.__name__,
-        'args': str(ex.args),
-        'stacktrace': str(strace.split('\n'))
-    })
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
