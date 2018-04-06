@@ -10,7 +10,7 @@ from django.conf import settings
 from django.http import Http404
 from random import shuffle
 
-from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest
+from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest, Server
 from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY
 
 def check_recaptcha(function):
@@ -329,3 +329,17 @@ def index_simple(request):
 
 def about(request):
     return render(request, 'room_stats/about.html')
+
+@login_required
+def set_server_recaptcha(request):
+    data = json.loads(request.body)
+    server_id = data.get('server_id', None)
+    captcha = data.get('captcha', None)
+    if not (server_id or captcha):
+        return JsonResponse({'success': False, 'message': "INVALID_PARAMS"}, status=403)
+    server = Server.objects.get(pk=server_id)
+    server.data['reg_captcha_response'] = captcha
+    server.data['reg_active_stage_progress'] = "USER_ACTION_COMPLETE"
+    server.save(update_fields=['data'])
+    return JsonResponse({'success': True})
+
