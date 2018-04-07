@@ -53,7 +53,7 @@ def set_registration_data(server):
 
 
 def continue_registration(server):
-    """ Register a new account on the server, or continue the old registration """
+    """ Register a new account on the server, or continue an old registration """
 
     # If registration was already started, lets continue from the last point
     chosen_flow = server.data.get("reg_chosen_flow", [])
@@ -102,7 +102,7 @@ def continue_registration(server):
 
 
 def complete_remaining_stages(server):
-    """ Perform up to 5 registration stages, including repeats for failed ones """
+    """ Perform up to 5 registration stages, including repeats onon  failed ones """
     token = None
     try:
         for a in range(1,5):
@@ -114,11 +114,6 @@ def complete_remaining_stages(server):
     # FIXME maybe send some notifications here later
     except exception.UserActionRequired as ex:
         pass
-
-    # this error shou
-    except exception.UsernameTaken as ex:
-        server.status = 'd'
-        server.save()
 
     # this errors are acceptable, but should be logged
     except RequestException as ex:
