@@ -99,7 +99,7 @@ class Server(models.Model):
         ('a', 'assumed'),
         ('c', 'confirmed'),
         ('n', 'not_exist'),
-        ('p', 'captcha_required'),
+        ('d', 'registration_disabled'),
         ('r', 'registered'),
         ('u', 'unknown'),
     )
@@ -112,7 +112,6 @@ class Server(models.Model):
     last_response_data = JSONField(default=dict, blank=True, null=True)
     last_response_code = models.IntegerField(blank=True, null=True)
 
-    def api(self, path, suffix="/_matrix/client/r0"):
-        result = "%s%s%s" % (self.hostname, suffix, path)
-        print(result)
+    def api(self, path="", suffix="/_matrix/client/r0"):
+        result = "https://%s%s%s" % (self.hostname, suffix, path)
         return result
