@@ -95,7 +95,9 @@ class ServerAdmin(admin.ModelAdmin):
         reg_active_stage_index = obj.data.get("reg_active_stage_index")
         reg_chosen_flow = obj.data.get("reg_chosen_flow")
         reg_active_stage_progress = obj.data.get("reg_active_stage_progress")
-        recaptcha_stage_is_active = reg_chosen_flow[reg_active_stage_index] == "m.login.recaptcha"
+        recaptcha_stage_is_active = False
+        if reg_active_stage_index and reg_chosen_flow:
+            recaptcha_stage_is_active = reg_chosen_flow[reg_active_stage_index] == "m.login.recaptcha"
         user_action_required = reg_active_stage_progress == "USER_ACTION_REQUIRED"
         html = ""
         if user_action_required and recaptcha_stage_is_active and server_captcha_key:
