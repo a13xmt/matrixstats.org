@@ -27,15 +27,18 @@ def verify_server_existence(server):
     response_data, response_code = None, None
     server.last_response_code = -1
     try:
-        r = rs.get("%s/_matrix/client/versions" % server.hostname)
+        r = rs.get(server.api(suffix="/_matrix/client/versions"))
         response_data = r.json()
         response_code = r.status_code
     except json.decoder.JSONDecodeError as ex:
         server.last_response_data = serialize(ex)
+        server.status = 'u'
     except requests.exceptions.RequestException as ex:
         server.last_response_data = serialize(ex)
+        server.status = 'u'
     except ex:
         server.last_response_data = serialize(ex)
+        server.status = 'u'
         critical(ex)
     else:
         server.last_response_data = response_data
