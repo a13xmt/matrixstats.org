@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.templatetags.static import static
 from django.contrib.postgres.fields import JSONField
+from django.db import transaction
 
 import re
 
@@ -115,3 +116,20 @@ class Server(models.Model):
     def api(self, path="", suffix="/_matrix/client/r0"):
         result = "https://%s%s%s" % (self.hostname, suffix, path)
         return result
+
+    @transaction.atomic
+    def update_data(self, data):
+        obj = Server.objects.select_for_update().get(pk=self.id)
+        obj.data = {**obj.data, **data}
+        obj.save(update_fields=['data'])
+
+    @transaction.atomic
+    def delete_data(self, keys):
+        if type(keys) != list:
+            keys = [keys]
+        obj = Server.objects.select_for_update().get(pk=self.id)
+        removed_keys = [obj.data.pop(k, None) for k in keys]
+        obj.save(update_fields=['data'])
+
+
+
