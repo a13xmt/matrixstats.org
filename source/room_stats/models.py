@@ -122,6 +122,7 @@ class Server(models.Model):
         obj = Server.objects.select_for_update().get(pk=self.id)
         obj.data = {**obj.data, **data}
         obj.save(update_fields=['data'])
+        self.refresh_from_db()
 
     @transaction.atomic
     def delete_data(self, keys):
@@ -130,6 +131,7 @@ class Server(models.Model):
         obj = Server.objects.select_for_update().get(pk=self.id)
         removed_keys = [obj.data.pop(k, None) for k in keys]
         obj.save(update_fields=['data'])
+        self.refresh_from_db()
 
 
 

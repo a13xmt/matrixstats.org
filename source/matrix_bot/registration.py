@@ -47,8 +47,7 @@ def set_registration_data(server):
         "password": md5((os.environ.get("MATRIX_BOT_SEED") + server.hostname).encode()).hexdigest(),
         "initial_device_display_name": "MatrixBot",
     }
-    server.data['reg_data'] = reg_data
-    server.save(update_fields=['data'])
+    server.update_data({'reg_data': reg_data})
     return reg_data
 
 
@@ -83,19 +82,18 @@ def continue_registration(server):
         server.save(update_fields=['last_response_data', 'last_response_code', 'status', 'data'])
         return
 
-    # Save server response for futher usage
-    server.data['flows'] = data.get('flows', [])
-    server.data['params'] = data.get('params', {})
-    server.data['session'] = data.get('session', {})
-
     # Get best possible registration flow
     best_flow = get_best_flow(data.get('flows', []))
 
-    # Save information about choosen flow and current active step
-    server.data['reg_chosen_flow'] = best_flow
-    server.data['reg_active_stage_index'] = 0
-    server.data['reg_active_stage_progress'] = PROGRESS.NEW
-    server.save(update_fields=['data'])
+    # Save server response and chosen flow for futher usage
+    server.update_data({
+        'flows': data.get('flows', []),
+        'params': data.get('params', {}),
+        'session': data.get('session', {}),
+        'reg_chosen_flow': best_flow,
+        'reg_active_stage_index': 0,
+        'reg_active_stage_progress': PROGRESS.NEW,
+    })
 
     # Actual registration process here
     return complete_remaining_stages(server)
@@ -118,20 +116,19 @@ def complete_remaining_stages(server):
     # this errors are acceptable, but should be logged
     except RequestException as ex:
         err = server.data.get('err_failed_requests', 0)
-        server.data['err_failed_requests'] = err + 1
-        server.save()
+        server.update_data({'err_failed_requests': err + 1})
 
     # this errors definetely should be logged and investigated
     except (exception.HandlerNotImplemented, exception.RecaptchaError) as ex:
         server.status = 'u'
         server.last_response_data = serialize(ex)
-        server.save()
+        server.save(update_fields=['status', 'last_response_data'])
 
     # this errors are critical
     except Exception as ex:
         server.status = 'u'
         server.last_response_data = serialize(ex)
-        server.save()
+        server.save(update_fields=['status', 'last_response_data'])
         critical(ex)
         raise(ex)
 
@@ -170,7 +167,7 @@ def complete_next_stage(server):
     # If username was already taken, fallback to manual registration
     if response.status_code == 400 and data.get('errcode') == "M_USER_IN_USE":
         server.status = 'd'
-        server.save()
+        server.save(update_fields=['last_response_data', 'last_response_code', 'status'])
         raise exception.UserActionRequired()
 
     # If another error occurs it's hard to say what happened here,
@@ -180,8 +177,10 @@ def complete_next_stage(server):
 
     # The current stage is complete, but we need to perform an additional one
     if response.status_code == 401 and not 'errcode' in data:
-        server.data['reg_active_stage_index'] += 1
-        server.data['reg_active_stage_progress'] = PROGRESS.NEW
+        server.update_data({
+            'reg_active_stage_index':  server.data.get('reg_active_stage_index') + 1,
+            'reg_active_stage_progress': PROGRESS.NEW
+        })
 
     # If the stage was the last one, we can finish the registration
     if response.status_code == 200:
@@ -189,24 +188,27 @@ def complete_next_stage(server):
         return data.get('access_token')
     # If its not, let's save the obtained data
     else:
-        server.save()
+        server.save(update_fields=['last_response_data', 'last_response_code', 'status'])
 
 
 def finalize_registration(server, data):
     """ Save registration data to the database and remove unrequired fields """
+
+    server.update_data({
+        'access_token': data.get('access_token'),
+        'home_server': data.get('home_server'),
+        'user_id': data.get('user_id'),
+        'device_id': data.get('device_id'),
+    })
+
     server.status = 'r'
-    server.data['access_token'] = data.get('access_token')
-    server.data['home_server'] = data.get('home_server')
-    server.data['user_id'] = data.get('user_id')
-    server.data['device_id'] = data.get('device_id')
     server.login = server.data.get('reg_data', {}).get('username')
     server.password = server.data.get('reg_data', {}).get('password')
-    # delete data keys that not required anymore
-    orphan_keys = (
+    server.save(update_fields=['status', 'login', 'password', 'last_response_data', 'last_response_code'])
+
+    server.delete_data([
         'reg_active_stage_index', 'reg_active_stage_progress', 'reg_captcha_response',
-        'reg_chosen_flow', 'reg_data', 'flows', 'params')
-    removed_keys = [server.data.pop(k, None) for k in orphan_keys]
-    server.save()
+        'reg_chosen_flow', 'reg_data', 'flows', 'params'])
 
 
 def recaptcha_handler(server):
@@ -214,8 +216,7 @@ def recaptcha_handler(server):
 
     def break_until_solved(server):
         """ Break registration process until captcha would be solved """
-        server.data['reg_active_stage_progress'] = PROGRESS.USER_ACTION_REQUIRED
-        server.save(update_fields=['data'])
+        server.update_data({'reg_active_stage_progress': PROGRESS.USER_ACTION_REQUIRED })
         raise exception.UserActionRequired()
 
     # Get current stage progress
