@@ -109,7 +109,7 @@ class MatrixHomeserver():
         )
         return str(access_token)
 
-    def api_call(self, method, path, data=None, json=None, suffix=None, auth=False, headers={}, cache_response=False, cache_timeout=3600):
+    def api_call(self, method, path, data=None, json=None, suffix=None, auth=True, headers={}, cache_errors=True, cache_timeout=60*60*24):
         """ Performs an API call to homeserver.
         Last response data can be cached, if required.
         """
@@ -119,11 +119,10 @@ class MatrixHomeserver():
             access_token = self._get_access_token()
             headers['Authorization'] = 'Bearer %s' % access_token
             response = rs.request(method=method, url=url, data=data, json=json, headers=headers)
-        if cache_response:
+        if cache_errors and response.status_code != 200:
             now = datetime.datetime.now().strftime("%Y-%m-%d+%H:%m")
             self._to_cache(**{
-                'response_data__%s__%s' % (now, path): response.json(),
-                'response_code__%s__%s' % (now, path): response.status_code
+                'response__%s__%s__%s' % (now, response.status_code, path): response.json(),
             }, expire=cache_timeout)
         return response
 
@@ -139,7 +138,7 @@ class MatrixHomeserver():
             'password': password,
             'device_id': device_id,
         }
-        response = self.api_call("POST", "/login", json=auth_data, cache_response=True, cache_timeout=60*60*72)
+        response = self.api_call("POST", "/login", json=auth_data, auth=False)
         data = response.json()
         if response.status_code == 403:
             self.server.status = 'u'
@@ -153,8 +152,6 @@ class MatrixHomeserver():
             return access_token
 
     def join(self, room_id):
-        response = self.api_call(
-            "POST", "/rooms/%s/join" % room_id, json={},
-            auth=True, cache_response=True, cache_timeout=60*60*24)
+        response = self.api_call("POST", "/rooms/%s/join" % room_id, json={})
         if response.status_code == 200:
             return response.json().get('room_id')
