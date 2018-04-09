@@ -13,5 +13,8 @@ class HandlerNotImplemented(ClientError):
 class UserActionRequired(MatrixBotException):
     pass
 
+class ConfigurationError(MatrixBotException):
+    pass
+
 class AuthError(MatrixBotException):
     pass

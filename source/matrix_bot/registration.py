@@ -275,3 +275,66 @@ def dummy_handler(server):
         server.api('/register'),
         json=reg_data
     )
+
+def update_profile(server, displayname=None, avatar_path=None):
+    """ Update profile with displayname and avatar """
+    if not displayname:
+        displayname = os.environ.get("MATRIX_BOT_DISPLAYNAME", None)
+    if not avatar_path:
+        avatar_path = os.environ.get("MATRIX_BOT_AVATAR_PATH", None)
+    try:
+        f = open(avatar_path, 'rb')
+    except FileNotFoundError:
+        raise exception.ConfigurationError("MATRIX_BOT_AVATAR_PATH is incorrect")
+    if not (displayname or avatar_path):
+        raise exception.ConfigurationError("MATRIX_BOT_DISPLAYNAME or MATRIX_BOT_AVATAR_PATH are not set")
+
+    access_token = server.data.get('access_token')
+    user_id = server.data.get('user_id')
+
+    if not (access_token or user_id):
+        raise exception.AuthError("access_token or user_id not found for this server")
+
+    profile_data = {
+        'displayname': None,
+        'avatar_uri': None,
+        'avatar_set': False
+    }
+
+    # set display name
+    data = {'displayname': displayname}
+    r = rs.put(
+        server.api("/profile/%s/displayname" % user_id),
+        json=data,
+        headers={'Authorization': 'Bearer %s' % access_token }
+    )
+    if r.status_code == 200:
+        profile_data['displayname'] = displayname
+
+    # upload avatar to media server
+    r = rs.post(
+        server.api("/upload?filename=matrixbot.png", "/_matrix/media/r0"),
+        data=f.read(),
+        headers={
+            'Authorization': 'Bearer %s' % access_token,
+            'Content-Type': 'application/json'
+        }
+    )
+    content_uri = None
+    if r.status_code == 200:
+        content_uri = r.json().get('content_uri')
+        profile_data['avatar_uri'] = content_uri
+
+    # set avatar
+    data = {'avatar_url': content_uri }
+    r = rs.put(
+        server.api('/profile/%s/avatar_url' % user_id),
+        json=data,
+        headers={'Authorization': 'Bearer %s' % access_token }
+    )
+    if r.status_code == 200:
+        profile_data['avatar_set'] = True
+
+    server.update_data({'profile_data': profile_data})
+
+
