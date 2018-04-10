@@ -9,3 +9,4 @@ pillow
 redis
 raven
 celery
+celery_once
