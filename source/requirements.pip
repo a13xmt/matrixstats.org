@@ -8,3 +8,4 @@ django-bulk-update
 pillow
 redis
 raven
+celery
