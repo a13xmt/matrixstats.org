@@ -135,6 +135,6 @@ RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
 RAVEN_ENVIRONMENT = os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[-1]
 RAVEN_CONFIG = {
     'dsn': os.environ.get("RAVEN_DSN"),
-    'release': RAVEN_ENVIRONMENT,
+    'environment': RAVEN_ENVIRONMENT,
 }
 
