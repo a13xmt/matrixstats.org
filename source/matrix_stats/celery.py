@@ -7,15 +7,13 @@ from raven.contrib.celery import register_signal, register_logger_signal
 
 RAVEN_DSN = os.environ.get('RAVEN_DSN')
 # Separate logs by enviroments (dev/prod)
-RELEASE_NAME = os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[-1]
-
-print(RELEASE_NAME, RAVEN_DSN)
+ENVIRONMENT = os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[-1]
 
 class Celery(celery.Celery):
     def on_configure(self):
         client = raven.Client(
             dsn=RAVEN_DSN,
-            release=RELEASE_NAME
+            environment=ENVIRONMENT
         )
         register_logger_signal(client)
         register_signal(client)

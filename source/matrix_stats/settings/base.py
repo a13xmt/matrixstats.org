@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'room_stats',
+    'raven.contrib.django.raven_compat',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,11 @@ MEDIA_ROOT = os.environ.get('APP_MEDIA_DIR')
 
 
 RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
+
+
+RAVEN_ENVIRONMENT = os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[-1]
+RAVEN_CONFIG = {
+    'dsn': os.environ.get("RAVEN_DSN"),
+    'release': RAVEN_ENVIRONMENT,
+}
+
