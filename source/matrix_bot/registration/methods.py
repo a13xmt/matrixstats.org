@@ -192,17 +192,17 @@ def finalize_registration(self, data):
         'reg_chosen_flow', 'reg_data', 'flows', 'params'])
 
 
-def update_profile(self, displayname=None, avatar_path=None):
+def update_profile(self, visible_name=None, avatar_path=None):
     """ Update profile with displayname and avatar """
-    if not displayname:
-        displayname = os.environ.get("MATRIX_BOT_DISPLAYNAME", None)
+    if not visible_name:
+        visible_name = os.environ.get("MATRIX_BOT_DISPLAYNAME", None)
     if not avatar_path:
         avatar_path = os.environ.get("MATRIX_BOT_AVATAR_PATH", None)
     try:
         f = open(avatar_path, 'rb')
     except FileNotFoundError:
         raise exception.ConfigurationError("MATRIX_BOT_AVATAR_PATH is incorrect")
-    if not (displayname or avatar_path):
+    if not (visible_name or avatar_path):
         raise exception.ConfigurationError("MATRIX_BOT_DISPLAYNAME or MATRIX_BOT_AVATAR_PATH are not set")
 
     access_token = self.server.data.get('access_token')
@@ -218,14 +218,14 @@ def update_profile(self, displayname=None, avatar_path=None):
     }
 
     # set display name
-    data = {'displayname': displayname}
+    data = {'displayname': visible_name}
     r = self.api_call(
         "PUT",
         "/profile/%s/displayname" % user_id,
         json=data
     )
     if r.status_code == 200:
-        profile_data['displayname'] = displayname
+        profile_data['displayname'] = visible_name
 
     # upload avatar to media server
     r = self.api_call(
@@ -233,7 +233,7 @@ def update_profile(self, displayname=None, avatar_path=None):
         "/upload?filename=matrixbot.png",
         suffix="/_matrix/media/r0",
         data=f.read(),
-        headers={'Content-Type': 'application/json'}
+        headers={'Content-Type': 'image/png'}
     )
     content_uri = None
     if r.status_code == 200:
