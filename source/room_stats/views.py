@@ -38,6 +38,10 @@ def check_recaptcha(function):
 
 def render_rooms_paginated(request, queryset, context={}, page_size=30):
     page = request.GET.get('page', 1)
+    try:
+        page = int(page)
+    except ValueError:
+        page = 1
     paginator = Paginator(queryset, page_size)
     try:
         rooms = paginator.page(page)
