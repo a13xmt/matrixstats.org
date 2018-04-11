@@ -1,18 +1,18 @@
 import requests
 import json
-import traceback
 import django
 import os
-import functools
 import datetime
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "matrix_stats.settings.dev")
 django.setup()
 
-from matrix_bot.registration import continue_registration
 from matrix_bot.utils import serialize, critical, prettify
 from room_stats.models import Server
 from matrix_bot.resources import rs, rds
+
+from matrix_bot.login import login
+from matrix_bot.registration import continue_registration
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
@@ -67,6 +67,7 @@ def sync(server):
 class MatrixHomeserver():
     def __init__(self, server_id):
         self.server = Server.objects.get(pk=server_id)
+        self.rs = rs
 
     def _cache(self, glob='', expand=False):
         """ Scan redis for server-related data and display it. """
@@ -118,7 +119,7 @@ class MatrixHomeserver():
         if auth:
             access_token = self._get_access_token()
             headers['Authorization'] = 'Bearer %s' % access_token
-            response = rs.request(method=method, url=url, data=data, json=json, headers=headers)
+        response = rs.request(method=method, url=url, data=data, json=json, headers=headers)
         if cache_errors and response.status_code != 200:
             now = datetime.datetime.now().strftime("%Y-%m-%d+%H:%m")
             self._to_cache(**{
@@ -127,31 +128,10 @@ class MatrixHomeserver():
         return response
 
     def login(self):
-        device_id = self.server.data.get('device_id')
-        login = self.server.login
-        password = self.server.password
-        if not (login or password):
-            raise exception.AuthError("Login or Password not set for this server")
-        auth_data = {
-            'type': 'm.login.password',
-            'user': login,
-            'password': password,
-            'device_id': device_id,
-        }
-        response = self.api_call("POST", "/login", json=auth_data, auth=False)
-        data = response.json()
-        if response.status_code == 403:
-            self.server.status = 'u'
-            self.server.save(update_fields=['status'])
-            return
-        if response.status_code == 200:
-            access_token = data.get('access_token')
-            device_id = data.get('device_id')
-            self.server.update_data({'access_token': access_token, 'device_id': device_id})
-            self._to_cache(**{"access_token": access_token, "device_id": device_id})
-            return access_token
+        return login(self)
+
+    def register(self, username=None, password=None):
+        return continue_registration(self, username, password)
 
     def join(self, room_id):
-        response = self.api_call("POST", "/rooms/%s/join" % room_id, json={})
-        if response.status_code == 200:
-            return response.json().get('room_id')
+        return join(self, room_id)
