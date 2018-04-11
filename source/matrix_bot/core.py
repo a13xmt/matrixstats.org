@@ -12,7 +12,8 @@ from room_stats.models import Server
 from matrix_bot.resources import rs, rds
 
 from matrix_bot.login import login
-from matrix_bot.registration import continue_registration
+from matrix_bot.registration import continue_registration, update_profile
+from matrix_bot.join import join
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
@@ -53,16 +54,6 @@ def verify_server_existence(server):
             server.status = 'n'
     server.save(update_fields=['last_response_data', 'last_response_code', 'status'])
 
-def sync(server):
-    r = rs.get(
-        server.api("/sync"),
-        json={'since': 's499291083_426347964_1064192_114962333_48751815_269211_5590083_5338311_7834'},
-        headers={'Authorization': 'Bearer %s' % server.data.get('access_token')}
-    )
-    data = r.json()
-    with open("sync.json", "w") as f:
-        f.write(prettify(data))
-    print(r.status_code, prettify(data))
 
 class MatrixHomeserver():
     def __init__(self, server_id):
@@ -132,6 +123,9 @@ class MatrixHomeserver():
 
     def register(self, username=None, password=None):
         return continue_registration(self, username, password)
+
+    def update_profile(self, visible_name=None, avatar_path=None):
+        return update_profile(self, visible_name, avatar_path)
 
     def join(self, room_id):
         return join(self, room_id)
