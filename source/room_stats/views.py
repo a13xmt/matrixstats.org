@@ -59,8 +59,11 @@ def get_daily_members_stats(request, room_id):
         } for s in stats]
     return JsonResponse({'result': result})
 
+
 def room_stats_view(request, room_id):
-    room = Room.objects.get(id=room_id)
+    room = Room.objects.filter(id=room_id).first()
+    if not room:
+        raise Http404("Room not found")
     context = {
         'room': room,
     }
