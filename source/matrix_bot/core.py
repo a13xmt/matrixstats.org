@@ -131,5 +131,5 @@ class MatrixHomeserver():
     def join(self, room_id):
         return join(self, room_id)
 
-    def sync(self, filter_obj):
-        return sync(self, filter_obj)
+    def sync(self, filter_obj={}, since=None):
+        return sync(self, filter_obj, since)
