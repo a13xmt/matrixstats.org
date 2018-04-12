@@ -14,6 +14,7 @@ from matrix_bot.resources import rs, rds
 from matrix_bot.login import login
 from matrix_bot.registration import continue_registration, update_profile
 from matrix_bot.join import join
+from matrix_bot.sync import sync
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
@@ -129,3 +130,6 @@ class MatrixHomeserver():
 
     def join(self, room_id):
         return join(self, room_id)
+
+    def sync(self, filter_obj):
+        return sync(self, filter_obj)
