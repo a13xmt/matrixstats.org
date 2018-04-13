@@ -15,6 +15,7 @@ from matrix_bot.login import login
 from matrix_bot.registration import continue_registration, update_profile
 from matrix_bot.join import join
 from matrix_bot.sync import sync
+from matrix_bot.statistics import get_daily_messages_count, get_daily_members_count
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
@@ -168,3 +169,9 @@ class MatrixHomeserver():
 
     def sync(self, filter_obj={}, since=None):
         return sync(self, filter_obj, since)
+
+    def get_daily_messages_count(self, room_id, date):
+        return get_daily_messages_count(self, room_id, date)
+
+    def get_daily_members_count(self, room_id, date):
+        return get_daily_members_count(self, room_id, date)
