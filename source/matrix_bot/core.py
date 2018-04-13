@@ -60,10 +60,22 @@ class MatrixHomeserver():
     def __init__(self, server_id):
         self.server = Server.objects.get(pk=server_id)
         self.rs = rs
+        self.rds = rds
+        self._in_transaction = False
+
+    def _open_transaction(self):
+        """ Open redis pipeline """
+        self._in_transaction = True
+        self._transaction = self.rds.pipeline()
+
+    def _commit_transaction(self):
+        """ Execute redis pipeline """
+        self._in_transaction = False
+        self._transaction.execute()
 
     def _cache(self, glob='', expand=False):
         """ Scan redis for server-related data and display it. """
-        keys = rds.keys("%s__%s*" % (self.server.hostname, glob))
+        keys = self.rds.keys("%s__%s*" % (self.server.hostname, glob))
         if not expand:
             keys = [k.decode() for k in keys]
             keys.sort()
@@ -71,26 +83,26 @@ class MatrixHomeserver():
             return
         result = {}
         for key in keys:
-            result[key.decode()] = [rds.get(key).decode(), rds.ttl(key)]
+            result[key.decode()] = [
+                self.rds.get(key).decode(),
+                self.rds.ttl(key)
+            ]
         print(prettify(result))
 
     def _from_cache(self, key):
         """ Get server-related data from redis """
-        return rds.get("%s__%s" % (self.server.hostname, key))
+        return self.rds.get("%s__%s" % (self.server.hostname, key))
 
     def _to_cache(self, key=None, value=None, expire=None, **kwargs):
         """ Set server-related data to redis """
-        if key and value: return rds.set(
-                "%s__%s" % (self.server.hostname, key),
-                value, ex=expire
-            )
+        full_key = "%s__%s" % (self.server.hostname, key)
+        target = self._transaction if self._in_transaction else self.rds
+        if key and value:
+            return target.set(full_key, value, ex=expire)
         else:
             result = []
             for key in kwargs:
-                result.append(rds.set(
-                    "%s__%s" % (self.server.hostname, key),
-                    kwargs[key], ex=expire
-                ))
+                result.append(target.set(full_key, kwargs[key], ex=expire))
             return result
 
     def _get_access_token(self):
