@@ -63,6 +63,10 @@ class MatrixHomeserver():
         self.rds = rds
         self._in_transaction = False
 
+    def _prefixed(self, key):
+        """ Expand redis key with server name """
+        return "%s__%s" % (self.server.hostname, key)
+
     def _open_transaction(self):
         """ Open redis pipeline """
         self._in_transaction = True
@@ -73,9 +77,20 @@ class MatrixHomeserver():
         self._in_transaction = False
         self._transaction.execute()
 
-    def _cache(self, glob='', expand=False):
-        """ Scan redis for server-related data and display it. """
-        keys = self.rds.keys("%s__%s*" % (self.server.hostname, glob))
+    def _scan_keys(self, glob='*'):
+        """ Search redis keys by pattern """
+        n = 0
+        keys = []
+        while(True):
+            n, k = self.rds.scan(n, match=self._prefixed(glob))
+            keys.extend(k)
+            if n == 0:
+                break
+        return keys
+
+    def _cache(self, glob='*', expand=False):
+        """ Display keys (and values) by pattern (debug only) """
+        keys = self.rds.keys(self._prefixed(glob))
         if not expand:
             keys = [k.decode() for k in keys]
             keys.sort()
@@ -91,19 +106,27 @@ class MatrixHomeserver():
 
     def _from_cache(self, key):
         """ Get server-related data from redis """
-        return self.rds.get("%s__%s" % (self.server.hostname, key))
+        return self.rds.get(self._prefixed(key))
 
     def _to_cache(self, key=None, value=None, expire=None, **kwargs):
         """ Set server-related data to redis """
-        full_key = "%s__%s" % (self.server.hostname, key)
         target = self._transaction if self._in_transaction else self.rds
         if key and value:
-            return target.set(full_key, value, ex=expire)
+            return target.set(self._prefixed(key), value, ex=expire)
         else:
             result = []
             for key in kwargs:
-                result.append(target.set(full_key, kwargs[key], ex=expire))
+                result.append(target.set(self._prefixed(key), kwargs[key], ex=expire))
             return result
+
+    def _to_set(self, key, value, expire=None):
+        target = self._transaction if self._in_transaction else self.rds
+        target.sadd(self._prefixed(key), value)
+        if expire:
+            target.expire(self._prefixed(key), expire)
+
+    def _count_set(self, key):
+        return self.rds.scard(key)
 
     def _get_access_token(self):
         """ Get access_token or obtain it if possible """
