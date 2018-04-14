@@ -1,1 +1,1 @@
-from .methods import get_daily_messages_count, get_daily_members_count
+from .methods import get_unique_messages, get_unique_members, get_active_rooms
