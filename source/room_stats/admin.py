@@ -7,6 +7,7 @@ from room_stats.models import DailyMembers
 from room_stats.models import Category
 from room_stats.models import PromotionRequest
 from room_stats.models import Server
+from room_stats.models import RoomStatisticalData
 from django.template.loader import render_to_string
 
 class RoomAdmin(admin.ModelAdmin):
@@ -121,6 +122,8 @@ class ServerAdmin(admin.ModelAdmin):
             'all': ('vendor/toastr.min.css',)
         }
 
+class RoomStatisticalDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'period', 'starts_at', 'messages_total', 'senders_total')
 
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Tag, TagAdmin)
@@ -128,4 +131,5 @@ admin.site.register(DailyMembers, DailyMembersAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(PromotionRequest, PromotionRequestAdmin)
 admin.site.register(Server, ServerAdmin)
+admin.site.register(RoomStatisticalData, RoomStatisticalDataAdmin)
 

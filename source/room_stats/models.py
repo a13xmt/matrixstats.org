@@ -1,11 +1,9 @@
+import re
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.templatetags.static import static
 from django.contrib.postgres.fields import JSONField
 from django.db import transaction
-
-import re
-
 from django.db import models
 
 class Category(models.Model):
@@ -134,4 +132,41 @@ class Server(models.Model):
         self.refresh_from_db()
 
 
+def get_period_starting_date(period, date):
+    if period == 'd':
+        return date
+    elif period == 'w':
+        return date - timedelta(days=date.weekday())
+    elif period == 'm':
+        return date.replace(day=1)
 
+def make_statistical_data_key(period, date, room_id):
+    date = get_period_starting_date(period, date)
+    datestr = date.strftime("%Y%m%d")
+    return ''.join([period, "-", datestr, "-", room_id])
+
+class RoomStatisticalData(models.Model):
+    PERIOD_CHOICES = (
+        ('d', 'daily'),
+        ('w', 'weekly'),
+        ('m', 'monthly'),
+    )
+
+    def make_id(self):
+        return make_statistical_data_key(self.period, self.starts_at, self.room_id)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.id = self.make_id()
+        super(RoomStatisticalData, self).save(*args, **kwargs)
+
+    id = models.CharField(max_length=530, primary_key=True, unique=True)
+    room_id = models.CharField(max_length=511, db_index=True)
+    period = models.CharField(max_length=1, choices=PERIOD_CHOICES, db_index=True)
+    starts_at = models.DateField()
+    data = JSONField(default=dict)
+    messages_total = models.IntegerField()
+    senders_total = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = "room statistical data"
