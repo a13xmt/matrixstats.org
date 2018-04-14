@@ -15,7 +15,7 @@ from matrix_bot.login import login
 from matrix_bot.registration import continue_registration, update_profile
 from matrix_bot.join import join
 from matrix_bot.sync import sync
-from matrix_bot.statistics import get_unique_messages, get_unique_members, get_active_rooms
+from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
@@ -173,9 +173,12 @@ class MatrixHomeserver():
     def get_unique_messages(self, room_id, datestr):
         return get_unique_messages(self, room_id, datestr)
 
-    def get_unique_members(self, room_id, datestr):
-        return get_unique_members(self, room_id, datestr)
+    def get_unique_senders(self, room_id, datestr):
+        return get_unique_senders(self, room_id, datestr)
 
     def get_active_rooms(self, datestr):
         return get_active_rooms(self, datestr)
+
+    def save_daily_stats(self, room_id, date):
+        return save_daily_stats(self, room_id, date)
 
