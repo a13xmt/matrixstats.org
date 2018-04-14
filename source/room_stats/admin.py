@@ -124,6 +124,7 @@ class ServerAdmin(admin.ModelAdmin):
 
 class RoomStatisticalDataAdmin(admin.ModelAdmin):
     list_display = ('id', 'period', 'starts_at', 'messages_total', 'senders_total')
+    list_filter = ('period', 'starts_at')
 
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Tag, TagAdmin)
