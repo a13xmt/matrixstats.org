@@ -252,3 +252,29 @@ def update_profile(self, visible_name=None, avatar_path=None):
 
     self.server.update_data({'profile_data': profile_data})
     return profile_data
+
+
+def upload_filter(self):
+    """ Upload filter to homeserver for futher usage for /sync requests """
+    filter_obj = {
+        'room': {
+            "timeline": {
+                'limit': 500
+            },
+            "state": {
+                'rooms': []
+            }
+        },
+    }
+    user_id = self.server.data.get('user_id')
+    r = self.api_call(
+        "POST",
+        "/user/%s/filter" % user_id,
+        json=filter_obj
+    )
+    data = r.json()
+    if r.status_code == 200:
+        filter_id = data.get('filter_id')
+        self.server.update_data({'filter_id': filter_id})
+        return filter_id
+
