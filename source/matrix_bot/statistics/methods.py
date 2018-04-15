@@ -41,6 +41,8 @@ def save_daily_stats(self, room_id, date):
     datestr = date.strftime("%Y-%m-%d")
     messages_total, messages = get_unique_messages(self, room_id, datestr)
     senders_total, senders = get_unique_senders(self, room_id, datestr)
+    if not (messages or senders):
+        return
 
     #
     # Update or create daily statistics record
@@ -62,8 +64,7 @@ def save_daily_stats(self, room_id, date):
     ds.senders_total = senders_total
     ds.data['messages'] = messages
     ds.data['senders'] = senders
-    if messages or senders:
-        ds.save()
+    ds.save()
 
     #
     # Update weekly statistics
@@ -93,8 +94,7 @@ def save_daily_stats(self, room_id, date):
     ws.data['senders'] = weekly_senders
     ws.messages_total = len(weekly_messages)
     ws.senders_total = len(weekly_senders)
-    if weekly_messages or weekly_senders:
-        ws.save()
+    ws.save()
 
     #
     # Update monthly statistics
@@ -124,5 +124,4 @@ def save_daily_stats(self, room_id, date):
     ms.data['senders'] = monthly_senders
     ms.messages_total = len(monthly_messages)
     ms.senders_total = len(monthly_senders)
-    if monthly_senders or monthly_messages:
-        ms.save()
+    ms.save()
