@@ -12,7 +12,7 @@ from room_stats.models import Server
 from matrix_bot.resources import rs, rds
 
 from matrix_bot.login import login
-from matrix_bot.registration import continue_registration, update_profile
+from matrix_bot.registration import continue_registration, update_profile, upload_filter
 from matrix_bot.join import join
 from matrix_bot.sync import sync
 from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
@@ -165,6 +165,9 @@ class MatrixHomeserver():
     def update_profile(self, visible_name=None, avatar_path=None):
         return update_profile(self, visible_name, avatar_path)
 
+    def upload_filter(self):
+        return upload_filter(self)
+
     def join(self, room_id):
         return join(self, room_id)
 
@@ -174,7 +177,7 @@ class MatrixHomeserver():
     def mark_as_read(self, room_id, event_id):
         return mark_as_read(self, room_id, event_id)
 
-    def sync(self, filter_obj={}, since=None):
+    def sync(self, filter_obj=None, since=None):
         return sync(self, filter_obj, since)
 
     def get_unique_messages(self, room_id, datestr):

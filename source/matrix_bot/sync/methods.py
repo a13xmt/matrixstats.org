@@ -1,12 +1,13 @@
 import json
 from .handlers import room_event_handlers
 
-def sync(self, filter_obj={}, since=None):
+def sync(self, filter_obj=None, since=None):
+    filter_value = json.dumps(filter_obj) if filter_obj else self.server.data.get('filter_id')
     cached_since = self._from_cache('next_batch')
     since = since or cached_since.decode() if cached_since else None
     qs = ""
-    if filter_obj:
-        qs += "filter=%s&" % json.dumps(filter_obj)
+    if filter_value:
+        qs += "filter=%s&" % filter_value
     if since:
         qs += "since=%s&" % since
     r = self.api_call(
