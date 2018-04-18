@@ -42,5 +42,8 @@ app.conf.ONCE = {
   }
 }
 
+app.conf.beat_schedule = {
+}
+
 app.autodiscover_tasks(['matrix_bot.tasks'])
 

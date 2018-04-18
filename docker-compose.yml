@@ -61,6 +61,18 @@ services:
     depends_on:
       - redis
 
+  celery_beat:
+    image: 'websource'
+    environment:
+      - C_FORCE_ROOT=true
+    env_file:
+      - ./source/matrix_stats/env/prod
+    volumes:
+      - 'sockets:/var/run/sockets'
+    command: 'celery -A matrix_stats beat -l debug'
+    depends_on:
+      - redis
+
   flower:
     image: 'websource'
     environment:
