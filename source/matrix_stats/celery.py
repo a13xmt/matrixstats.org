@@ -9,10 +9,16 @@ RAVEN_DSN = os.environ.get('RAVEN_DSN')
 # Separate logs by enviroments (dev/prod)
 RAVEN_ENVIRONMENT = os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[-1]
 
-CELERY_BROKER = 'redis://%s:%s/4' % (
-    os.environ.get('REDIS_HOST'),
-    os.environ.get('REDIS_PORT'),
-)
+CELERY_BROKER = None
+REDIS_SOCKET = os.environ.get('REDIS_SOCKET')
+if REDIS_SOCKET:
+    CELERY_BROKER = 'redis+socket://%s?db=4' % REDIS_SOCKET
+else:
+    CELERY_BROKER = 'redis://%s:%s/4' % (
+        os.environ.get('REDIS_HOST'),
+        os.environ.get('REDIS_PORT'),
+    )
+print("Broker: ", CELERY_BROKER)
 
 class Celery(celery.Celery):
     def on_configure(self):

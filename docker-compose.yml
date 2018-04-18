@@ -9,6 +9,13 @@ services:
       - POSTGRES_PASSWORD=matrixstats
     volumes:
       - 'pgdata:/var/lib/postgresql/data/'
+      - 'sockets:/var/run/sockets'
+
+  redis:
+    build: './docks/redis/.'
+    volumes:
+      - 'sockets:/var/run/sockets'
+      - 'redisdata:/data'
 
   nginx:
     build: './docks/nginx/.'
@@ -33,8 +40,27 @@ services:
       - 'staticdata:/static'
       - 'logsdata:/logs'
       - 'storagedata:/storage'
+      - 'sockets:/var/run/sockets'
     depends_on:
       - postgres 
+      - redis
+
+  celery_worker_default:
+    image: 'websource'
+    environment:
+      - C_FORCE_ROOT=true
+    env_file:
+      - ./source/matrix_stats/env/prod
+    volumes:
+      - 'mediadata:/media'
+      - 'staticdata:/static'
+      - 'logsdata:/logs'
+      - 'storagedata:/storage'
+      - 'sockets:/var/run/sockets'
+    command: 'celery -A matrix_stats worker -l info -E --concurrency 1 -Ofair --logfile=/logs/worker-default%I.log'
+    depends_on:
+      - web
+
 
 volumes:
   pgdata:
@@ -43,3 +69,5 @@ volumes:
   staticdata:
   logsdata:
   letsencryptdata:
+  redisdata:
+  sockets:
