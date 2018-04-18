@@ -59,7 +59,23 @@ services:
       - 'sockets:/var/run/sockets'
     command: 'celery -A matrix_stats worker -l info -E --concurrency 1 -Ofair --logfile=/logs/worker-default%I.log'
     depends_on:
-      - web
+      - redis
+
+  flower:
+    image: 'websource'
+    environment:
+      - C_FORCE_ROOT=true
+    env_file:
+      - ./source/matrix_stats/env/prod
+    ports:
+      - "127.0.0.1:5555:5555"
+    volumes:
+      - 'logsdata:/logs'
+      - 'sockets:/var/run/sockets'
+    command: 'celery flower -A matrix_stats --address=0.0.0.0 --port=5555'
+    depends_on:
+      - redis
+
 
 
 volumes:
