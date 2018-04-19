@@ -101,18 +101,20 @@ def complete_remaining_stages(self):
     # this is not an error, just user input required
     # FIXME maybe send some notifications here later
     except exception.UserActionRequired as ex:
-        pass
+        return "CAPTCHA_REQUIRED"
 
     # this errors are acceptable, but should be logged
     except RequestException as ex:
         err = self.server.data.get('err_failed_requests', 0)
         self.server.update_data({'err_failed_requests': err + 1})
+        return "REQUEST_FAILED"
 
     # this errors definetely should be logged and investigated
     except (exception.HandlerNotImplemented, exception.RecaptchaError) as ex:
         self.server.status = 'u'
         self.server.last_response_data = serialize(ex)
         self.server.save(update_fields=['status', 'last_response_data'])
+        return "HANDLER_FAILED"
 
     # this errors are critical
     except Exception as ex:
@@ -309,4 +311,5 @@ def verify_existence(self):
         else:
             self.server.status = 'n'
     self.server.save(update_fields=['last_response_data', 'last_response_code', 'status'])
+    return self.server.status
 

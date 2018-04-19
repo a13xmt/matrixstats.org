@@ -10,18 +10,25 @@ def register(server_id):
     """ Register new account on the chosen server and
     set username, avatar and filter for futher sync requests.
     """
+    # result is used only for task debugging, it can be safely removed
+    result = {}
     s = MatrixHomeserver(server_id)
     if s.server.status == 'a':
-        s.verify_existence()
+        server_status = s.verify_existence()
+        result['verify'] = server_status
     if s.server.status == 'c':
-        s.register()
+        registration_status = s.register()
+        result['register'] = registration_status
     if s.server.status == 'r':
         filter_id = s.server.data.get("filter_id", None)
         profile_data = s.server.data.get("profile_data", None)
         if not filter_id:
-            s.upload_filter()
+            filter_id = s.upload_filter()
+            result['filter_id'] = filter_id
         if not profile_data:
-            s.update_profile()
+            profile_data = s.update_profile()
+            result['profile_data'] = profile_data
+    return result
 
 @app.task
 def register_new_servers():
@@ -30,5 +37,6 @@ def register_new_servers():
     servers = Server.objects.filter(status__in=statuses)
     for server in servers:
         register.apply_async((server.id,))
+    return {'queried': len(servers)}
 
 
