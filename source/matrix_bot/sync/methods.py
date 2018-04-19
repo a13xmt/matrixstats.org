@@ -18,9 +18,10 @@ def sync(self, filter_obj=None, since=None):
     next_batch = data.get('next_batch')
     with open("sync.json", "w") as f:
         f.write(json.dumps(data))
+    result = process_messages(self, data)
     if next_batch:
         self._to_cache('next_batch', next_batch)
-    return process_messages(self, data)
+    return result
 
 def sync2(self, filter_obj={}, since=None):
     with open("sync.json", "r") as f:
