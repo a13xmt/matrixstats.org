@@ -29,6 +29,7 @@ def sync2(self, filter_obj={}, since=None):
     process_messages(self, json.loads(data))
 
 def process_messages(self, data):
+    events_total = 0
     self._open_transaction()
     rooms = data.get('rooms', {}).get('join',{})
     for room_id, room in rooms.items():
@@ -41,9 +42,10 @@ def process_messages(self, data):
                 self.reply(room_id, "test reply")
         timeline = room.get('timeline', {})
         events = timeline.get('events', [])
+        events_total += len(events)
         for event in events:
             event_handler = room_event_handlers.get(event.get('type'))
             result = event_handler(self, event, room_id) if event_handler else None
     self._commit_transaction()
-    return data
+    return events_total
 
