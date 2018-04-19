@@ -10,5 +10,6 @@ def dummy_handler(self):
     return self.api_call(
         "POST",
         "/register",
-        json=reg_data
+        json=reg_data,
+        auth=False
     )

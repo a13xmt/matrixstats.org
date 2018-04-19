@@ -278,3 +278,35 @@ def upload_filter(self):
         self.server.update_data({'filter_id': filter_id})
         return filter_id
 
+def verify_existence(self):
+    """ Check the server existance and set the status accordingly"""
+    response_data, response_code = None, None
+    self.server.last_response_code = -1
+    self.server.status = 'u'
+    try:
+        r = self.api_call(
+            "GET",
+            "",
+            suffix="/_matrix/client/versions",
+            auth=False
+        )
+        response_data = r.json()
+        response_code = r.status_code
+    except json.decoder.JSONDecodeError as ex:
+        self.server.last_response_data = serialize(ex)
+    except requests.exceptions.RequestException as ex:
+        self.server.last_response_data = serialize(ex)
+    except ex:
+        self.server.last_response_data = serialize(ex)
+        critical(ex)
+    else:
+        self.server.last_response_data = response_data
+        self.server.last_response_code = response_code
+        if response_code == 200 and "versions" in response_data:
+            self.server.status = 'c'
+        elif r.status_code >= 400:
+            self.server.status = 'u'
+        else:
+            self.server.status = 'n'
+    self.server.save(update_fields=['last_response_data', 'last_response_code', 'status'])
+

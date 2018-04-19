@@ -12,7 +12,7 @@ from room_stats.models import Server
 from matrix_bot.resources import rs, rds
 
 from matrix_bot.login import login
-from matrix_bot.registration import continue_registration, update_profile, upload_filter
+from matrix_bot.registration import continue_registration, update_profile, upload_filter, verify_existence
 from matrix_bot.join import join
 from matrix_bot.sync import sync
 from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
@@ -26,36 +26,6 @@ def handle_server_instance(server_id):
         verify_server_existence(server)
     if server.status == 'c':
         continue_registration(server)
-
-
-def verify_server_existence(server):
-    """ Check the server existance and set the status accordingly"""
-    response_data, response_code = None, None
-    server.last_response_code = -1
-    try:
-        r = rs.get(server.api(suffix="/_matrix/client/versions"))
-        response_data = r.json()
-        response_code = r.status_code
-    except json.decoder.JSONDecodeError as ex:
-        server.last_response_data = serialize(ex)
-        server.status = 'u'
-    except requests.exceptions.RequestException as ex:
-        server.last_response_data = serialize(ex)
-        server.status = 'u'
-    except ex:
-        server.last_response_data = serialize(ex)
-        server.status = 'u'
-        critical(ex)
-    else:
-        server.last_response_data = response_data
-        server.last_response_code = response_code
-        if response_code == 200 and "versions" in response_data:
-            server.status = 'c'
-        elif r.status_code >= 400:
-            server.status = 'u'
-        else:
-            server.status = 'n'
-    server.save(update_fields=['last_response_data', 'last_response_code', 'status'])
 
 
 class MatrixHomeserver():
@@ -161,6 +131,9 @@ class MatrixHomeserver():
 
     def register(self, username=None, password=None):
         return continue_registration(self, username, password)
+
+    def verify_existence(self):
+        return verify_existence(self)
 
     def update_profile(self, visible_name=None, avatar_path=None):
         return update_profile(self, visible_name, avatar_path)
