@@ -10,6 +10,7 @@ from django.conf import settings
 from django.http import Http404
 from random import shuffle
 
+from matrix_bot.tasks import register
 from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest, Server
 from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY
 
@@ -348,5 +349,6 @@ def set_server_recaptcha(request):
     server.data['reg_captcha_response'] = captcha
     server.data['reg_active_stage_progress'] = "USER_ACTION_COMPLETE"
     server.save(update_fields=['data'])
+    register.apply_async((server_id,))
     return JsonResponse({'success': True})
 

@@ -36,8 +36,8 @@ def set_registration_data(self, username=None, password=None):
     """ Set registration data for the new account """
     reg_data = {
         "bind_email": True,
-        "username": username or os.environ.get("MATRIX_BOT_USERNAME"),
-        "password": password or md5((os.environ.get("MATRIX_BOT_SEED") + self.server.hostname).encode()).hexdigest(),
+        "username": username or self.server.login or os.environ.get("MATRIX_BOT_USERNAME"),
+        "password": password or self.server.password or md5((os.environ.get("MATRIX_BOT_SEED") + self.server.hostname).encode()).hexdigest(),
         "initial_device_display_name": "MatrixBot",
     }
     self.server.update_data({'reg_data': reg_data})
