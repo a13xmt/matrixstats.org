@@ -40,3 +40,9 @@ def register_new_servers():
     return {'queried': len(servers)}
 
 
+@app.task(base=QueueOnce, once={'timeout': 60})
+def sync(server_id):
+    """ Synchronize server history and store it for later use """
+    s = MatrixHomeserver(server_id)
+    events_received = s.sync()
+    return {'events': events_received}
