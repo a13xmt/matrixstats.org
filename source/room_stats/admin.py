@@ -110,7 +110,7 @@ class ServerAdmin(admin.ModelAdmin):
         return mark_safe(html)
     render_captcha.short_description = "recaptcha"
 
-    list_display = ('hostname', 'login', 'status', 'prettify_data', 'last_response_data', 'last_response_code', 'render_captcha' )
+    list_display = ('hostname', 'login', 'sync_allowed', 'last_sync_time', 'sync_interval', 'status', 'prettify_data', 'last_response_data', 'last_response_code', 'render_captcha' )
     class Media:
         js = (
             "https://www.google.com/recaptcha/api.js?onload=onloadCallback",
