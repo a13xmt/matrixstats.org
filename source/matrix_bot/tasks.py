@@ -1,5 +1,6 @@
 from celery_once import QueueOnce
 from matrix_stats.celery import app
+from django.utils import timezone
 from datetime import datetime
 
 from room_stats.models import Server
@@ -60,7 +61,7 @@ def sync(server_id, interval):
     """ Synchronize server history and store it for later use """
     s = MatrixHomeserver(server_id)
     # FIXME START remove this later for performance reasons
-    s.server.last_sync_time = datetime.now()
+    s.server.last_sync_time = timezone.now()
     s.server.save()
     # FIXME END remove this later for performance reasons
     if s.server.sync_allowed and s.server.status == 'r':
@@ -72,7 +73,34 @@ def sync(server_id, interval):
 
 @app.task
 def sync_all():
-    servers = Server.objects.filter(status='r')
+    servers = Server.objects.filter(status='r', sync_allowed=True)
     for server in servers:
         sync.apply_async((server.id, server.sync_interval ))
+
+
+@app.task
+def save_statistics():
+    servers = Server.objects.filter(sync_allowed=True)
+    date = datetime.now()
+    datestr = date.strftime("%Y-%m-%d")
+    results = {
+        'total': len(servers),
+        'active': 0,
+        'details': {}
+    }
+    for server in servers:
+        s = MatrixHomeserver(server.id)
+        rcount, active_rooms = s.get_active_rooms(datestr)
+        print("%s: %s active rooms for %s (%s)" % (datestr, rcount, server.hostname, server.id))
+        if rcount:
+            results['active'] += 1
+            results['details'][server.hostname] = 0
+        for room in active_rooms:
+            s.save_daily_stats(room, date)
+            results['details'][server.hostname] += 1
+    return results
+
+
+
+
 
