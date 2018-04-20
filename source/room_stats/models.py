@@ -110,6 +110,7 @@ class Server(models.Model):
     data = JSONField(default=dict, blank=True, null=True)
     last_response_data = JSONField(default=dict, blank=True, null=True)
     last_response_code = models.IntegerField(blank=True, null=True)
+    last_sync_time = models.DateTimeField(default=None, blank=True, null=True)
     sync_allowed = models.BooleanField(default=True)
     sync_interval = models.IntegerField(default=60)
 
