@@ -39,7 +39,7 @@ def process_messages(self, data):
             last_event_id = events[-1].get('event_id', None)
             if last_event_id:
                 print(self.mark_as_read(room_id, last_event_id))
-                self.reply(room_id, "test reply")
+                self.reply(room_id, "Somebody mentioned me. You can get my description here https://matrixstats.org/bot/")
         timeline = room.get('timeline', {})
         events = timeline.get('events', [])
         events_total += len(events)
