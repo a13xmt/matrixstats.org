@@ -1,5 +1,6 @@
 from celery_once import QueueOnce
 from matrix_stats.celery import app
+from datetime import datetime
 
 from room_stats.models import Server
 from matrix_bot.core import MatrixHomeserver
@@ -40,9 +41,38 @@ def register_new_servers():
     return {'queried': len(servers)}
 
 
-@app.task(base=QueueOnce, once={'timeout': 60})
-def sync(server_id):
+def on_sync_success(self, retval, task_id, args, kwargs):
+    # FIXME log every success for homeserver status map
+    if retval == "BREAK_SYNC":
+        return
+    interval = args[1]
+    sync.apply_async(args, kwargs, countdown=interval)
+
+
+def on_sync_fail(self, exc, task_id, args, kwargs, einfo):
+    # FIXME break sync in case of some specific errors
+    # FIXME log every fail data for homeserver status map details
+    interval = args[1]
+    sync.apply_async(args, kwargs, countdown=interval)
+
+@app.task(base=QueueOnce, once={'timeout': 60, 'unlock_before_run': True}, on_success=on_sync_success, on_failure=on_sync_fail)
+def sync(server_id, interval):
     """ Synchronize server history and store it for later use """
     s = MatrixHomeserver(server_id)
-    events_received = s.sync()
-    return {'events': events_received}
+    # FIXME START remove this later for performance reasons
+    s.server.last_sync_time = datetime.now()
+    s.server.save()
+    # FIXME END remove this later for performance reasons
+    if s.server.sync_allowed and s.server.status == 'r':
+        events_received = s.sync()
+        return {'events': events_received}
+    else:
+        return "BREAK_SYNC"
+
+
+@app.task
+def sync_all():
+    servers = Server.objects.filter(status='r')
+    for server in servers:
+        sync.apply_async((server.id, server.sync_interval ))
+
