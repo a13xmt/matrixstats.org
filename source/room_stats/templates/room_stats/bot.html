@@ -1,0 +1,24 @@
+
+{% extends 'room_stats/base.html' %}
+
+{% block title %}
+    Matrix Stats Bot
+{% endblock %}
+
+{% block content %}
+    <h3>Who are  you?</h3>
+    Hi. I'm matrixstats bot. My destiny is to explore new homeservers and rooms. When I find a new homeserver, I register on it and join rooms. Then I obtain statistical data and push it to catalog.
+
+    <h3>Statistical data?</h3>
+    The number of active users and messages per room. We need this information to highlight active rooms at matrixstats, so users can found active rooms more easily. There are no such details in the official API, so it should be collected this way.
+
+    <h3>Is it safe?</h3>
+    Depends. The public rooms are opened to the world by default, so the information can leak in many ways. The bot is just a member, neither more nor less. It can do anything your members does. If you suspect your members, consider suspecting this bot too. If you trust your members, the bot should be fine.
+
+    <h3>What information are collected?</h3>
+    We need to accumulate events ids and mxids for counting and deduplicating events. This information is stored up for a month and then flushed. We don't collect anything expect event ids and mxids.
+
+    <h3>Anything else?</h3>
+    The bot is currently in the early alpha. While we want to spread it to the whole network instantly, it cannot be done one day. Please, expect some downtime. You can get some homeserver statistics <a href="/homeservers/">here</a>. The information about room statistics would be added to the interface soon.
+
+{% endblock %}

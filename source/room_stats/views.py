@@ -338,6 +338,9 @@ def index_simple(request):
 def about(request):
     return render(request, 'room_stats/about.html')
 
+def bot(request):
+    return render(request, 'room_stats/bot.html')
+
 @login_required
 def set_server_recaptcha(request):
     data = json.loads(request.body)

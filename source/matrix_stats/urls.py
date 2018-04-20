@@ -62,6 +62,7 @@ urlpatterns = [
     url(r'^categories/$', views.list_categories, name='categories'),
     url(r'^promote/$', views.promote_room, name='promote'),
     url(r'^about/$', views.about, name='about'),
+    url(r'^bot/$', views.bot, name='bot'),
 
     url(r'^rooms/top/$', views.list_rooms_by_members_count),
 
