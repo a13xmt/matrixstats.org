@@ -110,6 +110,8 @@ class Server(models.Model):
     data = JSONField(default=dict, blank=True, null=True)
     last_response_data = JSONField(default=dict, blank=True, null=True)
     last_response_code = models.IntegerField(blank=True, null=True)
+    sync_allowed = models.BooleanField(default=True)
+    sync_interval = models.IntegerField(default=60)
 
     def api(self, path="", suffix="/_matrix/client/r0"):
         result = "https://%s%s%s" % (self.hostname, suffix, path)
@@ -152,8 +154,8 @@ class RoomStatisticalData(models.Model):
         ('m', 'monthly'),
     )
 
-    def make_id(self):
-        return make_statistical_data_key(self.period, self.starts_at, self.room_id)
+    def make_id(self=None):
+        return make_statistical_data_key(self.period, self.starts_at, self.room_id) if self else "d-00000000-None"
 
     def save(self, *args, **kwargs):
         if not self.id:
