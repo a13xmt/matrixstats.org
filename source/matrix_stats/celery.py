@@ -47,6 +47,10 @@ app.conf.beat_schedule = {
     'save-statistics-daily':  {
         'task': 'matrix_bot.tasks.save_statistics',
         'schedule': crontab(hour=1, minute=0),
+    },
+    'register-new-servers': {
+        'task': 'matrix_bot.tasks.register_new_servers',
+        'schedule': crontab(hour='*/1', minute=0)
     }
 }
 
@@ -55,7 +59,7 @@ app.conf.task_routes = {
     'matrix_bot.tasks.register': {'queue': 'service'},
     'matrix_bot.tasks.save_statistics': {'queue': 'service'},
     'matrix_bot.tasks.sync_all': {'queue': 'control'},
-    'matrix_bot.tasks.register_new_services': {'queue': 'control'},
+    'matrix_bot.tasks.register_new_servers': {'queue': 'control'},
 }
 
 app.autodiscover_tasks(['matrix_bot.tasks'])
