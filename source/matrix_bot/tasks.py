@@ -1,7 +1,7 @@
 from celery_once import QueueOnce
 from matrix_stats.celery import app
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from room_stats.models import Server
 from matrix_bot.core import MatrixHomeserver
@@ -81,7 +81,7 @@ def sync_all():
 @app.task
 def save_statistics():
     servers = Server.objects.filter(sync_allowed=True)
-    date = datetime.now()
+    date = datetime.now() - timedelta(days=1)
     datestr = date.strftime("%Y-%m-%d")
     results = {
         'total': len(servers),

@@ -3,6 +3,7 @@ import os
 import celery
 import raven
 from raven.contrib.celery import register_signal, register_logger_signal
+from celery.schedules import crontab
 
 
 RAVEN_DSN = os.environ.get('RAVEN_DSN')
@@ -43,6 +44,10 @@ app.conf.ONCE = {
 }
 
 app.conf.beat_schedule = {
+    'save-statistics-daily':  {
+        'task': 'matrix_bot.tasks.save_statistics',
+        'schedule': crontab(hour=1, minute=0),
+    }
 }
 
 app.conf.task_routes = {
