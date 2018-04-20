@@ -63,6 +63,7 @@ urlpatterns = [
     url(r'^promote/$', views.promote_room, name='promote'),
     url(r'^about/$', views.about, name='about'),
     url(r'^bot/$', views.bot, name='bot'),
+    url(r'^homeservers/$', views.list_homeservers, name='homeservers'),
 
     url(r'^rooms/top/$', views.list_rooms_by_members_count),
 

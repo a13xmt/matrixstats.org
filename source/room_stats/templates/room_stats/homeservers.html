@@ -1,0 +1,31 @@
+{% extends 'room_stats/base.html' %}
+
+{% block title %}
+    Matrix Homeservers
+{% endblock %}
+
+{% block content %}
+  The page is under development. However, there are some info:
+
+  <div class="homeserver_list">
+    {% for server in servers %}
+    <div class="homeserver__item">
+      <br>
+      <b>{{ server.hostname }}</b>
+      <br>
+      status: <b>{{ server.status }}</b>
+      <br>
+      sync active: {{ server.sync_allowed }}
+      <br>
+      sync interval: {{ server.sync_interval }}
+      <br>
+      last sync: {{ server.last_sync_time }}
+      <br>
+    {% endfor %}
+  </div>
+
+  <br>status legend:  (<b>a</b>ssumed/<b>c</b>onfirmed/<b>n</b>ot_exist/registration_<b>d</b>isabled/<b>r</b>egistered/<b>u</b>nknown)
+
+
+
+{% endblock %}

@@ -355,3 +355,11 @@ def set_server_recaptcha(request):
     register.apply_async((server_id,))
     return JsonResponse({'success': True})
 
+
+def list_homeservers(request):
+    servers = Server.objects.all()
+    context = {
+        'servers': servers
+    }
+    return render(request, 'room_stats/homeservers.html', context)
+
