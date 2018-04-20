@@ -9,6 +9,7 @@ from room_stats.models import PromotionRequest
 from room_stats.models import Server
 from room_stats.models import RoomStatisticalData
 from django.template.loader import render_to_string
+from django.utils import timezone
 
 class RoomAdmin(admin.ModelAdmin):
     all_categories = Category.objects.order_by('name')
@@ -88,6 +89,18 @@ class ServerAdmin(admin.ModelAdmin):
         return mark_safe("<pre style='max-width: 500px; overflow: hidden;'>%s</pre>" % json.dumps(obj.data, indent=4, sort_keys=True))
     prettify_data.short_description = "data (prettifyed)"
 
+    def last_sync_delta(self, obj):
+        if not obj.last_sync_time:
+            return "-"
+        delta = timezone.now() - obj.last_sync_time
+        ds = str(delta).split('.')[0].split(':')
+        res = ""
+        if ds[0] != '0': res += "%sh" % ds[0]
+        if ds[1] != '00': res += " %sm" % ds[1]
+        res += " %ss" % ds[2]
+        return res
+    last_sync_delta.short_description = "last sync delta"
+
     def render_captcha(self, obj):
         server_captcha_key = obj.data.get("params", {}).get("m.login.recaptcha", {}).get("public_key", None)
         # captcha should be rendered only if it required
@@ -110,7 +123,7 @@ class ServerAdmin(admin.ModelAdmin):
         return mark_safe(html)
     render_captcha.short_description = "recaptcha"
 
-    list_display = ('hostname', 'login', 'sync_allowed', 'last_sync_time', 'sync_interval', 'status', 'prettify_data', 'last_response_data', 'last_response_code', 'render_captcha' )
+    list_display = ('hostname', 'login', 'sync_allowed', 'last_sync_delta', 'sync_interval', 'status', 'prettify_data', 'last_response_data', 'last_response_code', 'render_captcha' )
     class Media:
         js = (
             "https://www.google.com/recaptcha/api.js?onload=onloadCallback",
