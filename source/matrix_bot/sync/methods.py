@@ -125,13 +125,15 @@ def save_rooms(self, rooms):
     new_rooms = []
     for room_id in new_room_ids:
         r = rooms_dict.get(room_id)
+        avatar_path = r.get('avatar_url', '')[6:]
+        avatar_url = avatar_url_template % avatar_path if avatar_path else ''
         room = Room(
             id=r['room_id'],
             name=r.get('name',''),
             aliases=", ".join(r.get('aliases', [])),
             topic=r.get('topic',''),
             members_count=r.get('num_joined_members', 0),
-            avatar_url=r.get('avatar_url', ''),
+            avatar_url=avatar_url,
             is_public_readable=r.get('world_readable'),
             is_guest_writeable=r.get('guest_can_join'),
             created_at=date_now,
@@ -147,11 +149,9 @@ def save_rooms(self, rooms):
     date_for_id = date_now.strftime("%Y%m%d")
 
     # Delete old records
+    dm_ids = ["%s-%s" % (room.id, date_for_id) for room in rooms]
     DailyMembers.objects.filter(
-        room_id=self.server.hostname,
-        date__year=date_now.year,
-        date__month=date_now.month,
-        date__day=date_now.day
+        id__in=dm_ids
     ).delete()
 
     daily_members = [
