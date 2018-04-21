@@ -1,9 +1,10 @@
+import re
 from celery_once import QueueOnce
 from matrix_stats.celery import app
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-from room_stats.models import Server
+from room_stats.models import Server, Tag, Room
 from matrix_bot.core import MatrixHomeserver
 
 import time
@@ -114,8 +115,17 @@ def get_all_rooms():
     for server in servers:
         get_rooms.apply_async((server.id, ))
 
-
-
-
-
+@app.task
+def extract_tags():
+    Tag.objects.all().delete()
+    hashtag = re.compile("#\w+")
+    rooms = Room.objects.filter(topic__iregex=r'#\w+')
+    for room in rooms:
+        room_tags = hashtag.findall(room.topic)
+        for tag in room_tags:
+            linked_tag = Tag(
+                id=tag[1:],
+            )
+            linked_tag.save()
+            linked_tag.rooms.add(room)
 

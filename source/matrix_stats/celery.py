@@ -55,6 +55,10 @@ app.conf.beat_schedule = {
     'update-rooms-3h': {
         'task': 'matrix_bot.tasks.get_all_rooms',
         'schedule': crontab(hour='*/3', minute=0)
+    },
+    'extract-tags-24h': {
+        'task': 'matrix_bot.tasks.extract_tags',
+        'schedule': crontab(hour='2', minute=0)
     }
 }
 
@@ -63,6 +67,7 @@ app.conf.task_routes = {
     'matrix_bot.tasks.register': {'queue': 'service'},
     'matrix_bot.tasks.save_statistics': {'queue': 'service'},
     'matrix_bot.tasks.get_rooms': {'queue': 'service'},
+    'matrix_bot.tasks.extract_tags': {'queue': 'service'},
     'matrix_bot.tasks.sync_all': {'queue': 'control'},
     'matrix_bot.tasks.register_new_servers': {'queue': 'control'},
     'matrix_bot.tasks.get_all_rooms': {'queue': 'control'}
