@@ -16,6 +16,7 @@ services:
     volumes:
       - 'sockets:/var/run/sockets'
       - 'redisdata:/data'
+      - 'logsdata:/logs'
 
   nginx:
     build: './docks/nginx/.'
