@@ -80,7 +80,7 @@ def get_rooms(self, timeout=60, chunk_size=2000, limit=None):
 
 from django_bulk_update.helper import bulk_update
 from django.db import transaction
-from room_stats.models import Room
+from room_stats.models import Room, DailyMembers
 @transaction.atomic
 def save_rooms(self, rooms):
 
@@ -139,5 +139,28 @@ def save_rooms(self, rooms):
         )
         new_rooms.append(room)
     Room.objects.bulk_create(new_rooms)
+
+
+    # Update room members
+    rooms = Room.objects.filter(id__in=room_ids)
+
+    date_for_id = date_now.strftime("%Y%m%d")
+
+    # Delete old records
+    DailyMembers.objects.filter(
+        room_id=self.server.hostname,
+        date__year=date_now.year,
+        date__month=date_now.month,
+        date__day=date_now.day
+    ).delete()
+
+    daily_members = [
+        DailyMembers(
+            id="%s-%s" % ( room.id, date_for_id),
+            room_id=room.id,
+            members_count=room.members_count
+        ) for room in rooms
+    ]
+    DailyMembers.objects.bulk_create(daily_members)
 
     return {'total': len(rooms_list)}
