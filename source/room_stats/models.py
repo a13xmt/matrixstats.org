@@ -38,6 +38,7 @@ class Room(models.Model):
     inactive = models.BooleanField(default=False)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
+    federated_with = JSONField(default=dict)
 
     def __str__(self):
         return "(%s) %s" % (self.members_count, self.name)
