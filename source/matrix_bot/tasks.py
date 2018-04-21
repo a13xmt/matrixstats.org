@@ -101,6 +101,21 @@ def save_statistics():
     return results
 
 
+@app.task(base=QueueOnce, once={'timeout': 120, 'unlock_before_run': True})
+def get_rooms(server_id):
+    s = MatrixHomeserver(server_id)
+    rooms = s.get_rooms()
+    result = s.save_rooms(rooms)
+    return result
+
+@app.task
+def get_all_rooms():
+    servers = Server.objects.filter(status='r')
+    for server in servers:
+        get_rooms.apply_async((server.id, ))
+
+
+
 
 
 

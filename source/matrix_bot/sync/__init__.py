@@ -1,1 +1,1 @@
-from .methods import sync
+from .methods import sync, get_rooms, save_rooms

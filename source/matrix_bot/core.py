@@ -14,7 +14,7 @@ from matrix_bot.resources import rs, rds
 from matrix_bot.login import login
 from matrix_bot.registration import continue_registration, update_profile, upload_filter, verify_existence
 from matrix_bot.join import join
-from matrix_bot.sync import sync
+from matrix_bot.sync import sync, get_rooms, save_rooms
 from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
 from matrix_bot.reply import reply, mark_as_read
 
@@ -109,7 +109,7 @@ class MatrixHomeserver():
         )
         return str(access_token)
 
-    def api_call(self, method, path, data=None, json=None, suffix=None, auth=True, headers={}, cache_errors=True, cache_timeout=60*60*24):
+    def api_call(self, method, path, data=None, json=None, suffix=None, params=None, auth=True, headers={}, cache_errors=True, cache_timeout=60*60*24):
         """ Performs an API call to homeserver.
         Last response data can be cached, if required.
         """
@@ -118,11 +118,11 @@ class MatrixHomeserver():
         if auth:
             access_token = self._get_access_token()
             headers['Authorization'] = 'Bearer %s' % access_token
-        response = rs.request(method=method, url=url, data=data, json=json, headers=headers)
+        response = rs.request(method=method, url=url, data=data, json=json, params=params, headers=headers)
         if cache_errors and response.status_code != 200:
             now = datetime.datetime.now().strftime("%Y-%m-%d+%H:%m")
             self._to_cache(**{
-                'response__%s__%s__%s' % (now, response.status_code, path): response.json(),
+                'response__%s__%s__%s' % (now, response.status_code, path): response.content,
             }, expire=cache_timeout)
         return response
 
@@ -164,4 +164,10 @@ class MatrixHomeserver():
 
     def save_daily_stats(self, room_id, date):
         return save_daily_stats(self, room_id, date)
+
+    def get_rooms(self):
+        return get_rooms(self)
+
+    def save_rooms(self, rooms):
+        return save_rooms(self, rooms)
 
