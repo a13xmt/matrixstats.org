@@ -83,11 +83,18 @@ class PromotionRequestAdmin(admin.ModelAdmin):
 
 
 import json
+from matrix_bot.resources import rds
 class ServerAdmin(admin.ModelAdmin):
 
     def prettify_data(self, obj):
         return mark_safe("<pre style='max-width: 500px; overflow: hidden;'>%s</pre>" % json.dumps(obj.data, indent=4, sort_keys=True))
     prettify_data.short_description = "data (prettifyed)"
+
+    def last_responses(self, obj):
+        keys = rds.keys("*%s__response*" % obj.hostname) # FIXME debug only
+        keys = "<br>".join(sorted([k.decode() for k in keys]))
+        return mark_safe(keys)
+    last_responses.short_description = "last responses"
 
     def last_sync_delta(self, obj):
         if not obj.last_sync_time:
@@ -124,6 +131,7 @@ class ServerAdmin(admin.ModelAdmin):
     render_captcha.short_description = "recaptcha"
 
     list_display = ('hostname', 'login', 'sync_allowed', 'last_sync_delta', 'sync_interval', 'status', 'prettify_data', 'last_response_data', 'last_response_code', 'render_captcha' )
+    readonly_fields = ('last_responses', )
     class Media:
         js = (
             "https://www.google.com/recaptcha/api.js?onload=onloadCallback",
