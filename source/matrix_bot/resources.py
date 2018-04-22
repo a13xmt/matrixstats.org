@@ -3,7 +3,12 @@ import os
 import redis
 
 rs = requests.Session()
-rs.headers.update({'User-Agent': 'Matrixbot-dev-experimental/1.1 (+https://matrixstats.org)'})
+
+version = "prod" if "prod" in os.environ.get("DJANGO_SETTINGS_MODULE", "") else "dev"
+if version == "prod":
+    rs.headers.update({'User-Agent': 'Matrixbot/1.1 (+https://matrixstats.org/bot/)'})
+else:
+    rs.headers.update({'User-Agent': 'Matrixbot-dev-experimental/1.1 (+https://matrixstats.org/bot/)'})
 
 redis_settings = {
     'db': 0
