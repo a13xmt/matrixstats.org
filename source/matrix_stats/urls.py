@@ -71,10 +71,10 @@ urlpatterns = [
     url(r'^rooms/public/', views.list_public_rooms, name='public'),
     url(r'^rooms/cyrillic/', views.list_rooms_by_lang_ru, name='cyrillic'),
     url(r'^rooms/tags/', views.list_tags, name='tags'),
-    url(r'^rooms/tag/(?P<tag>\w+)', views.list_rooms_with_tag, name='rooms-with-tag'),
-    url(r'^rooms/homeserver/(?P<homeserver>[a-zA-Z0-9\.]+)', views.rooms_by_homeserver, name='rooms-by-homeserver'),
+    url(r'^rooms/tag/(?P<tag>\w+)/', views.list_rooms_with_tag, name='rooms-with-tag'),
+    url(r'^rooms/homeserver/(?P<homeserver>[a-zA-Z0-9\.]+)/', views.rooms_by_homeserver, name='rooms-by-homeserver'),
 
-    url(r'^rooms/search/(?P<term>\w+)', views.list_rooms_by_search_term, name='rooms-with-search-term'),
+    url(r'^rooms/search/(?P<term>\w+)/', views.list_rooms_by_search_term, name='rooms-with-search-term'),
 
 
 ]
