@@ -54,7 +54,7 @@ app.conf.beat_schedule = {
     },
     'update-rooms-3h': {
         'task': 'matrix_bot.tasks.get_all_rooms',
-        'schedule': crontab(hour='*/3', minute=0)
+        'schedule': crontab(hour='*/3', minute=12)
     },
     'extract-tags-24h': {
         'task': 'matrix_bot.tasks.extract_tags',
