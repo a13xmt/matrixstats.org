@@ -207,11 +207,10 @@ def update_profile(self, visible_name=None, avatar_path=None):
     if not (visible_name or avatar_path):
         raise exception.ConfigurationError("MATRIX_BOT_DISPLAYNAME or MATRIX_BOT_AVATAR_PATH are not set")
 
-    access_token = self.server.data.get('access_token')
     user_id = self.server.data.get('user_id')
 
-    if not (access_token or user_id):
-        raise exception.AuthError("access_token or user_id not found for this server")
+    if not user_id:
+        raise exception.AuthError("user_id is not set for this server")
 
     profile_data = {
         'displayname': None,

@@ -19,6 +19,8 @@ def login(self):
     if response.status_code == 200:
         access_token = data.get('access_token')
         device_id = data.get('device_id')
-        self.server.update_data({'access_token': access_token, 'device_id': device_id})
+        user_id = data.get('user_id')
+        home_server = data.get('home_server')
+        self.server.update_data({'access_token': access_token, 'device_id': device_id, 'user_id': user_id, 'home_server': home_server })
         self._to_cache(**{"access_token": access_token, "device_id": device_id})
         return access_token

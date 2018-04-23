@@ -132,6 +132,10 @@ class MatrixHomeserver():
     def register(self, username=None, password=None):
         return continue_registration(self, username, password)
 
+    def finalize_manual_registration(self):
+        self.login()
+        return self.update_profile(), self.upload_filter()
+
     def verify_existence(self):
         return verify_existence(self)
 
