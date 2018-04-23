@@ -1,5 +1,6 @@
 import re
 from celery_once import QueueOnce
+from celery_once.tasks import AlreadyQueued
 from matrix_stats.celery import app
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -76,7 +77,10 @@ def sync(server_id, interval):
 def sync_all():
     servers = Server.objects.filter(status='r', sync_allowed=True)
     for server in servers:
-        sync.apply_async((server.id, server.sync_interval ))
+        try:
+            sync.apply_async((server.id, server.sync_interval ))
+        except AlreadyQueued:
+            pass
 
 
 @app.task
