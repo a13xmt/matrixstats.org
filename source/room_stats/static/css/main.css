@@ -557,6 +557,44 @@ nav a:hover {
   margin-right: 10px;
 }
 
+.room-federation-list {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.room-federation-badge {
+  padding: 2px 4px;
+  margin-right: 4px;
+  border-radius: 5px;
+  font-size: 12px;
+  border: 1px #ccc solid;
+
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #808080;
+}
+
+.room-federation-badge > span {
+  color: #444;
+}
+
+.room-federation-badge:hover {
+  color: #ddd;
+  background-color: #333;
+  border: 1px #333 solid;
+}
+
+.room-federation-badge:hover > span {
+  color: #ddd;
+}
+
+.room-federation-label {
+  margin-left: 2px;
+
+}
+
 /*
  *
  * Tags

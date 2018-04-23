@@ -262,6 +262,15 @@ def set_room_categories(request, room_id):
     return JsonResponse({'status': 'ok'})
 
 
+def rooms_by_homeserver(request, homeserver):
+    rooms = Room.objects.filter(federated_with__has_key=homeserver).order_by('-members_count')
+    context = {
+        'title': '%s rooms' % homeserver,
+        'header': '%s rooms' % homeserver
+    }
+    return render_rooms_paginated(request, rooms, context)
+
+
 def list_rooms(request):
     categories = Category.objects.order_by('?')[0:8]
     new_ids = [r.id for r in Room.objects.raw(NEW_ROOMS_FOR_LAST_N_DAYS_QUERY % 30)[:]]

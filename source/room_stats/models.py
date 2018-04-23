@@ -63,6 +63,9 @@ class Room(models.Model):
         else:
             return static('img/no-logo.png')
 
+    def get_primary_server(self):
+        return self.id.split(':')[-1]
+
     def topic_split(self):
         return re.sub(r" [\|•]{1,2} ", "\n\n", self.topic)
 

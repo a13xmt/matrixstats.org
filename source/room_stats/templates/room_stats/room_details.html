@@ -40,6 +40,18 @@
 
     <meta itemprop="alternateName" value="{{ room.id }}" />
     <div class="room-details-aliases" itemprop="alternateName">{{ room.aliases }}</div>
+
+    {% with room.get_primary_server as primary_homeserver %}
+      <div class="room-federation-list">
+        {% for homeserver in room.federated_with %}
+          <a class="room-federation-badge" href="{% url 'rooms-by-homeserver' homeserver %}">
+            <i class="fas {% if homeserver == primary_homeserver %}fa-globe{% else %}fa-server{% endif %}"></i>
+            <span class="room-federation-label">{{ homeserver }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% endwith %}
+
   </div>
 
   <div class="room-details-menu">
