@@ -171,3 +171,7 @@ class MatrixHomeserver():
     def save_rooms(self, rooms):
         return save_rooms(self, rooms)
 
+    def joined_rooms(self):
+        r = self.api_call("GET", "/joined_rooms")
+        return r.json().get('joined_rooms', []) if r.status_code == 200 else r.content
+
