@@ -14,7 +14,7 @@
             <a class="room-widget" href="{% url 'room-stats' room_id=room.id %}">
               <div class="room-widget-top">
                 <div class="room-widget-logo">
-                  <img src="{{ room.get_logo_url }}"/>
+                  <img src="{{ room.get_logo_url }}" onerror="imgError(this)" />
                 </div>
                 <div class="room-widget-header">
                   {{ room.get_short_name }}

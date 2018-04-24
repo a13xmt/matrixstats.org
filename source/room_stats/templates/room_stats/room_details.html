@@ -25,7 +25,7 @@
 <div class="room-details-container" itemscope itemtype="https://schema.org/Conversation">
 
   <div class="room-details-logo">
-    <img src="{{ room.get_logo_url }}" itemprop="image" />
+    <img src="{{ room.get_logo_url }}" itemprop="image" onError="imgError(this)" />
   </div>
 
   <div class="room-details-main">

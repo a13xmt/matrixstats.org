@@ -26,6 +26,15 @@
       gtag('config', 'UA-103796347-2');
     </script>
 
+    <script>
+      /* Image error handler */
+      function imgError(image) {
+        image.onerror = "";
+        image.src = "/static/img/no-logo.png";
+        return true;
+      }
+    </script>
+
     {% block additional_imports %}
     {% endblock additional_imports %}
 

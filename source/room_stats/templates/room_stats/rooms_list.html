@@ -24,7 +24,7 @@
   <div class="rlist-item">
       <div class="rlist-item-top">
         <a class="rlist-item-logo" href="{% url 'room-stats' room_id=room.id %}">
-          <img src="{{ room.get_logo_url }}" itemprop="image" />
+          <img src="{{ room.get_logo_url }}" itemprop="image" onerror="imgError(this)" />
         </a>
         <a class="rlist-item-header" href="{% url 'room-stats' room_id=room.id %}">
           {{ room.get_short_name }}
