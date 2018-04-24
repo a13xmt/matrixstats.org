@@ -80,20 +80,34 @@ def get_rooms(self, timeout=60, chunk_size=2000, limit=None):
 
 from django_bulk_update.helper import bulk_update
 from django.db import transaction
-from room_stats.models import Room, DailyMembers
+from room_stats.models import Room, DailyMembers, Server
 @transaction.atomic
 def save_rooms(self, rooms):
+
+    obtained = len(rooms)
+    print("Rooms obtained: %s" % obtained)
+    # Exclude known primary homeservers
+    # They would update their rooms individually
+    exclude_servers = [
+        s.get('hostname') for s in
+        Server.objects.filter(status='r').exclude(hostname=self.server.hostname).values('hostname')
+    ]
+    rooms = [
+        room for room in rooms if (room.get('room_id').split(':')[-1] not in exclude_servers)
+    ]
 
     rooms_list = rooms
     rooms_dict = {room['room_id']: room for room in rooms_list}
     room_ids = [ r['room_id'] for r in rooms_list ]
-    print("Rooms found: %s" % len(rooms_list))
+    covered = len(rooms_list)
+    print("Rooms covered: %s" % covered)
 
     # split rooms before bulk_create and bulk_update
     existing_rooms = Room.objects.filter(id__in=room_ids)
     existing_room_ids = [room.id for room in existing_rooms]
     new_room_ids = [id for id in room_ids if id not in existing_room_ids]
-    print("new room ids: %s" % new_room_ids)
+    new = len(new_room_ids)
+    print("New rooms: %s" % new_room_ids)
 
     avatar_url_template = "https://" + self.server.hostname + "/_matrix/media/r0/thumbnail/%s?width=128&height=128"
     date_now = datetime.now()
@@ -163,4 +177,9 @@ def save_rooms(self, rooms):
     ]
     DailyMembers.objects.bulk_create(daily_members)
 
-    return {'total': len(rooms_list)}
+    result = {
+        'obtained': obtained,
+        'covered': covered,
+        'new': new
+    }
+    return result
