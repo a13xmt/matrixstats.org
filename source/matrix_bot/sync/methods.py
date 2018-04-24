@@ -25,11 +25,6 @@ def sync(self, filter_obj=None, since=None):
         self._to_cache('next_batch', next_batch)
     return result
 
-def sync2(self, filter_obj={}, since=None):
-    with open("sync.json", "r") as f:
-        data = f.read()
-    process_messages(self, json.loads(data))
-
 def process_messages(self, data):
     events_total = 0
     self._open_transaction()

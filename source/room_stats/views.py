@@ -37,7 +37,8 @@ def check_recaptcha(function):
     return wrap
 
 
-def render_rooms_paginated(request, queryset, context={}, page_size=30):
+def render_rooms_paginated(request, queryset, context=None, page_size=30):
+    context = context or {}
     page = request.GET.get('page', 1)
     try:
         page = int(page)

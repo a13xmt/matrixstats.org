@@ -295,7 +295,7 @@ def verify_existence(self):
         response_code = r.status_code
     except json.decoder.JSONDecodeError as ex:
         self.server.last_response_data = serialize(ex)
-    except requests.exceptions.RequestException as ex:
+    except RequestException as ex:
         self.server.last_response_data = serialize(ex)
     except ex:
         self.server.last_response_data = serialize(ex)

@@ -47,7 +47,8 @@ class MatrixClient:
         else:
             raise MatrixClientError(r.text)
 
-    def get(self, path, params={}):
+    def get(self, path, params=None):
+        params = params or {}
         params['access_token'] = self.get_token()
         r = rs.get(
             self.__get_url(path),
@@ -58,7 +59,8 @@ class MatrixClient:
         else:
             raise MatrixClientError(r.text)
 
-    def get_public_rooms(self, timeout=30, chunk_size=2000, limit=None, args={}):
+    def get_public_rooms(self, timeout=30, chunk_size=2000, limit=None, args=None):
+        args = args or {}
         upper_time_bound = datetime.now() + timedelta(seconds=timeout)
         if limit and limit <= chunk_size:
             args['limit'] = limit

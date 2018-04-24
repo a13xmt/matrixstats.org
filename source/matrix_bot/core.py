@@ -109,11 +109,12 @@ class MatrixHomeserver():
         )
         return str(access_token)
 
-    def api_call(self, method, path, data=None, json=None, suffix=None, params=None, auth=True, headers={}, cache_errors=True, cache_timeout=60*60*24):
+    def api_call(self, method, path, data=None, json=None, suffix=None, params=None, auth=True, headers=None, cache_errors=True, cache_timeout=60*60*24):
         """ Performs an API call to homeserver.
         Last response data can be cached, if required.
         """
         suffix = suffix or "/_matrix/client/r0"
+        headers = headers or {}
         url = "https://%s%s%s" % (self.server.hostname, suffix, path)
         if auth:
             access_token = self._get_access_token()
