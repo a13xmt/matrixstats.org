@@ -42,3 +42,27 @@ NEW_ROOMS_FOR_LAST_N_DAYS_QUERY = """
   ON r.id = rc.room_id
   ORDER BY members_count DESC;
 """
+
+ROOM_STATISTICS_FOR_PERIOD_QUERY = """
+WITH stats AS (
+  SELECT * FROM room_stats_roomstatisticaldata
+  WHERE room_id='%(room_id)s' AND period='%(period)s'
+), defaults AS (
+  WITH series AS (
+   SELECT MIN(s.starts_at) as minperiod, MAX(s.starts_at) as maxperiod
+   FROM stats as s
+  )
+  SELECT generate_series(series.minperiod, series.maxperiod, '%(interval)s'::interval) AS starts_at
+  FROM series
+)
+SELECT
+  defaults.starts_at::date,
+  COALESCE(id, '-') as id,
+  COALESCE(room_id, '-') as room_id,
+  COALESCE(period, 'd') as period,
+  COALESCE(data, '{}'::jsonb) as data,
+  COALESCE(messages_total, 0) as messages_total,
+  COALESCE(senders_total, 0) as senders_total
+FROM defaults
+LEFT JOIN stats ON defaults.starts_at = stats.starts_at;
+"""

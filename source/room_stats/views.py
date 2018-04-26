@@ -11,8 +11,8 @@ from django.http import Http404
 from random import shuffle
 
 from matrix_bot.tasks import register
-from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest, Server
-from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY
+from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest, Server, RoomStatisticalData
+from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY, ROOM_STATISTICS_FOR_PERIOD_QUERY
 
 def check_recaptcha(function):
     def wrap(request, *args, **kwargs):
@@ -372,4 +372,30 @@ def list_homeservers(request):
         'servers': servers
     }
     return render(request, 'room_stats/homeservers.html', context)
+
+def get_room_statistics(request, room_id, period):
+    periods = ['d','w','m']
+    intervals = {
+        'd': '1 day',
+        'w': '7 day',
+        'm': '1 month'
+    }
+    room = Room.objects.filter(pk=room_id).first()
+    if (period not in periods) or (not room):
+        raise Http404("There are no such statistics")
+
+    stats = RoomStatisticalData.objects.raw(
+         ROOM_STATISTICS_FOR_PERIOD_QUERY % {
+            'room_id': room_id,
+            'period': period,
+            'interval': intervals[period]
+        }
+    )
+    stats = [{
+        'starts_at': s.starts_at,
+        'senders_total': s.senders_total,
+        'messages_total': s.messages_total,
+    } for s in stats]
+    return JsonResponse({'stats': stats})
+
 
