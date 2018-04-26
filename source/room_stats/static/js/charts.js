@@ -1,22 +1,14 @@
-/*
- *
- * Room members statistics graph
- *
- */
-
 function display_members_graph(data){
   data = data['result']
-
-  var svg = dimple.newSvg('.room-graph', '100%', 300);
+  var svg = dimple.newSvg('.room-members-graph', '100%', 300);
+  var chart = new dimple.chart(svg, data);
   svg.append("text")
-    .attr("x", 255)
-    .attr("y", 16)
-    .attr("text-anchor", "middle")
+    .attr("x", chart._xPixels() + chart._widthPixels() / 2)
+    .attr("y", chart._yPixels() - 20)
+    .style("text-anchor", "middle")
     .style("font-size", "14px")
     .style("color", "#444")
     .text("Members total");
-  var chart = new dimple.chart(svg)
-  var chart = new dimple.chart(svg, data);
   var x = chart.addTimeAxis('x', 'date', '%Y-%m-%d', '%b, %Y');
   x.title = ""
   x.addOrderRule('Date');
@@ -73,16 +65,15 @@ function display_room_stats_graph(data){
   for (var i = 0; i < 3; i++){
     var period = periods[i]
     var d = data[period]
-
     var svg = dimple.newSvg('.room-stats-graph-' + period, '100%', 300);
+    var chart = new dimple.chart(svg)
     svg.append("text")
-      .attr("x", 255)
-      .attr("y", 16)
-      .attr("text-anchor", "middle")
+      .attr("x", chart._xPixels() + chart._widthPixels() / 2)
+      .attr("y", chart._yPixels() - 20)
+      .style("text-anchor", "middle")
       .style("font-size", "14px")
       .style("color", "#444")
       .text(settings[period]['label']);
-    var chart = new dimple.chart(svg)
     chart.defaultColors = settings[period]['colors']
     var x = chart.addTimeAxis('x', 'date', '%Y-%m-%d', '%b, %d');
     x.title = ""
@@ -116,14 +107,13 @@ function display_room_stats_graph(data){
     s2.getTooltipText = function(e){
       return [
         (new Date(e.x)).toLocaleDateString("en-us", {year: "numeric", month: "long", day: "numeric"}),
-        e.y + " senders"
+        e.y + " active members"
       ]
     }
 
     chart.draw();
   }
   adjust_colors();
-
 }
 
 function adjust_colors(){
@@ -134,9 +124,9 @@ function adjust_colors(){
 
 
 $(document).ready(function(){
-  if($('.room-graph').length){
+  if($('.room-members-graph').length){
     $.ajax({
-      url: '/stats/' + $('.room-graph').attr('data-room-id'),
+      url: '/stats/' + $('.room-graphs').attr('data-room-id'),
       success: display_members_graph,
       error: function(error,text){ console.log(error,text)}
     })
@@ -144,7 +134,7 @@ $(document).ready(function(){
 
   if($('.room-stats-graph-d').length){
     $.ajax({
-      url: '/rstats/' + $('.room-stats-graph-d').attr('data-room-id'),
+      url: '/rstats/' + $('.room-graphs').attr('data-room-id'),
       success: display_room_stats_graph,
       error: function(error,text){ console.log(error,text)}
     })

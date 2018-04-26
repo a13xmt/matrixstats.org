@@ -114,10 +114,12 @@
   {% endif %}
 
   <br>
-  <div class="room-graph" data-room-id="{{ room.id }}" style="display: inline-block; width: 49%;"></div>
-  <div class="room-stats-graph-d" data-room-id="{{ room.id }}" style="display: inline-block; width: 49%;"></div>
-  <div class="room-stats-graph-w" data-room-id="{{ room.id }}" style="display: inline-block; width: 49%;"></div>
-  <div class="room-stats-graph-m" data-room-id="{{ room.id }}" style="display: inline-block; width: 49%;"></div>
+  <div class="room-graphs" data-room-id="{{ room.id }}">
+    <div class="room-members-graph"></div>
+    <div class="room-stats-graph-d"></div>
+    <div class="room-stats-graph-w"></div>
+    <div class="room-stats-graph-m"></div>
+  </div>
 
   {% include 'room_stats/widgets/modal_promote_room.html' %}
 

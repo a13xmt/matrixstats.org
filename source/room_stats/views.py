@@ -393,12 +393,9 @@ def get_room_statistics(request, room_id):
                 'interval': intervals[period]
             }
         )
-        # stats = [{
-        #     'date': s.starts_at,
-        #     'senders_total': s.senders_total,
-        #     'messages_total': s.messages_total,
-        # } for s in stats]
-        # result[period] = stats
+        # Empty if just two date borders inside
+        if len(stats[:]) <= 2:
+            raise Http404("There is no such statistics")
         senders = [{
             'date': s.starts_at,
             'value': s.senders_total,
