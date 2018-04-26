@@ -44,17 +44,29 @@ function display_room_stats_graph(data){
     'd': {
       'period': d3.timeDay,
       'ticks': 10,
-      'label': 'Daily activity'
+      'label': 'Daily activity',
+      'colors': [
+        new dimple.color("#bccad6"),
+        new dimple.color("#8d9db6"),
+      ]
     },
     'w': {
       'period': d3.timeMonday,
       'ticks': 5,
-      'label': 'Weekly activity'
+      'label': 'Weekly activity',
+      'colors': [
+        new dimple.color("#c0d5d7"),
+        new dimple.color("#7fa298"),
+      ]
     },
     'm': {
       'period': d3.timeMonth,
       'ticks': 5,
-      'label': 'Monthly activity'
+      'label': 'Monthly activity',
+      'colors': [
+        new dimple.color("#b1cbbb"),
+        new dimple.color("#92aaa1"),
+      ]
     }
   }
 
@@ -71,10 +83,7 @@ function display_room_stats_graph(data){
       .style("color", "#444")
       .text(settings[period]['label']);
     var chart = new dimple.chart(svg)
-    // chart.defaultColors = [
-    //   new dimple.color("#888", "#888"), // Set a red fill with a blue stroke
-    // ];
-
+    chart.defaultColors = settings[period]['colors']
     var x = chart.addTimeAxis('x', 'date', '%Y-%m-%d', '%b, %d');
     x.title = ""
     x.addOrderRule('Date');
