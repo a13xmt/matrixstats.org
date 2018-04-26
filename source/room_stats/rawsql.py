@@ -56,11 +56,8 @@ WITH stats AS (
   FROM series
 )
 SELECT
+  id,
   defaults.starts_at::date,
-  COALESCE(id, '-') as id,
-  COALESCE(room_id, '-') as room_id,
-  COALESCE(period, 'd') as period,
-  COALESCE(data, '{}'::jsonb) as data,
   COALESCE(messages_total, 0) as messages_total,
   COALESCE(senders_total, 0) as senders_total
 FROM defaults

@@ -382,20 +382,23 @@ def get_room_statistics(request, room_id, period):
     }
     room = Room.objects.filter(pk=room_id).first()
     if (period not in periods) or (not room):
-        raise Http404("There are no such statistics")
+        raise Http404("There is no such statistics")
 
-    stats = RoomStatisticalData.objects.raw(
-         ROOM_STATISTICS_FOR_PERIOD_QUERY % {
-            'room_id': room_id,
-            'period': period,
-            'interval': intervals[period]
-        }
-    )
-    stats = [{
-        'starts_at': s.starts_at,
-        'senders_total': s.senders_total,
-        'messages_total': s.messages_total,
-    } for s in stats]
-    return JsonResponse({'stats': stats})
+    result = {}
+    for period in periods:
+        stats = RoomStatisticalData.objects.raw(
+            ROOM_STATISTICS_FOR_PERIOD_QUERY % {
+                'room_id': room_id,
+                'period': period,
+                'interval': intervals[period]
+            }
+        )
+        stats = [{
+            'starts_at': s.starts_at,
+            'senders_total': s.senders_total,
+            'messages_total': s.messages_total,
+        } for s in stats]
+        result[period] = stats
+    return JsonResponse(result)
 
 
