@@ -373,7 +373,7 @@ def list_homeservers(request):
     }
     return render(request, 'room_stats/homeservers.html', context)
 
-def get_room_statistics(request, room_id, period):
+def get_room_statistics(request, room_id):
     periods = ['d','w','m']
     intervals = {
         'd': '1 day',
@@ -381,7 +381,7 @@ def get_room_statistics(request, room_id, period):
         'm': '1 month'
     }
     room = Room.objects.filter(pk=room_id).first()
-    if (period not in periods) or (not room):
+    if not room:
         raise Http404("There is no such statistics")
 
     result = {}
@@ -393,12 +393,32 @@ def get_room_statistics(request, room_id, period):
                 'interval': intervals[period]
             }
         )
-        stats = [{
-            'starts_at': s.starts_at,
-            'senders_total': s.senders_total,
-            'messages_total': s.messages_total,
+        # stats = [{
+        #     'date': s.starts_at,
+        #     'senders_total': s.senders_total,
+        #     'messages_total': s.messages_total,
+        # } for s in stats]
+        # result[period] = stats
+        senders = [{
+            'date': s.starts_at,
+            'value': s.senders_total,
+            'index': 'senders'
         } for s in stats]
-        result[period] = stats
+
+        messages = [{
+            'date': s.starts_at,
+            'value': s.messages_total,
+            'index': 'messages'
+        } for s in stats]
+
+        ovdmx_messages = max([s.messages_total for s in stats]) * 1.1
+        ovdmx_senders = ovdmx_messages * 0.5
+
+        result[period] = {}
+        result[period]['senders'] = senders
+        result[period]['messages'] = messages
+        result[period]['ovdmx_senders'] = ovdmx_senders
+        result[period]['ovdmx_messages'] = ovdmx_messages
     return JsonResponse(result)
 
 

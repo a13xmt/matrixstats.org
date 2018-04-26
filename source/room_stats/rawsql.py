@@ -52,7 +52,7 @@ WITH stats AS (
    SELECT MIN(s.starts_at) as minperiod, MAX(s.starts_at) as maxperiod
    FROM stats as s
   )
-  SELECT generate_series(series.minperiod, series.maxperiod, '%(interval)s'::interval) AS starts_at
+  SELECT generate_series(series.minperiod - '%(interval)s'::interval, series.maxperiod + '%(interval)s'::interval, '%(interval)s'::interval) AS starts_at
   FROM series
 )
 SELECT

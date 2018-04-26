@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^stats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/',
         views.get_daily_members_stats
     ),
-    url(r'^rstats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/(?P<period>[dwm]{1})/',
+    url(r'^rstats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/',
         views.get_room_statistics
     ),
     url(r'^room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)$',
