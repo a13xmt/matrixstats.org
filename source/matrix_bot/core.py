@@ -17,6 +17,7 @@ from matrix_bot.join import join
 from matrix_bot.sync import sync, get_rooms, save_rooms
 from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
 from matrix_bot.reply import reply, mark_as_read
+from matrix_bot.exception import TimeoutError
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
@@ -109,6 +110,27 @@ class MatrixHomeserver():
         )
         return str(access_token)
 
+    def _log_request_meta(self, success=True, code=None, path=None):
+        date = datetime.now()
+        day = date.strftime("%Y-%m-%d")
+        if success:
+            success_counter_key = self._prefixed("sc__%s" % day)
+            self.rds.incr(success_counter_key)
+            self.rds.expire(success_counter_key, 60 * 60 * 72)
+        else:
+            err_counter_key = self._prefixed("ec__%s" % day)
+            err_details_key = self._prefixed("ed__%s" % day)
+            err_details_data = "%s_%s_%s" % (
+                code,
+                path,
+                date.strftime("%H:%M:%S")
+            )
+            self.rds.incr(err_counter_key)
+            self.rds.expire(err_counter_key, 60 * 60 * 72)
+            self.rds.rpush(err_details_key, err_details_data)
+            self.rds.expire(err_details_key, 60 * 60 * 72)
+
+
     def api_call(self, method, path, data=None, json=None, suffix=None, params=None, auth=True, headers=None, cache_errors=True, cache_timeout=60*60*24):
         """ Performs an API call to homeserver.
         Last response data can be cached, if required.
@@ -119,12 +141,23 @@ class MatrixHomeserver():
         if auth:
             access_token = self._get_access_token()
             headers['Authorization'] = 'Bearer %s' % access_token
-        response = rs.request(method=method, url=url, data=data, json=json, params=params, headers=headers)
-        if cache_errors and response.status_code != 200:
-            now = datetime.datetime.now().strftime("%Y-%m-%d+%H:%m")
-            self._to_cache(**{
-                'response__%s__%s__%s' % (now, response.status_code, path): response.content,
-            }, expire=cache_timeout)
+        response = None
+        try:
+            response = rs.request(method=method, url=url, data=data, json=json, params=params, headers=headers)
+        except (ConnectionError, TimeoutError):
+            self._log_request_meta(success=False, code=0, path=path.split('?')[0])
+            raise ConnectionError("Connection failed due to timeout")
+            # FIXME break the task
+        if response.status_code != 200:
+            self._log_request_meta(success=False, code=response.status_code, path=path.split('?')[0])
+            raise ConnectionError("Server responds with bad code %s" % response.status_code)
+            # FIXME break the task
+        self._log_request_meta(success=True)
+        # if cache_errors and response.status_code != 200:
+        #     now = datetime.datetime.now().strftime("%Y-%m-%d+%H:%m")
+        #     self._to_cache(**{
+        #         'response__%s__%s__%s' % (now, response.status_code, path): response.content,
+        #     }, expire=cache_timeout)
         return response
 
     def login(self):
