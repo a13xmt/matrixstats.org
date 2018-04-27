@@ -2,7 +2,7 @@ import requests
 import json
 import django
 import os
-import datetime
+from datetime import datetime
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "matrix_stats.settings.dev")
 django.setup()
@@ -154,7 +154,7 @@ class MatrixHomeserver():
             # FIXME break the task
         self._log_request_meta(success=True)
         # if cache_errors and response.status_code != 200:
-        #     now = datetime.datetime.now().strftime("%Y-%m-%d+%H:%m")
+        #     now = datetime.now().strftime("%Y-%m-%d+%H:%m")
         #     self._to_cache(**{
         #         'response__%s__%s__%s' % (now, response.status_code, path): response.content,
         #     }, expire=cache_timeout)
