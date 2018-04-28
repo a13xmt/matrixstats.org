@@ -21,3 +21,6 @@ class ConfigurationError(MatrixBotException):
 
 class AuthError(MatrixBotException):
     pass
+
+class StopSync(MatrixBotException):
+    pass

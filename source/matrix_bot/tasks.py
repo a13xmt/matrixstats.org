@@ -1,4 +1,8 @@
+import os
 import re
+import celery
+from uuid import uuid4
+from inspect import getcallargs
 from celery_once import QueueOnce
 from celery_once.tasks import AlreadyQueued
 from matrix_stats.celery import app
@@ -6,7 +10,132 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 
 from room_stats.models import Server, Tag, Room
+from matrix_bot.resources import rds_sync
 from matrix_bot.core import MatrixHomeserver
+from matrix_bot.exception import StopSync
+
+class AlreadyLocked(Exception):
+    def __init__(self, countdown):
+        self.message = "Expires in {} seconds".format(countdown)
+        self.countdown = countdown
+
+class RepeatableMutexTask(celery.Task):
+    """
+    Represents repeatable task that can be run only once.
+    Any additional calls to the task would be rejected,
+    based on selected task arguments.
+
+    Class-wise arguments:
+    continue_exceptions -- Set of exceptions that can be used to exit the task on its behalf.
+    mutex_lock_keys -- List of unique task arguments that would be used for lock key.
+    mutex_interval_key -- Name of the task argument with the next interval value.
+    """
+
+    continue_exceptions = set()
+    terminate_exceptions = set()
+    mutex_max_exec_time = 60
+    mutex_lock_keys = None
+    mutex_interval_key = None
+    rds = rds_sync
+
+    def get_key(self, args, kwargs):
+        """
+        Build a lock key based on the task name and its arguments
+        """
+        args = args or {}
+        kwargs = kwargs or {}
+        call_args = getcallargs(self.run, *args, **kwargs)
+        if isinstance(call_args.get('self'), celery.Task):
+            del call_args['self']
+
+        keys = sorted(self.mutex_lock_keys) if type(self.mutex_lock_keys) is list else [self.mutex_lock_keys]
+        accum = []
+        for key in keys:
+            accum.append("%s-%s" % (key, call_args[key]))
+        key = "m:%s:%s" % (self.name, ":".join(accum))
+        return key
+
+    def raise_or_lock(self, key, uuid, interval):
+        """
+        Lock the given redis key, making another instances
+        of the task with the same arguments unable to run.
+        If the lock already exists, exception would be raised.
+        """
+        print("Attempting to lock for %ss key %s with uuid %s" % (interval, key, uuid))
+        lock_uuid = self.rds.get(key)
+        lock_uuid = lock_uuid.decode() if lock_uuid else None
+        safe = not lock_uuid or lock_uuid == uuid
+        if not safe:
+            ttl = self.rds.ttl(key)
+            raise AlreadyLocked(ttl)
+        self.rds.set(key, uuid, ex=self.mutex_max_exec_time+interval)
+
+    def __call__(self, *args, **kwargs):
+        """
+        We need to catch some exceptions before the worker
+        can report that the task was failed. Some exceptions
+        may be used to interrupt the task quietly on its behalf.
+        """
+        try:
+            retval = super(RepeatableMutexTask, self).__call__(*args, **kwargs)
+        except self.continue_exceptions:
+            retval = {'result': 'RECOVERED'}
+        except self.terminate_exceptions:
+            retval = {'result': 'TERMINATE'}
+        return retval
+
+    def apply_async(self, args=None, kwargs=None, **options):
+        """
+        Makes the current task run indefenetly with the given
+        time interval. The task can only be stopped in case of
+        critical exception, or special exit code from the worker.
+        """
+
+        if not self.mutex_lock_keys:
+            raise RuntimeError("No mutex_lock_keys set for RepeatableMutexTask")
+        if not self.mutex_interval_key:
+            raise RuntimeError("No mutex_interval_key set for RepeatableMutexTask")
+
+        args = args or {}
+        kwargs = kwargs or {}
+        call_args = getcallargs(self.run, *args, **kwargs)
+        interval = call_args.get(self.mutex_interval_key)
+
+        uuid = kwargs.get('mutex_uuid')
+        if not uuid:
+            uuid = str(uuid4())
+            kwargs['mutex_uuid'] = uuid
+        key = self.get_key(args, kwargs)
+        self.raise_or_lock(key, uuid, interval)
+        return super(RepeatableMutexTask, self).apply_async(args, kwargs, **options)
+
+    def after_return(self, status, retval, task_id, args, kwargs, einfo):
+        """
+        Reschedule the task in case it was completed successfully.
+
+        The task itself can return an object with mutex_interval_key field set,
+        to use the selected interval for the next call. For example, the task
+        may return {'interval': 10} if 'interval' was used as a mutex_interval_key,
+        and it would be used as the next countdown value.
+
+        This allows to control task interval in a runtime instead of relying
+        on a constant schedule.
+        """
+        # If the task was finished with an error,
+        # just exit without rescheduling
+        error = isinstance(retval, Exception) or (type(retval) is dict and retval.get("result") == "TERMINATE")
+        if error:
+            self.rds.delete(get_key(args,kwargs))
+            return
+
+        # Get the next task interval from the task return value, or from the initial task args
+        call_args = getcallargs(self.run, *args, **kwargs)
+        task_result_interval = retval.get(self.mutex_interval_key) if (type(retval) is dict) else None
+        interval = task_result_interval or call_args.get(self.mutex_interval_key)
+
+        # Now we can reschedule the task
+        self.apply_async(args, kwargs, countdown=interval)
+
 
 import time
 @app.task(base=QueueOnce, once={'timeout': 60})

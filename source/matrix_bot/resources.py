@@ -11,7 +11,6 @@ else:
     rs.headers.update({'User-Agent': 'Matrixbot-dev-experimental/1.1 (+https://matrixstats.org/bot/)'})
 
 redis_settings = {
-    'db': 0
 }
 
 REDIS_SOCKET = os.environ.get("REDIS_SOCKET")
@@ -21,4 +20,5 @@ else:
     redis_settings['host'] = os.environ.get("REDIS_HOST")
     redis_settings['port'] = os.environ.get("REDIS_PORT")
 
-rds = redis.StrictRedis(**redis_settings)
+rds = redis.StrictRedis(db=0, **redis_settings)
+rds_sync = redis.StrictRedis(db=4, socket_timeout=3600, **redis_settings)
