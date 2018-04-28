@@ -1,6 +1,7 @@
 import os
 import re
 import celery
+import requests
 from uuid import uuid4
 from inspect import getcallargs
 from celery_once import QueueOnce
@@ -181,7 +182,12 @@ def register_new_servers():
 
 @app.task(
     base=RepeatableMutexTask,
-    continue_exceptions=(DiscardTask, TimeoutError, ConnectionError),
+    continue_exceptions=(
+        DiscardTask,
+        TimeoutError,
+        ConnectionError,
+        requests.exceptions.ConnectionError,
+    ),
     terminate_exceptions=(StopSync,),
     mutex_exec_timeout=120,
     mutex_interval_key='interval',
