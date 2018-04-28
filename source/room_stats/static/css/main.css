@@ -561,11 +561,13 @@ nav a:hover {
   display: flex;
   width: 100%;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .room-federation-badge {
   padding: 2px 4px;
   margin-right: 4px;
+  margin-bottom: 4px;
   border-radius: 5px;
   font-size: 12px;
   border: 1px #aaa solid;
