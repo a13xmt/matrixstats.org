@@ -23,15 +23,14 @@ class AlreadyLocked(Exception):
 class RepeatableMutexTask(celery.Task):
     """
     Represents repeatable task that can be run only once.
-    Any additional calls to the task would be rejected,
-    based on selected task arguments.
+    Any additional calls to the task would be rejected.
 
     Class-wise arguments:
-    continue_exceptions -- Set of exceptions that can be used to exit the task on its behalf.
-    terminate_exceptions -- Set of exceptions that should finish the scheduler after the task returns.
-    mutex_max_exec_time -- Maximum lock time for tasks that become broken in the runtime.
-    mutex_lock_keys -- List of unique task arguments that would be used for lock key.
-    mutex_interval_key -- Name of the task argument with the next interval value.
+    continue_exceptions -- Set of exceptions that shouldn't break the schedule.
+    terminate_exceptions -- Set of exceptions that would finish the schedule after the task returns.
+    mutex_max_exec_time -- Upper time limit to consider task as alive.
+    mutex_lock_keys -- List of unique task arguments that forms an lock.
+    mutex_interval_key -- Name of the task argument that contains next interval (countdown) for task.
     """
 
     continue_exceptions = set()
@@ -62,7 +61,7 @@ class RepeatableMutexTask(celery.Task):
         """
         Lock the given redis key, making another instances
         of the task with the same arguments unable to run.
-        If the lock already exists, exception would be raised.
+        If the lock already exists, exception raised.
         """
         print("Attempting to lock for %ss key %s with uuid %s" % (interval, key, uuid))
         lock_uuid = self.rds.get(key)
@@ -76,8 +75,8 @@ class RepeatableMutexTask(celery.Task):
     def __call__(self, *args, **kwargs):
         """
         We need to catch some exceptions before the worker
-        can report that the task was failed. Some exceptions
-        may be used to interrupt the task quietly on its behalf.
+        can report task as failed. Some exceptions
+        may be used to interrupt the task quietly if required.
         """
         try:
             retval = super(RepeatableMutexTask, self).__call__(*args, **kwargs)
@@ -139,7 +138,6 @@ class RepeatableMutexTask(celery.Task):
         interval = task_result_interval or call_args.get(self.mutex_interval_key)
         # Inject task interval value in case it was changed
         call_args[self.mutex_interval_key] = task_result_interval
-        print("Next args: %s" % call_args)
 
         # Now we can reschedule the task
         self.apply_async(None, call_args, countdown=interval)

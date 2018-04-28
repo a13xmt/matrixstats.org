@@ -143,9 +143,9 @@ class MatrixHomeserver():
         response = None
         try:
             response = rs.request(method=method, url=url, data=data, json=json, params=params, headers=headers)
-        except (ConnectionError, TimeoutError):
+        except requests.exceptions.ConnectionError as ex:
             self._log_request_meta(success=False, code=0, path=path.split('?')[0])
-            raise ConnectionError("Connection failed")
+            raise ex
             # FIXME break the task
         if response.status_code != 200:
             self._log_request_meta(success=False, code=response.status_code, path=path.split('?')[0])
