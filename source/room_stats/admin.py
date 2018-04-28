@@ -91,9 +91,13 @@ class ServerAdmin(admin.ModelAdmin):
     prettify_data.short_description = "data (prettifyed)"
 
     def last_responses(self, obj):
-        keys = rds.keys("*%s__response*" % obj.hostname) # FIXME debug only
-        keys = "<br>".join(sorted([k.decode() for k in keys]))
-        return mark_safe(keys)
+        keys = rds.keys("*%s__ed*" % obj.hostname) # FIXME debug only
+        errors = []
+        for key in keys:
+            errors.append(key)
+            errors.extend(rds.lrange(key, 0, 1000))
+        html = "<br>".join([e.decode() for e in errors])
+        return mark_safe(html)
     last_responses.short_description = "last responses"
 
     def last_sync_delta(self, obj):
