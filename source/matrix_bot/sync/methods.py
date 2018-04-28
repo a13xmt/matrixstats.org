@@ -1,7 +1,6 @@
 import json
 from datetime import datetime, timedelta
 from .handlers import room_event_handlers
-from matrix_bot.exception import TimeoutError
 
 def sync(self, filter_obj=None, since=None):
     filter_value = json.dumps(filter_obj) if filter_obj else self.server.data.get('filter_id')

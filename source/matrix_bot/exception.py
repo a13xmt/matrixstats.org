@@ -7,9 +7,6 @@ class ClientError(MatrixBotException):
 class RecaptchaError(ClientError):
     pass
 
-class TimeoutError(ClientError):
-    pass
-
 class HandlerNotImplemented(ClientError):
     pass
 

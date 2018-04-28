@@ -17,7 +17,6 @@ from matrix_bot.join import join
 from matrix_bot.sync import sync, get_rooms, save_rooms
 from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
 from matrix_bot.reply import reply, mark_as_read
-from matrix_bot.exception import TimeoutError
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
@@ -146,7 +145,7 @@ class MatrixHomeserver():
             response = rs.request(method=method, url=url, data=data, json=json, params=params, headers=headers)
         except (ConnectionError, TimeoutError):
             self._log_request_meta(success=False, code=0, path=path.split('?')[0])
-            raise ConnectionError("Connection failed due to timeout")
+            raise ConnectionError("Connection failed")
             # FIXME break the task
         if response.status_code != 200:
             self._log_request_meta(success=False, code=response.status_code, path=path.split('?')[0])
