@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from room_stats.models import Server, Tag, Room
 from matrix_bot.resources import rds_sync
 from matrix_bot.core import MatrixHomeserver
-from matrix_bot.exception import StopSync
+from matrix_bot.exception import StopSync, DiscardTask
 
 class AlreadyLocked(Exception):
     def __init__(self, countdown):
@@ -27,6 +27,8 @@ class RepeatableMutexTask(celery.Task):
 
     Class-wise arguments:
     continue_exceptions -- Set of exceptions that can be used to exit the task on its behalf.
+    terminate_exceptions -- Set of exceptions that should finish the scheduler after the task returns.
+    mutex_max_exec_time -- Maximum lock time for tasks that become broken in the runtime.
     mutex_lock_keys -- List of unique task arguments that would be used for lock key.
     mutex_interval_key -- Name of the task argument with the next interval value.
     """
@@ -125,16 +127,21 @@ class RepeatableMutexTask(celery.Task):
         # just exit without rescheduling
         error = isinstance(retval, Exception) or (type(retval) is dict and retval.get("result") == "TERMINATE")
         if error:
-            self.rds.delete(get_key(args,kwargs))
+            self.rds.delete(self.get_key(args,kwargs))
             return
 
         # Get the next task interval from the task return value, or from the initial task args
         call_args = getcallargs(self.run, *args, **kwargs)
+        if isinstance(call_args.get('self'), celery.Task):
+            del call_args['self']
         task_result_interval = retval.get(self.mutex_interval_key) if (type(retval) is dict) else None
         interval = task_result_interval or call_args.get(self.mutex_interval_key)
+        # Inject task interval value in case it was changed
+        call_args[self.mutex_interval_key] = task_result_interval
+        print("Next args: %s" % call_args)
 
         # Now we can reschedule the task
-        self.apply_async(args, kwargs, countdown=interval)
+        self.apply_async(None, call_args, countdown=interval)
 
 
 import time
@@ -172,35 +179,29 @@ def register_new_servers():
         register.apply_async((server.id,))
     return {'queried': len(servers)}
 
-
-def on_sync_success(self, retval, task_id, args, kwargs):
-    # FIXME log every success for homeserver status map
-    if retval == "BREAK_SYNC":
-        return
-    interval = args[1]
-    sync.apply_async(args, kwargs, countdown=interval)
-
-
-def on_sync_fail(self, exc, task_id, args, kwargs, einfo):
-    # FIXME break sync in case of some specific errors
-    # FIXME log every fail data for homeserver status map details
-    interval = args[1]
-    sync.apply_async(args, kwargs, countdown=interval)
-
-@app.task(base=QueueOnce, once={'timeout': 60, 'unlock_before_run': True}, on_success=on_sync_success, on_failure=on_sync_fail)
-def sync(server_id, interval):
-    """ Synchronize server history and store it for later use """
+@app.task(
+    base=RepeatableMutexTask,
+    continue_exceptions=(DiscardTask, TimeoutError, ConnectionError),
+    terminate_exceptions=(StopSync,),
+    mutex_exec_timeout=120,
+    mutex_interval_key='interval',
+    mutex_lock_keys=['server_id'])
+def sync(server_id, interval, mutex_uuid=None):
+    """
+    Synchronize last messages from the given server.
+    Adjust sync interval, if changed.
+    """
     s = MatrixHomeserver(server_id)
-    # FIXME START remove this later for performance reasons
     s.server.last_sync_time = timezone.now()
     s.server.save()
-    # FIXME END remove this later for performance reasons
+
+    result = { 'interval': s.server.sync_interval }
     if s.server.sync_allowed and s.server.status == 'r':
         events_received = s.sync()
-        return {'events': events_received}
+        result['events'] = events_received
+        return result
     else:
-        return "BREAK_SYNC"
-
+        raise StopSync()
 
 @app.task
 def sync_all():
@@ -208,7 +209,7 @@ def sync_all():
     for server in servers:
         try:
             sync.apply_async((server.id, server.sync_interval ))
-        except AlreadyQueued:
+        except AlreadyLocked:
             pass
 
 

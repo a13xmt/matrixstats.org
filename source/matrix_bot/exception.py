@@ -24,3 +24,6 @@ class AuthError(MatrixBotException):
 
 class StopSync(MatrixBotException):
     pass
+
+class DiscardTask(MatrixBotException):
+    pass
