@@ -243,7 +243,10 @@ def save_statistics():
 @app.task(base=QueueOnce, once={'timeout': 120, 'unlock_before_run': True})
 def get_rooms(server_id):
     s = MatrixHomeserver(server_id)
-    rooms = s.get_rooms()
+    try:
+        rooms = s.get_rooms()
+    except (ConnectionError, TimeoutError, requests.exceptions.ConnectionError):
+        return {'result': 'CONN_ERR'}
     result = s.save_rooms(rooms)
     return result
 
