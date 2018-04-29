@@ -137,7 +137,7 @@ class RepeatableMutexTask(celery.Task):
         task_result_interval = retval.get(self.mutex_interval_key) if (type(retval) is dict) else None
         interval = task_result_interval or call_args.get(self.mutex_interval_key)
         # Inject task interval value in case it was changed
-        call_args[self.mutex_interval_key] = task_result_interval
+        call_args[self.mutex_interval_key] = interval
 
         # Now we can reschedule the task
         self.apply_async(None, call_args, countdown=interval)
