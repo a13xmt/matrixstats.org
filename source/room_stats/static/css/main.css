@@ -786,6 +786,10 @@ a.tag-cloud:hover {
   color: red;
 }
 
+.neutral {
+  color: #444;
+}
+
 .noselect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

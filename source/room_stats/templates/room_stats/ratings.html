@@ -22,6 +22,18 @@
         <a href="/rooms/public">Public</a>
       </li>
 
+      <li>Most messages:
+        <a href="{% url 'rooms-by-activity' rating='messages' period='d' delta='1' %}">1d</a>,
+        <a href="{% url 'rooms-by-activity' rating='messages' period='w' delta='1' %}">7d</a>,
+        <a href="{% url 'rooms-by-activity' rating='messages' period='m' delta='1' %}">30d</a>
+      </li>
+
+      <li>Most active members:
+        <a href="{% url 'rooms-by-activity' rating='senders' period='d' delta='1' %}">1d</a>,
+        <a href="{% url 'rooms-by-activity' rating='senders' period='w' delta='1' %}">7d</a>,
+        <a href="{% url 'rooms-by-activity' rating='senders' period='m' delta='1' %}">30d</a>
+      </li>
+
       <li>Most joinable:
         <a href="{% url 'top-abs-weekly' %}">7d</a>,
         <a href="{% url 'top-abs-monthly' %}">30d</a>,

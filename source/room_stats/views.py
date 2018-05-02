@@ -291,8 +291,9 @@ def list_rooms_by_activity(request, rating, period, delta):
         room.messages_total = sd_obj[room.id].messages_total
 
     period_verbose = {'d':'day', 'w': 'week', 'm':'month'}[period]
+    rating_verbose = {'senders': 'active members', 'messages': 'messages'}[rating]
     context = {
-        'header': 'Rooms by %s per %s (%s)' % (rating, period_verbose, starts_at),
+        'header': 'Rooms by most %s per %s (%s)' % (rating_verbose, period_verbose, starts_at),
         'rating': rating,
         'period': period,
         'delta': delta
