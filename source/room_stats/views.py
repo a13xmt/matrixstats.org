@@ -6,12 +6,13 @@ from django.http.response import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.db.models import Case, When
 from django.conf import settings
 from django.http import Http404
 from random import shuffle
 
 from matrix_bot.tasks import register
-from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest, Server, RoomStatisticalData
+from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest, Server, RoomStatisticalData, get_period_starting_date
 from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY, ROOM_STATISTICS_FOR_PERIOD_QUERY
 
 def check_recaptcha(function):
@@ -268,6 +269,33 @@ def rooms_by_homeserver(request, homeserver):
     context = {
         'title': '%s rooms' % homeserver,
         'header': '%s rooms' % homeserver
+    }
+    return render_rooms_paginated(request, rooms, context)
+
+
+def list_rooms_by_activity(request, rating, period, delta):
+    try:
+        delta = int(delta)
+    except ValueError:
+        delta = 1
+    date = datetime.now() - timedelta(days=delta)
+    starts_at = (get_period_starting_date(period, date)).date()
+    sd = RoomStatisticalData.objects.filter(period=period, starts_at=starts_at).order_by('-%s_total' % rating)[:250]
+    sd_obj = {s.room_id: s for s in sd}
+    room_ids = [s.room_id for s in sd]
+    preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(room_ids)])
+    rooms = Room.objects.filter(id__in=room_ids).order_by(preserved)
+
+    for room in rooms:
+        room.senders_total = sd_obj[room.id].senders_total
+        room.messages_total = sd_obj[room.id].messages_total
+
+    period_verbose = {'d':'day', 'w': 'week', 'm':'month'}[period]
+    context = {
+        'header': 'Rooms by %s per %s (%s)' % (rating, period_verbose, starts_at),
+        'rating': rating,
+        'period': period,
+        'delta': delta
     }
     return render_rooms_paginated(request, rooms, context)
 

@@ -54,6 +54,10 @@ urlpatterns = [
     url(r'^top/rel/quarterly/$', views.list_most_joinable_rooms, kwargs={
         'delta': 90, 'rating': 'relative'}, name='top-rel-quarterly'),
 
+    url(r'^top/(?P<rating>(senders)|(messages))/(?P<period>[dwm]{1})/(?P<delta>[0-9]*)/',
+        views.list_rooms_by_activity, name='rooms-by-activity'),
+
+
     url(r'^promoted/small/$', views.list_promoted_rooms, kwargs={
         'size': 's' }, name='promoted-small'),
     url(r'^promoted/medium/$', views.list_promoted_rooms, kwargs={

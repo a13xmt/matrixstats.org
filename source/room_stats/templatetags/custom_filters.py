@@ -25,4 +25,8 @@ def display_room_delta(room, rating):
         else:
             label = '{:+.2f}%'.format(room.percentage)
             html = "<span class='%s'>%s</span>" % (cl(room.percentage), label)
+    if rating == 'senders':
+        html = "<i class='far fa-user fa-sm'></i> %s" % room.senders_total
+    if rating == 'messages':
+        html = "<i class='far fa-comment-alt fa-sm'></i> %s" % room.messages_total
     return mark_safe(html)
