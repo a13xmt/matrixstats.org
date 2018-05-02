@@ -147,7 +147,7 @@ class MatrixHomeserver():
             self._log_request_meta(success=False, code=0, path=path.split('?')[0])
             raise ex
             # FIXME break the task
-        if response.status_code != 200:
+        if response.status_code != 200 and path != "/register":
             self._log_request_meta(success=False, code=response.status_code, path=path.split('?')[0])
             raise ConnectionError("Server responds with bad code %s" % response.status_code)
             # FIXME break the task
