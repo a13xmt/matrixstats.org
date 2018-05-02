@@ -28,10 +28,14 @@
         <a href="{% url 'rooms-by-activity' rating='messages' period='m' delta='1' %}">30d</a>
       </li>
 
-      <li>Most active members:
+      <li>Most senders:
         <a href="{% url 'rooms-by-activity' rating='senders' period='d' delta='1' %}">1d</a>,
         <a href="{% url 'rooms-by-activity' rating='senders' period='w' delta='1' %}">7d</a>,
         <a href="{% url 'rooms-by-activity' rating='senders' period='m' delta='1' %}">30d</a>
+      </li>
+
+      <li>Most active audience:
+        <a href="{% url 'rooms-by-active-audience' delta='1' %}">30d</a>
       </li>
 
       <li>Most joinable:

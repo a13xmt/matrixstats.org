@@ -274,10 +274,8 @@ def rooms_by_homeserver(request, homeserver):
 
 
 def list_rooms_by_activity(request, rating, period, delta):
-    try:
-        delta = int(delta)
-    except ValueError:
-        delta = 1
+    try: delta = int(delta)
+    except ValueError: delta = 1
     date = datetime.now() - timedelta(days=delta)
     starts_at = (get_period_starting_date(period, date)).date()
     sd = RoomStatisticalData.objects.filter(period=period, starts_at=starts_at).order_by('-%s_total' % rating)[:250]
@@ -300,6 +298,24 @@ def list_rooms_by_activity(request, rating, period, delta):
     }
     return render_rooms_paginated(request, rooms, context)
 
+def list_rooms_by_active_audience(request, delta):
+    period = 'm'
+    try: delta = int(delta)
+    except ValueError: delta = 1
+    date = datetime.now() - timedelta(days=delta)
+    starts_at = (get_period_starting_date(period, date)).date()
+    sd = RoomStatisticalData.objects.filter(period=period, starts_at=starts_at)
+    sd_obj = {s.room_id: s for s in sd}
+    room_ids = [s.room_id for s in sd]
+    rooms = Room.objects.filter(id__in=room_ids)
+    for room in rooms:
+        room.relative_activity = sd_obj[room.id].senders_total / room.members_count
+    srooms = sorted(rooms, key=lambda r: -r.relative_activity)
+    context = {
+        'header': 'Rooms by audience activity (%s)' % starts_at,
+        'rating': 'audience_activity',
+    }
+    return render_rooms_paginated(request, srooms, context)
 
 def list_rooms(request):
     categories = Category.objects.order_by('?')[0:8]
