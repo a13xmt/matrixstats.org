@@ -23,15 +23,15 @@
       </li>
 
       <li>Most messages:
-        <a href="{% url 'rooms-by-activity' rating='messages' period='d' delta='1' %}">1d</a>,
-        <a href="{% url 'rooms-by-activity' rating='messages' period='w' delta='1' %}">7d</a>,
-        <a href="{% url 'rooms-by-activity' rating='messages' period='m' delta='1' %}">30d</a>
+        <a href="{% url 'rooms-by-activity' rating='messages' period='d' delta='1' %}">daily</a>,
+        <a href="{% url 'rooms-by-activity' rating='messages' period='w' delta='7' %}">weekly</a>,
+        <a href="{% url 'rooms-by-activity' rating='messages' period='m' delta='31' %}">monthly</a>
       </li>
 
       <li>Most senders:
-        <a href="{% url 'rooms-by-activity' rating='senders' period='d' delta='1' %}">1d</a>,
-        <a href="{% url 'rooms-by-activity' rating='senders' period='w' delta='1' %}">7d</a>,
-        <a href="{% url 'rooms-by-activity' rating='senders' period='m' delta='1' %}">30d</a>
+        <a href="{% url 'rooms-by-activity' rating='senders' period='d' delta='1' %}">daily</a>,
+        <a href="{% url 'rooms-by-activity' rating='senders' period='w' delta='7' %}">weekly</a>,
+        <a href="{% url 'rooms-by-activity' rating='senders' period='m' delta='31' %}">monthly</a>
       </li>
 
       <li>Most active audience:
