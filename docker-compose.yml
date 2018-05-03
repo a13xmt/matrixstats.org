@@ -90,7 +90,7 @@ services:
       - 'logsdata:/logs'
       - 'storagedata:/storage'
       - 'sockets:/var/run/sockets'
-    command: 'celery -A matrix_stats worker -l info -E -Q sync --concurrency 5 -Ofair --logfile=/logs/worker-sync.log'
+    command: 'celery -A matrix_stats worker -P eventlet -c 50 -l info -E -Q sync -Ofair --logfile=/logs/worker-sync.log'
     depends_on:
       - redis
 

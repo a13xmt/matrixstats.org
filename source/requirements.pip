@@ -11,3 +11,4 @@ raven
 celery
 celery_once
 flower
+eventlet

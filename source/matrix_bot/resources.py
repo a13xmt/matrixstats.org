@@ -1,6 +1,7 @@
-import requests
+import eventlet
+requests = eventlet.import_patched('requests')
+redis = eventlet.import_patched('redis')
 import os
-import redis
 
 rs = requests.Session()
 
