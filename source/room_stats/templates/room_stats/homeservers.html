@@ -1,29 +1,49 @@
 {% extends 'room_stats/base.html' %}
+{% load custom_filters %}
 
 {% block title %}
     Matrix Homeservers
 {% endblock %}
 
+{% block content_class %}htable{% endblock %}
+
 {% block content %}
   <h1>Matrix Homeservers</h1>
   The page is under development. There are some raw info:
 
-  <div class="homeserver_list">
+  <table>
+    <thead>
+      <tr>
+        <th>Homeserver</th>
+        <th>Rooms</th>
+        <th>Status</th>
+        <th>Sync</th>
+        <th>Last sync</th>
+        {% for date in dates %}
+        <th>{{ date }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
     {% for server in servers %}
-    <div class="homeserver__item">
-      <br>
-      <b>{{ server.hostname }}</b>
-      <br>
-      status: <b>{{ server.status }}</b>
-      <br>
-      sync active: {{ server.sync_allowed }}
-      <br>
-      sync interval: {{ server.sync_interval }}
-      <br>
-      last sync: {{ server.last_sync_time }}
-      <br>
+    <tr>
+      <td>
+        <a class="room-federation-badge" style="display: inline-block;" href="{% url 'rooms-by-homeserver' homeserver=server.hostname %}">
+          <i class="fas fa-globe"></i>
+          <span class="room-federation-label">{{ server.hostname}}</span>
+        </a>
+      </td>
+      <td>{{ server.room_disp }}</td>
+      <td>{{ server | display_server_status  }}</td>
+      <td>{{ server | display_server_sync_state }}</td>
+      <td>{{ server.last_sync_time | highlight_delta }}</td>
+      {% for date,stat in server.stats.items %}
+      <td>{{ stat.scp }} ({{ stat.sc }}/{{ stat.ec }})</td>
+      {% endfor %}
+    </tr>
     {% endfor %}
-  </div>
+    </tbody>
+  </table>
 
   <br>status legend:  (<b>a</b>ssumed/<b>c</b>onfirmed/<b>r</b>egistered/<b>n</b>ot_exist/registration_<b>d</b>isabled/<b>u</b>nknown)
   <br>timezone: UTC
