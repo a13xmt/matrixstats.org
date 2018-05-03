@@ -411,10 +411,43 @@ def set_server_recaptcha(request):
     return JsonResponse({'success': True})
 
 
+from matrix_bot.resources import rds
 def list_homeservers(request):
-    servers = Server.objects.all()
+    servers = Server.objects.all().order_by('id')
+
+    dates = []
+    for delta in [2,1,0]:
+        dates.append(str((datetime.now() - timedelta(days=delta)).date()))
+    for server in servers:
+        server.stats = {}
+        total = server.data.get('total_rooms')
+        owned = server.data.get('owned_rooms')
+        server.room_disp = "%s/%s" % (total, owned) if (total is not None and owned is not None) else ''
+        print(server.room_disp)
+
+    for date in dates:
+        sc_keys = [ "%s__sc__%s" % (s.hostname, date) for s in servers]
+        ec_keys = [ "%s__ec__%s" % (s.hostname, date) for s in servers]
+        ed_keys = [ "%s__ed__%s" % (s.hostname, date) for s in servers]
+        success_calls = [int(e.decode()) if e else 0 for e in rds.mget(*sc_keys)]
+        error_calls = [int(e.decode()) if e else 0 for e in rds.mget(*ec_keys)]
+        p = rds.pipeline()
+        for ed_key in ed_keys:
+            p.lrange(ed_key, 0, 100)
+        error_details = p.execute()
+        for server, sc, ec, ed in zip(servers, success_calls, error_calls, error_details):
+            ed = [e.decode() for e in ed]
+            scn = None if sc == 0 else 100 if ec == 0 else ((1 - (ec/sc)) * 100)
+            scp = '{:.2f}%'.format(scn) if scn else "-"
+            server.stats[date] = {
+                'sc': sc,
+                'ec': ec,
+                'ed': ed,
+                'scp': scp
+            }
     context = {
-        'servers': servers
+        'servers': servers,
+        'dates': dates
     }
     return render(request, 'room_stats/homeservers.html', context)
 
