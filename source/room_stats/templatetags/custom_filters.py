@@ -1,5 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
+from django.utils import timezone
 import re
 
 register = template.Library()
@@ -31,4 +32,63 @@ def display_room_delta(room, rating):
         html = "<span class='neutral'><i class='far fa-comment-alt fa-sm'></i> %s</span>" % room.messages_total
     if rating == 'audience_activity':
         html = "<span class='neutral'><i class='far fa-user'></i> %s%%</span>" % '{:.2f}'.format(room.relative_activity * 100)
+    return mark_safe(html)
+
+
+@register.filter
+def display_server_status(server):
+    statuses = {
+        'a': {'name': 'assumed', 'color': '#483D8B'},
+        'c': {'name': 'confirmed', 'color': '#FFA07A'},
+        'n': {'name': 'not_exist', 'color': '#888'},
+        'd': {'name': 'reg_disabled', 'color': '#888'},
+        'r': {'name': 'registered', 'color': 'seagreen'},
+        'u': {'name': 'unknown', 'color': 'violet'},
+    }
+    html = "<span style='color: %s'>%s</span>" % (
+        statuses[server.status]['color'],
+        statuses[server.status]['name']
+    )
+    return mark_safe(html)
+
+@register.filter
+def display_server_sync_state(server):
+    icon = {
+        'on': {'class': 'fas fa-caret-up', 'color': 'seagreen'},
+        'off': {'class': 'fas fa-caret-down', 'color': '#B22222'},
+        'impossible': {'class': 'fas fa-caret-down', 'color': '#888'}
+    }
+    value = 'off'
+    if server.status == 'r' and server.sync_allowed:
+        value = 'on'
+    elif server.status in ['d', 'a', 'c', 'n']:
+        value = 'impossible'
+    html = "<i class='%s' style='color: %s;'></i>" % (
+        icon[value]['class'],
+        icon[value]['color']
+    )
+    return mark_safe(html)
+
+@register.filter
+def highlight_delta(date):
+    if not date:
+        return "-"
+    now = timezone.now()
+    delta = (now - date).total_seconds()
+    color_map = {
+        60: "#57bb8a", # 1 minute
+        180: "#63b682", # 3 minute
+        300: "#73b87e", # 5 minutes
+        600: "#84bb7b", # 10 minutes
+        1200: "#94bd77", # 20 minutes
+        1800: "#b0be6e", # 30 minutes
+        3600: "#c4c56d", # 1 hr
+        3600*3: "#d4c86a", # 3 hr
+        3600*6: "#f5ce62", # 6 hr
+        3600*24: "#e2886c", # 1 day
+        3600*48: "#dd776e", # 2 day
+        3600*72: "#dd776e", # 3 day
+    }
+    closest = min(color_map, key=lambda x: abs(x-delta))
+    html = "<span style='color: %s'>%s</span" % (color_map[closest], date.strftime("%d/%m/%Y %H:%m"))
     return mark_safe(html)
