@@ -437,7 +437,7 @@ def list_homeservers(request):
         error_details = p.execute()
         for server, sc, ec, ed in zip(servers, success_calls, error_calls, error_details):
             ed = [e.decode() for e in ed]
-            scn = None if sc == 0 else 100 if ec == 0 else ((1 - (ec/sc)) * 100)
+            scn = None if sc == 0 else 100 if ec == 0 else (sc / (sc+ec) * 100)
             scp = '{:.2f}%'.format(scn) if scn else "-"
             server.stats[date] = {
                 'sc': sc,

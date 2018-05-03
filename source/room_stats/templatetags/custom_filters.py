@@ -76,10 +76,7 @@ def highlight_delta(date):
     now = timezone.now()
     delta = (now - date).total_seconds()
     color_map = {
-        60: "#57bb8a", # 1 minute
-        180: "#63b682", # 3 minute
-        300: "#73b87e", # 5 minutes
-        600: "#84bb7b", # 10 minutes
+        600: "seagreen", # 10 minutes
         1200: "#94bd77", # 20 minutes
         1800: "#b0be6e", # 30 minutes
         3600: "#c4c56d", # 1 hr
