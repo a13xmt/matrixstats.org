@@ -171,6 +171,11 @@ def save_rooms(self, rooms):
     ]
     DailyMembers.objects.bulk_create(daily_members)
 
+    self.server.update_data({
+        'total_rooms': obtained,
+        'owned_rooms': covered
+    })
+
     result = {
         'obtained': obtained,
         'covered': covered,
