@@ -49,7 +49,7 @@
       <td>{{ server.room_disp }}</td>
       <td>{{ server | display_server_status  }}</td>
       <td class='text-center'>{{ server | display_server_sync_state }}</td>
-      <td class='text-center'>{{ server.last_sync_time | highlight_delta }}</td>
+      <td class='text-center'>{{ server | highlight_sync_delta }}</td>
       {% for date,stat in server.stats.items %}
         {{ stat | highlight_server_stats }}
       {% endfor %}

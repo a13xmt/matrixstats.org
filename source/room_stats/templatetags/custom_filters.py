@@ -70,7 +70,8 @@ def display_server_sync_state(server):
     return mark_safe(html)
 
 @register.filter
-def highlight_delta(date):
+def highlight_sync_delta(server):
+    date = server.last_sync_time
     if not date:
         return "–"
     now = timezone.now()
@@ -87,7 +88,9 @@ def highlight_delta(date):
         3600*72: "#dd776e", # 3 day
     }
     closest = min(color_map, key=lambda x: abs(x-delta))
-    html = "<span style='color: %s'>%s</span" % (color_map[closest], date.strftime("%d/%m/%Y %H:%m"))
+    html = "<span style='color: %s'>%s</span" % (
+        color_map[closest] if server.sync_allowed else '#888',
+        date.strftime("%d/%m/%Y %H:%m"))
     return mark_safe(html)
 
 
