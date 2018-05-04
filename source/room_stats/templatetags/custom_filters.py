@@ -89,7 +89,7 @@ def highlight_sync_delta(server):
         3600*72: "#dd776e", # 3 day
     }
     closest = min(color_map, key=lambda x: abs(x-delta))
-    html = "<span style='color: %s'>%s</span" % (
+    html = "<span style='color: %s'>%s</span>" % (
         color_map[closest] if server.sync_allowed else '#888',
         date.strftime("%d/%m/%Y %H:%m"))
     return mark_safe(html)
