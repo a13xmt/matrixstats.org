@@ -69,7 +69,7 @@ nav {
   display: inline-block;
 }
 
-nav a {
+nav > .nav-links > a {
   text-decoration: none;
   color: white;
   font-size: 18px;
@@ -596,6 +596,31 @@ nav a:hover {
   margin-left: 2px;
 
 }
+
+a.homeserver-badge {
+  border: 1px #aaa solid;
+  border-radius: 5px;
+  padding: 2px 4px;
+  font-size: 12px;
+  text-decoration: none !important;
+  color: #808080;
+  display: inline-block;
+}
+
+.homeserver-badge:hover {
+  color: #ddd;
+  background-color: #333;
+  border: 1px #333 solid;
+}
+
+.homeserver-badge:hover > span {
+  color: #ddd;
+}
+
+.homeserver-badge > span {
+  color: #444;
+}
+
 
 .room-graphs {
   display: flex;

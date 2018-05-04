@@ -1,5 +1,20 @@
 {% extends 'room_stats/base.html' %}
+{% load staticfiles %}
 {% load custom_filters %}
+
+{% block additional_imports %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/datatables.min.css' %}"/>
+  <script type="text/javascript" src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
+
+  <script>
+    $(document).ready(function() {
+      $('#homeservers').DataTable({
+        paging: false,
+        info: false
+      });
+    });
+  </script>
+{% endblock %}
 
 {% block title %}
     Matrix Homeservers
@@ -9,16 +24,16 @@
   <h1>Matrix Homeservers</h1>
   The page is under development. There are some raw info:
 
-  <table>
+  <table id="homeservers" class="table" width="100%" style="border-collapse: collapse !important;">
     <thead>
       <tr>
         <th>Homeserver</th>
         <th>Rooms</th>
         <th>Status</th>
-        <th>Sync</th>
-        <th>Last sync</th>
+        <th class='text-center'>Sync</th>
+        <th class='text-center'>Last sync</th>
         {% for date in dates %}
-        <th>{{ date }}</th>
+        <th class='text-center'>{{ date }}</th>
         {% endfor %}
       </tr>
     </thead>
@@ -26,17 +41,17 @@
     {% for server in servers %}
     <tr>
       <td>
-        <a class="room-federation-badge" style="display: inline-block;" href="{% url 'rooms-by-homeserver' homeserver=server.hostname %}">
+        <a class="homeserver-badge" href="{% url 'rooms-by-homeserver' homeserver=server.hostname %}">
           <i class="fas fa-globe"></i>
           <span class="room-federation-label">{{ server.hostname}}</span>
         </a>
       </td>
       <td>{{ server.room_disp }}</td>
       <td>{{ server | display_server_status  }}</td>
-      <td>{{ server | display_server_sync_state }}</td>
-      <td>{{ server.last_sync_time | highlight_delta }}</td>
+      <td class='text-center'>{{ server | display_server_sync_state }}</td>
+      <td class='text-center'>{{ server.last_sync_time | highlight_delta }}</td>
       {% for date,stat in server.stats.items %}
-      <td>{{ stat.scp }} ({{ stat.sc }}/{{ stat.ec }})</td>
+        {{ stat | highlight_server_stats }}
       {% endfor %}
     </tr>
     {% endfor %}

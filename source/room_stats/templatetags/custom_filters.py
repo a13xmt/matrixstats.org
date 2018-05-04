@@ -38,8 +38,8 @@ def display_room_delta(room, rating):
 @register.filter
 def display_server_status(server):
     statuses = {
-        'a': {'name': 'assumed', 'color': '#483D8B'},
-        'c': {'name': 'confirmed', 'color': '#FFA07A'},
+        'a': {'name': 'assumed', 'color': '#6495ED'},
+        'c': {'name': 'confirmed', 'color': '#4682B4'},
         'n': {'name': 'not_exist', 'color': '#888'},
         'd': {'name': 'reg_disabled', 'color': '#888'},
         'r': {'name': 'registered', 'color': 'seagreen'},
@@ -72,7 +72,7 @@ def display_server_sync_state(server):
 @register.filter
 def highlight_delta(date):
     if not date:
-        return "-"
+        return "–"
     now = timezone.now()
     delta = (now - date).total_seconds()
     color_map = {
@@ -89,3 +89,27 @@ def highlight_delta(date):
     closest = min(color_map, key=lambda x: abs(x-delta))
     html = "<span style='color: %s'>%s</span" % (color_map[closest], date.strftime("%d/%m/%Y %H:%m"))
     return mark_safe(html)
+
+
+@register.filter
+def highlight_server_stats(stat):
+    scn = stat.get('scn')
+    if scn is None:
+        return mark_safe("<td class='text-center'>–</td>")
+    scp = '{:.0f}%'.format(scn)
+    color_map = {
+        90: 'seagreen',
+        70: '#b0be6e',
+        50: '#e2886c',
+        20: '#dd776e',
+    }
+    closest = min(color_map, key=lambda x: abs(x-scn))
+
+    html = "<td class='text-center' style='color: %s' title='Requests: %s successful, %s failed.'>%s</td>" % (
+        color_map[closest],
+        stat.get('sc'),
+        stat.get('ec'),
+        scp
+    )
+    return mark_safe(html)
+
