@@ -196,13 +196,13 @@ def sync(server_id, interval, mutex_uuid=None):
     Adjust sync interval, if changed.
     """
     s = MatrixHomeserver(server_id)
-    s.server.last_sync_time = timezone.now()
-    s.server.save()
 
     result = { 'interval': s.server.sync_interval }
     if s.server.sync_allowed and s.server.status == 'r':
         events_received = s.sync()
         result['events'] = events_received
+        s.server.last_sync_time = timezone.now()
+        s.server.save()
         return result
     else:
         raise StopSync()
