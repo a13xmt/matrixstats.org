@@ -167,7 +167,7 @@ def register(server_id):
         if not profile_data:
             profile_data = s.update_profile()
             result['profile_data'] = profile_data
-        sync.apply_async((s.id, s.sync_interval))
+        sync.apply_async((s.server.id, s.server.sync_interval))
     return result
 
 @app.task
