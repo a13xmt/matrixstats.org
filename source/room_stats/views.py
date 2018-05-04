@@ -452,6 +452,19 @@ def list_homeservers(request):
     }
     return render(request, 'room_stats/homeservers.html', context)
 
+@check_recaptcha
+def add_homeserver(request):
+    if request.recaptcha_is_valid:
+        hostname = request.POST.get('hostname')
+        hs = Server.objects.filter(hostname=hostname).first()
+        if hs:
+            return JsonResponse({'success': False})
+        hs = Server(hostname=hostname, sync_interval=600)
+        hs.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'message': 'INVALID_CAPTCHA'}, status=403)
+
 def get_room_statistics(request, room_id):
     periods = ['d','w','m']
     intervals = {
