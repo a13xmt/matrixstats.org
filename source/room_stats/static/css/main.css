@@ -875,5 +875,5 @@ a.open-modal,
 a.open-modal:hover,
 a.open-modal:active {
   color: #444;
-  text-decoration: none;
+  text-decoration: underline;
 }

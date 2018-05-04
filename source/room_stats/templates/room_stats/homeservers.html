@@ -4,6 +4,7 @@
 
 {% block additional_imports %}
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/datatables.min.css' %}"/>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
   <script type="text/javascript" src="{% static 'vendor/datatables/datatables.min.js' %}"></script>
 
   <script>
@@ -23,7 +24,8 @@
 
 {% block content %}
   <h1>Matrix Homeservers</h1>
-  The page is under development. There are some raw info:
+
+  This is an unnoficial list of matrix homeservers discovered. If you wish, you can <a class="open-modal" href="#" onclick="open_modal()">add</a> another one. We use this servers to update catalog whenever it's possible.
 
   <table id="homeservers" class="table" width="100%" style="border-collapse: collapse !important;">
     <thead>
@@ -47,7 +49,7 @@
           <span class="room-federation-label">{{ server.hostname}}</span>
         </a>
       </td>
-      <td data-order="{{ server.owned }}">{{ server.room_disp }}</td>
+      <td title="total/self-sufficient rooms" data-order="{{ server.owned }}">{{ server.room_disp }}</td>
       <td>{{ server | display_server_status  }}</td>
       {{ server | display_server_sync_state }}
       <td class='text-center'>{{ server | highlight_sync_delta }}</td>
@@ -58,5 +60,7 @@
     {% endfor %}
     </tbody>
   </table>
+
+  {% include 'room_stats/widgets/modal_add_homeserver.html' %}
 
 {% endblock %}

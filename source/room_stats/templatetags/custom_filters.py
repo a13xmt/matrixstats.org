@@ -67,7 +67,7 @@ def display_server_sync_state(server):
         icon[value]['class'],
         icon[value]['color']
     )
-    html = "<td data-order='%s' class='text-center'>%s</td>" % ( value, icon_html )
+    html = "<td title='%s' data-order='%s' class='text-center'>%s</td>" % (value, value, icon_html )
     return mark_safe(html)
 
 @register.filter
