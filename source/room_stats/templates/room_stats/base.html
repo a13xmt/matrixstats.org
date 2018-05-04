@@ -43,12 +43,12 @@
   <body itemscope itemtype="http://schema.org/WebPage">
 
     <nav role="navigation" itemscope itemtype="http://schema.org/SiteNavigationElement">
-      <div class="nav-header noselect">Matrix Stats</div>
+      <div class="nav-header noselect"><a href="/">Matrix Stats</a></div>
       <div class="nav-links">
-        <a itemprop="url" href="/">Home</a>
         <a itemprop="url" href="{% url 'ratings' %}">Ratings</a>
         <a itemprop="url" href="{% url 'categories' %}">Categories</a>
         <a itemprop="url" href="{% url 'tags' %}">Tags</a>
+        <a itemprop="url" href="{% url 'homeservers' %}">Homeservers</a>
         <a itemprop="url" href="{% url 'about' %}">About</a>
       </div>
     </nav>
