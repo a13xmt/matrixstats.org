@@ -46,9 +46,9 @@
           <span class="room-federation-label">{{ server.hostname}}</span>
         </a>
       </td>
-      <td>{{ server.room_disp }}</td>
+      <td data-order="{{ server.owned }}">{{ server.room_disp }}</td>
       <td>{{ server | display_server_status  }}</td>
-      <td class='text-center'>{{ server | display_server_sync_state }}</td>
+      {{ server | display_server_sync_state }}
       <td class='text-center'>{{ server | highlight_sync_delta }}</td>
       {% for date,stat in server.stats.items %}
         {{ stat | highlight_server_stats }}

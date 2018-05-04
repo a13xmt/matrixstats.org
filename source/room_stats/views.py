@@ -422,6 +422,8 @@ def list_homeservers(request):
         server.stats = {}
         total = server.data.get('total_rooms')
         owned = server.data.get('owned_rooms')
+        server.total = total
+        server.owned = owned
         server.room_disp = "%s/%s" % (total, owned) if (total is not None and owned is not None) else ''
         print(server.room_disp)
 

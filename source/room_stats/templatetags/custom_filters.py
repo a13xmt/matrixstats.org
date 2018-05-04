@@ -63,10 +63,11 @@ def display_server_sync_state(server):
         value = 'on'
     elif server.status in ['d', 'a', 'c', 'n']:
         value = 'impossible'
-    html = "<i class='%s' style='color: %s;'></i>" % (
+    icon_html = "<i class='%s' style='color: %s;'></i>" % (
         icon[value]['class'],
         icon[value]['color']
     )
+    html = "<td data-order='%s' class='text-center'>%s</td>" % ( value, icon_html )
     return mark_safe(html)
 
 @register.filter
@@ -98,7 +99,7 @@ def highlight_sync_delta(server):
 def highlight_server_stats(stat):
     scn = stat.get('scn')
     if scn is None:
-        return mark_safe("<td class='text-center'>–</td>")
+        return mark_safe("<td data-order='0' class='text-center'>–</td>")
     scp = '{:.0f}%'.format(scn)
     color_map = {
         100: 'seagreen',
@@ -109,7 +110,8 @@ def highlight_server_stats(stat):
     }
     closest = min(color_map, key=lambda x: abs(x-scn))
 
-    html = "<td class='text-center' style='color: %s' title='Requests: %s successful, %s failed.'>%s</td>" % (
+    html = "<td data-order='%s' class='text-center' style='color: %s' title='Requests: %s successful, %s failed.'>%s</td>" % (
+        scn,
         color_map[closest],
         stat.get('sc'),
         stat.get('ec'),
