@@ -91,7 +91,7 @@ def highlight_sync_delta(server):
     closest = min(color_map, key=lambda x: abs(x-delta))
     html = "<span style='color: %s'>%s</span>" % (
         color_map[closest] if server.sync_allowed else '#888',
-        date.strftime("%d/%m/%Y %H:%m"))
+        date.strftime("%d/%m/%Y %H:%M"))
     return mark_safe(html)
 
 
