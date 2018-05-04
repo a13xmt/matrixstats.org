@@ -101,7 +101,8 @@ def highlight_server_stats(stat):
         return mark_safe("<td class='text-center'>–</td>")
     scp = '{:.0f}%'.format(scn)
     color_map = {
-        90: 'seagreen',
+        100: 'seagreen',
+        90: '#94bd77',
         70: '#b0be6e',
         50: '#e2886c',
         20: '#dd776e',
