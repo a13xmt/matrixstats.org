@@ -293,22 +293,20 @@ def verify_existence(self):
         )
         response_data = r.json()
         response_code = r.status_code
-    except json.decoder.JSONDecodeError as ex:
+    except (json.decoder.JSONDecodeError, ConnectionError, RequestException) as ex:
         self.server.last_response_data = serialize(ex)
-    except RequestException as ex:
+        self.server.status = 'n'
+    except Exception as ex:
         self.server.last_response_data = serialize(ex)
-    except ex:
-        self.server.last_response_data = serialize(ex)
-        critical(ex)
+        self.server.save(update_fields=['last_response_data', 'last_response_code', 'status'])
+        raise(ex)
     else:
         self.server.last_response_data = response_data
         self.server.last_response_code = response_code
         if response_code == 200 and "versions" in response_data:
             self.server.status = 'c'
-        elif r.status_code >= 400:
-            self.server.status = 'u'
         else:
-            self.server.status = 'n'
+            self.server.status = 'u'
     self.server.save(update_fields=['last_response_data', 'last_response_code', 'status'])
     return self.server.status
 
