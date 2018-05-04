@@ -65,6 +65,13 @@ nav {
   margin: 15px 0;
 }
 
+.nav-header > a,
+.nav-header > a:hover{
+  text-decoration: none;
+  color: white;
+  background-color: inherit;
+}
+
 .nav-links {
   display: inline-block;
 }
@@ -714,7 +721,7 @@ a.tag-cloud:hover {
  * Modal
  *
  */
-.modal {
+.c-modal {
   display: none;
   position: fixed;
   left: 0;
@@ -726,21 +733,27 @@ a.tag-cloud:hover {
   background-color: rgba(0,0,0,0.4);
 }
 
-.modal-window {
+.c-modal-window {
   background-color: #fff;
   margin: 15% auto;
   padding: 0;
   max-width: 500px;
 }
 
-.modal-window textarea {
+.c-modal-window input {
+  display: block;
+  margin: 10px auto;
+  width: 100%;
+  text-align: center;
+}
+.c-modal-window textarea {
   display: block;
   width: 80%;
   height: 120px;
   margin: 10px auto;
 }
 
-.modal-header {
+.c-modal-header {
   color: #fff;
   background-color: #444;
   width: 100%;
@@ -750,25 +763,31 @@ a.tag-cloud:hover {
   padding: 15px 0;
 }
 
-.modal-content {
+.c-modal-content {
   margin: 10px auto;
   padding: 0px 15px 15px 15px;
 }
 
-.modal .caption {
-  font-size: 0.8em;
+.c-modal .caption {
+  font-size: 13px;
   color: #333;
   display: block;
 }
 
-.modal .success {
+.c-modal .caption a,
+.c-modal .caption a:hover{
+  color: #444;
+  text-decoration: underline;
+}
+
+.c-modal .success {
   padding: 15px 0;
   text-align: center;
   width: 100%;
   color: #333;
 }
 
-.modal .error {
+.c-modal .error {
   padding: 15px 0;
   text-align: center;
   width: 100%;
@@ -779,7 +798,7 @@ a.tag-cloud:hover {
   margin-top: 10px;
 }
 
-.modal button {
+.c-modal button {
   display: block;
   padding: 10px;
   text-decoration: none;
@@ -791,7 +810,7 @@ a.tag-cloud:hover {
   width: 150px;
 }
 
-.modal button:hover {
+.c-modal button:hover {
   color: #fff;
   background-color: #444;
   border: 1px #444 solid;
@@ -852,3 +871,9 @@ a.tag-cloud:hover {
   display: none;
 }
 
+a.open-modal,
+a.open-modal:hover,
+a.open-modal:active {
+  color: #444;
+  text-decoration: none;
+}

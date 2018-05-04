@@ -1,7 +1,7 @@
-<div class="modal">
-  <div class="modal-window">
-    <div class="modal-header">Promote room</div>
-    <div class="modal-content">
+<div class="c-modal">
+  <div class="c-modal-window">
+    <div class="c-modal-header">Promote room</div>
+    <div class="c-modal-content">
       <form id="promote-form">
       {% csrf_token %}
       <input type="hidden" name="room_id" value="{{ room.id }}" />

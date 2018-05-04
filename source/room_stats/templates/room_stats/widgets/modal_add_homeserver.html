@@ -1,0 +1,21 @@
+<div class="c-modal">
+  <div class="c-modal-window">
+    <div class="c-modal-header">Add homeserver</div>
+    <div class="c-modal-content">
+      <form id="homeserver-form">
+      {% csrf_token %}
+
+        <span class="caption">You can add a homeserver using this form. Our <a href="/bot/">bot</a> will register on it and will fetch the public rooms periodically.</span>
+
+        <span class="caption">The registration process is automatic, however, in some cases we may need to finish it manualy. Please, don't hesitate to <a href="/about/">contact us</a> in case something goes wrong.</span>
+
+        <span class="caption">The registration may take up to one hour. The server should be visible in the table in about 2 minutes.</span>
+
+        <input name="hostname" placeholder="example.com"/>
+
+        <button class="g-recaptcha ureset-button" data-badge="inline" data-theme="dark" data-sitekey="6LegaE4UAAAAAL74MnoU4CR9xRTNsKfeMu1z3BxT" data-callback="reHomeserverSubmit" data-error-callback="function(){}">Add</button>
+
+      </form>
+    </div>
+  </div>
+</div>
