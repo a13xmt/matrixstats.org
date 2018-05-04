@@ -420,11 +420,11 @@ def list_homeservers(request):
         dates.append(str((datetime.now() - timedelta(days=delta)).date()))
     for server in servers:
         server.stats = {}
-        total = server.data.get('total_rooms')
-        owned = server.data.get('owned_rooms')
+        total = server.data.get('total_rooms', 0)
+        owned = server.data.get('owned_rooms', 0)
         server.total = total
         server.owned = owned
-        server.room_disp = "%s/%s" % (total, owned) if (total is not None and owned is not None) else ''
+        server.room_disp = "%s/%s" % (total, owned) if (total is not 0 and owned is not 0) else ''
         print(server.room_disp)
 
     for date in dates:
