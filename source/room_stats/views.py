@@ -458,10 +458,10 @@ def add_homeserver(request):
         hostname = request.POST.get('hostname')
         hs = Server.objects.filter(hostname=hostname).first()
         if hs:
-            return JsonResponse({'success': False})
+            return JsonResponse({'success': False, 'message': 'ALREADY_EXISTS'})
         hs = Server(hostname=hostname, sync_interval=600)
         hs.save()
-        return JsonResponse({'success': True})
+        return JsonResponse({'success': True, 'message': 'CREATED'})
     else:
         return JsonResponse({'success': False, 'message': 'INVALID_CAPTCHA'}, status=403)
 
