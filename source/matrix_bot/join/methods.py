@@ -1,10 +1,18 @@
+from room_stats.models import Room
+
 def mark_as_banned(self, room_id):
     key = self._prefixed("banned_rooms")
     self.rds.sadd(key, room_id)
 
 def mark_as_unbanned(self, room_id):
-    key = self._prefixed("banned_rooms")
-    self.rds.srem(key, room_id)
+    key_banned = self._prefixed("banned_rooms")
+    key_joined = self._prefixed("joined_rooms")
+    key_was_joined = self._prefixed("was_joined_rooms")
+    p = self.rds.pipeline()
+    p.srem(key_banned)
+    p.srem(key_joined)
+    p.srem(key_was_joined)
+    p.execute()
 
 def mark_as_joined(self, room_id):
     key = self._prefixed("joined_rooms")
@@ -50,6 +58,10 @@ def update_banned_rooms(self):
     rooms = self.rds.sdiff(key_was_joined, key_joined)
     self.rds.sadd(key_banned_rooms, *rooms)
 
-def join_all(self):
-    pass
-
+def get_rooms_to_join(self):
+    hostname = self.server.hostname
+    all_rooms = list(Room.objects.filter(id__endswith=hostname).order_by('-members_count').values_list('id', flat=True))
+    key_was_joined = self._prefixed("was_joined_rooms")
+    was_joined_rooms = [r.decode() for r in self.rds.smembers(key_was_joined)]
+    candidates = [room for room in all_rooms if room not in was_joined_rooms]
+    return candidates
