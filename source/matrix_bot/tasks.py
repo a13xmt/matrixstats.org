@@ -290,5 +290,5 @@ def update_joined_rooms(server_id):
 def update_all_joined_rooms():
     servers = Server.objects.filter(status='r', sync_allowed=True)
     for server in servers:
-        update_joined_rooms.apply_async(server.id)
+        update_joined_rooms.apply_async((server.id, ))
 
