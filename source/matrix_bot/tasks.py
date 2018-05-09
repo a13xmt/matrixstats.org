@@ -271,3 +271,24 @@ def extract_tags():
             linked_tag.save()
             linked_tag.rooms.add(room)
 
+
+@app.task
+def update_joined_rooms(server_id):
+    s = MatrixHomeserver(server_id)
+    try:
+        joined_rooms = s.fetch_joined_rooms()
+    except (ConnectionError, TimeoutError, requests.exceptions.ConnectionError):
+        return {'result': 'CONN_ERR'}
+    banned_rooms = s.update_banned_rooms()
+    result = {
+        'joined': len(joined_rooms),
+        'banned': len(banned_rooms)
+    }
+    return result
+
+@app.task
+def update_all_joined_rooms():
+    servers = Server.objects.filter(status='r', sync_allowed=True)
+    for server in servers:
+        update_joined_rooms.apply_async(server.id)
+
