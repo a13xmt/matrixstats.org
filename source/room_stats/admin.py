@@ -90,6 +90,16 @@ class ServerAdmin(admin.ModelAdmin):
         return mark_safe("<pre style='max-width: 500px; overflow: hidden;'>%s</pre>" % json.dumps(obj.data, indent=4, sort_keys=True))
     prettify_data.short_description = "data (prettifyed)"
 
+    def joined_rooms(self, obj):
+        key_was_joined = "%s__was_joined_rooms" % obj.hostname
+        key_joined = "%s__joined_rooms" % obj.hostname
+        key_banned = "%s__banned_rooms" % obj.hostname
+        was_joined = rds.scard(key_was_joined)
+        joined = rds.scard(key_joined)
+        banned = rds.scard(key_banned)
+        return "%s/%s/%s" % ( was_joined, joined, banned)
+    joined_rooms.short_description = "joined rooms"
+
     def last_responses(self, obj):
         keys = rds.keys("*%s__ed*" % obj.hostname) # FIXME debug only
         errors = []
@@ -134,7 +144,7 @@ class ServerAdmin(admin.ModelAdmin):
         return mark_safe(html)
     render_captcha.short_description = "recaptcha"
 
-    list_display = ('hostname', 'login', 'sync_allowed', 'last_sync_delta', 'sync_interval', 'status', 'prettify_data', 'last_response_data', 'last_response_code', 'render_captcha' )
+    list_display = ('hostname', 'login', 'sync_allowed', 'joined_rooms', 'last_sync_delta', 'sync_interval', 'status', 'prettify_data', 'last_response_data', 'last_response_code', 'render_captcha' )
     readonly_fields = ('last_responses', )
     class Media:
         js = (
