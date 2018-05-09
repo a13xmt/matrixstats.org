@@ -193,6 +193,20 @@ def finalize_registration(self, data):
         'reg_active_stage_index', 'reg_active_stage_progress', 'reg_captcha_response',
         'reg_chosen_flow', 'reg_data', 'flows', 'params'])
 
+def set_displayname(self, name):
+    # set display name
+    user_id = self.server.data.get('user_id')
+    profile_data = self.server.data.get('profile_data')
+    data = {'displayname': name}
+    r = self.api_call(
+        "PUT",
+        "/profile/%s/displayname" % user_id,
+        json=data
+    )
+    if r.status_code == 200:
+        profile_data['displayname'] = name
+        self.server.update_data({'profile_data': profile_data})
+
 
 def update_profile(self, visible_name=None, avatar_path=None):
     """ Update profile with displayname and avatar """
