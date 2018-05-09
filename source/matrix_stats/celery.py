@@ -72,6 +72,7 @@ app.conf.beat_schedule = {
 
 app.conf.task_routes = {
     'matrix_bot.tasks.sync': {'queue': 'sync'},
+    'matrix_bot.tasks.join_rooms': {'queue': 'sync'},
     'matrix_bot.tasks.register': {'queue': 'service'},
     'matrix_bot.tasks.save_statistics': {'queue': 'service'},
     'matrix_bot.tasks.get_rooms': {'queue': 'service'},
@@ -81,7 +82,8 @@ app.conf.task_routes = {
     'matrix_bot.tasks.sync_all': {'queue': 'control'},
     'matrix_bot.tasks.register_new_servers': {'queue': 'control'},
     'matrix_bot.tasks.get_all_rooms': {'queue': 'control'},
-    'matrix_bot.tasks.update_all_joined_rooms': {'queue': 'control'}
+    'matrix_bot.tasks.update_all_joined_rooms': {'queue': 'control'},
+    'matrix_bot.tasks.join_all_rooms': {'queue': 'control'}
 }
 
 app.autodiscover_tasks(['matrix_bot.tasks'])

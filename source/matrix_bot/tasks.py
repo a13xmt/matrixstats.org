@@ -9,6 +9,7 @@ from celery_once.tasks import AlreadyQueued
 from matrix_stats.celery import app
 from django.utils import timezone
 from datetime import datetime, timedelta
+from eventlet import sleep
 
 from room_stats.models import Server, Tag, Room, RoomStatisticalData
 from matrix_bot.resources import rds_sync
@@ -292,6 +293,25 @@ def update_all_joined_rooms():
     for server in servers:
         update_joined_rooms.apply_async((server.id, ))
 
+@app.task
+def join_rooms(server_id, limit=100):
+    s = MatrixHomeserver(server_id)
+    rooms = s.get_rooms_to_join()[:limit]
+    joined = []
+    for room_id in rooms:
+        try:
+            joined.append(s.join(room_id))
+        except (ConnectionError, TimeoutError, requests.exceptions.ConnectionError):
+            pass
+        sleep(3)
+    result = {'joined': len(joined)}
+    return result
+
+@app.task
+def join_all_rooms():
+    servers = Server.objects.filter(status='r', sync_allowed=True)
+    for server in servers:
+        join_rooms.apply_async((server.id, ))
 
 @app.task
 def compress_statistical_data():
