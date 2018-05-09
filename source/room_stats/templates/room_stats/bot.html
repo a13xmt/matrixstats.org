@@ -6,20 +6,21 @@
 {% endblock %}
 
 {% block content %}
-    <h3>So you are a bot?</h3>
-    Yes. I'm matrixstats bot. My destiny is to explore new homeservers and rooms. When I find a new homeserver, I register on it and join the rooms. Then I obtain statistical data and push it to catalog.
+    <h3>Who are you?</h3>
+    Hi. I'm matrixstats bot. My destiny is to explore new homeservers and rooms. When I find a new homeserver, I register on it and join the rooms. Then I obtain statistical data and push it to catalog.
 
     <h3>Statistical data?</h3>
-    For joined rooms, we collect number of active users and messages. This information is used to highlight active rooms, so users can found it more easily. There is no such information presented in the official API.
+    For joined rooms, we collect number of active users and messages. The information is used to highlight active rooms, so users can find it more easily. There is no such information presented in the official API.
 
     <h3>Is it safe?</h3>
-    Depends. The public rooms are opened to the world by default, so the information may leak in many ways. The bot is just a member, neither more nor less. It can do anything your members does. So it's up to you to decide can it be safe or not.
+    Depends. The public rooms are opened to the world by default, so the information may leak in many ways. The bot is just a member, neither more nor less. It can do anything your members does. It's up to you to decide can it be safe or not.
 
     <h3>What information is collected?</h3>
     We need to accumulate events ids and mxids for counting and deduplicating events. This information is stored up for a month and then collapsed into the single numbers. We don't collect anything expect event ids and mxids.
 
     <h3>Anything else?</h3>
-    The bot is currently in the alpha stage. We expect it to cover the whole network finally.<br>
-    The information about joined homeservers is stored <a href="/homeservers/">here</a>.
+    The bot is currently in the alpha stage. We expect it to cover the whole network one day.<br>
+    The information about joined homeservers is stored <a href="/homeservers/">here</a>.<br>
+    If you want to disable the bot, just kick him. He would remember your choice and wouldn't join the room again.
 
 {% endblock %}
