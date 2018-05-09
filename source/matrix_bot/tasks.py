@@ -10,7 +10,7 @@ from matrix_stats.celery import app
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-from room_stats.models import Server, Tag, Room
+from room_stats.models import Server, Tag, Room, RoomStatisticalData
 from matrix_bot.resources import rds_sync
 from matrix_bot.core import MatrixHomeserver
 from matrix_bot.exception import StopSync, DiscardTask
@@ -292,3 +292,27 @@ def update_all_joined_rooms():
     for server in servers:
         update_joined_rooms.apply_async((server.id, ))
 
+
+@app.task
+def compress_statistical_data():
+    date = datetime.now()
+    # remove daily data older than 14 days
+    RoomStatisticalData.objects.filter(
+        period='d',
+        starts_at__lte=(date - timedelta(days=14))
+    ).delete()
+    # remove daily event data older than 7 days
+    RoomStatisticalData.objects.filter(
+        period='d',
+        starts_at__lte=(date - timedelta(days=7))
+    ).update(data={})
+    # remove weekly event data older than 30 days
+    RoomStatisticalData.objects.filter(
+        period='w',
+        starts_at__lte=(date - timedelta(days=30))
+    ).update(data={})
+    # remove monthly event data older than 90 days
+    RoomStatisticalData.objects.filter(
+        period='m',
+        starts_at__lte=(date - timedelta(days=90))
+    ).update(data={})

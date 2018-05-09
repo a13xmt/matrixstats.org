@@ -63,6 +63,10 @@ app.conf.beat_schedule = {
     'extract-tags-24h': {
         'task': 'matrix_bot.tasks.extract_tags',
         'schedule': crontab(hour='2', minute=0)
+    },
+    'compress-statistical-data-1w': {
+        'task': 'matrix_bot.tasks.compress_statistical_data',
+        'schedule': crontab(hour=3, minute=0, day_of_week='mon')
     }
 }
 
@@ -73,6 +77,7 @@ app.conf.task_routes = {
     'matrix_bot.tasks.get_rooms': {'queue': 'service'},
     'matrix_bot.tasks.extract_tags': {'queue': 'service'},
     'matrix_bot.tasks.update_joined_rooms': {'queue': 'service'},
+    'matrix_bot.tasks.compress_statistical_data': {'queue': 'service'},
     'matrix_bot.tasks.sync_all': {'queue': 'control'},
     'matrix_bot.tasks.register_new_servers': {'queue': 'control'},
     'matrix_bot.tasks.get_all_rooms': {'queue': 'control'},
