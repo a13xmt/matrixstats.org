@@ -336,3 +336,10 @@ def compress_statistical_data():
         period='m',
         starts_at__lte=(date - timedelta(days=90))
     ).update(data={})
+
+@app.task
+def delete_inactive_rooms(days=7):
+    Room.objects.filter(
+        updated_at__lte=(datetime.now() - timedelta(days=days))
+    ).delete()
+

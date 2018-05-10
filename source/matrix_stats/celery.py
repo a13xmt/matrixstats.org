@@ -67,6 +67,10 @@ app.conf.beat_schedule = {
     'compress-statistical-data-1w': {
         'task': 'matrix_bot.tasks.compress_statistical_data',
         'schedule': crontab(hour=3, minute=0, day_of_week='mon')
+    },
+    'delete-inactive-rooms-1d': {
+        'task': 'matrix_bot.tasks.delete_inactive_rooms',
+        'schedule': crontab(hour=4, minute=18)
     }
 }
 
@@ -76,6 +80,7 @@ app.conf.task_routes = {
     'matrix_bot.tasks.register': {'queue': 'service'},
     'matrix_bot.tasks.save_statistics': {'queue': 'service'},
     'matrix_bot.tasks.get_rooms': {'queue': 'service'},
+    'matrix_bot.tasks.delete_inactive_rooms': {'queue': 'service'},
     'matrix_bot.tasks.extract_tags': {'queue': 'service'},
     'matrix_bot.tasks.update_joined_rooms': {'queue': 'service'},
     'matrix_bot.tasks.compress_statistical_data': {'queue': 'service'},
