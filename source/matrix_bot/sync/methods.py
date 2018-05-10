@@ -2,8 +2,10 @@ import json
 from datetime import datetime, timedelta
 from .handlers import room_event_handlers
 
-def sync(self, filter_obj=None, since=None):
-    filter_value = json.dumps(filter_obj) if filter_obj else self.server.data.get('filter_id')
+def sync(self, filter_obj=None, since=None, fast_forward=False):
+    if fast_forward:
+        filter_obj = {'room': {'rooms': [], 'state': {'limit': 1,}, 'timeline': {'limit': 1,}}}
+    filter_value = json.dumps(filter_obj) if filter_obj is not None else self.server.data.get('filter_id')
     cached_since = self._from_cache('next_batch')
     since = since or cached_since.decode() if cached_since else None
     qs = ""
