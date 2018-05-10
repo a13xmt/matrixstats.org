@@ -6,6 +6,9 @@ from django.contrib.postgres.fields import JSONField
 from django.db import transaction
 from django.db import models
 
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='category/', blank=True, null=True)
@@ -138,6 +141,12 @@ class Server(models.Model):
         obj.save(update_fields=['data'])
         self.refresh_from_db()
 
+@receiver(pre_delete, sender=Server)
+def release_federated_rooms(sender, instance, using, **kwargs):
+    rooms = Room.objects.filter(federated_with__has_key=instance.hostname)
+    for room in rooms:
+        room.federated_with.pop(instance.hostname)
+        room.save()
 
 def get_period_starting_date(period, date):
     if period == 'd':
