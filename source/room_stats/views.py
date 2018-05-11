@@ -1,5 +1,6 @@
 import requests
 import json
+import re
 from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http.response import JsonResponse
@@ -456,6 +457,7 @@ def list_homeservers(request):
 def add_homeserver(request):
     if request.recaptcha_is_valid:
         hostname = request.POST.get('hostname')
+        hostname = re.sub('[^a-zA-Z0-9\.\:\_\-]+', '', hostname)
         hs = Server.objects.filter(hostname=hostname).first()
         if hs:
             return JsonResponse({'success': False, 'message': 'ALREADY_EXISTS'})
