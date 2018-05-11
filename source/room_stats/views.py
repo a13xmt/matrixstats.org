@@ -510,4 +510,23 @@ def get_room_statistics(request, room_id):
         result[period]['ovdmx_messages'] = ovdmx_messages
     return JsonResponse(result)
 
+def api_get_rooms(request):
+    rooms = Room.objects.prefetch_related('categories')
+    result = [{
+        'id': room.id,
+        'homeserver': room.id.split(':')[-1],
+        'name': room.name,
+        'categories': [category.name for category in room.categories.all()],
+        'aliases': room.aliases.split(', '),
+        'topic': room.topic,
+        'members_count': room.members_count,
+        'avatar_url': room.avatar_url,
+        'is_public_readable': room.is_public_readable,
+        'is_guest_writeable': room.is_guest_writeable,
+        'created_at': room.created_at,
+        'updated_at': room.updated_at,
+        'federated_with': [key for key in room.federated_with.keys()]
+    } for room in rooms]
+    return JsonResponse({'rooms': result})
+
 

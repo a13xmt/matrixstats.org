@@ -85,5 +85,5 @@ urlpatterns = [
 
     url(r'^rooms/search/(?P<term>\w+)/', views.list_rooms_by_search_term, name='rooms-with-search-term'),
 
-
+    url(r'^api/v1/rooms', views.api_get_rooms, name='api-get-rooms')
 ]
