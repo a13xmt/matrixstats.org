@@ -74,7 +74,7 @@ services:
       - 'logsdata:/logs'
       - 'storagedata:/storage'
       - 'sockets:/var/run/sockets'
-    command: 'celery -A matrix_stats worker -l info -E -Q service --concurrency 2 -Ofair --logfile=/logs/worker-service.log'
+    command: 'celery -A matrix_stats worker -l info -E -Q service --concurrency 5 -Ofair --logfile=/logs/worker-service.log'
     depends_on:
       - redis
 
