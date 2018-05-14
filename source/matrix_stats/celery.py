@@ -48,10 +48,10 @@ app.conf.beat_schedule = {
         'task': 'matrix_bot.tasks.save_statistics',
         'schedule': crontab(hour=1, minute=0),
     },
-    'register-new-servers': {
-        'task': 'matrix_bot.tasks.register_new_servers',
-        'schedule': crontab(hour='*/1', minute=0)
-    },
+    # 'register-new-servers': {
+    #     'task': 'matrix_bot.tasks.register_new_servers',
+    #     'schedule': crontab(hour='*/1', minute=0)
+    # },
     'update-rooms-3h': {
         'task': 'matrix_bot.tasks.get_all_rooms',
         'schedule': crontab(hour='*/3', minute=12)
