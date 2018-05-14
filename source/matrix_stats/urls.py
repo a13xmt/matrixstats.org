@@ -24,10 +24,10 @@ urlpatterns = [
     url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/setcategories/', views.set_room_categories),
     url(r'^admin/update_server_recaptcha/', views.set_server_recaptcha),
 
-    url(r'^stats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/',
+    url(r'^stats/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/',
         views.get_daily_members_stats
     ),
-    url(r'^rstats/(?P<room_id>\![a-zA-Z0-9\.\:\_]*)/',
+    url(r'^rstats/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/',
         views.get_room_statistics
     ),
     url(r'^room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)$',
