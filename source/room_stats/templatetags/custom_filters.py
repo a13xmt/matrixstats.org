@@ -45,7 +45,9 @@ def display_server_status(server):
         'r': {'name': 'public', 'color': 'seagreen', 'icon': 'fa-globe'},
         'u': {'name': 'unknown', 'color': 'violet', 'icon': 'fa-exclamation-triangle'},
     }
-    html = "<span style='color: %s'><i class='fas %s fa-sm'></i> %s</span>" % (
+    sort_order = 'rdnacu'
+    html = "<td data-order='%s'><span style='color: %s'><i class='fas %s fa-sm'></i> %s</span></td>" % (
+        sort_order.index(server.status),
         statuses[server.status]['color'],
         statuses[server.status]['icon'],
         statuses[server.status]['name']
