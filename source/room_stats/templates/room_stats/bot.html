@@ -6,6 +6,30 @@
 {% endblock %}
 
 {% block content %}
+    <p style="color: #A52A2A;">
+      <b>15.05.18 The bot is currently disabled</b><br>
+      We were sad to know that the bot presence may impact homeserver performance in some cases. Until the situation would be solved, the bot will be disabled. <b>If your server had strange performance issues for the last week (starting 7th May), please, consider that it was the case.</b>
+    </p>
+
+    <p style="color: #A52A2A;">
+      <b>Details:</b><br>
+      The bot performed two kind of requests: regular GET /sync requests with 5-10 min interval and GET /publicRooms requests with 3hr interval. The /sync ones seems to overload the server in cases a lot of rooms was joined previously. This was resulted in heavy RAM usage and a lot of 5xx errors for users <b>for at least 2 huge community servers</b> (with a chances to even more).
+      <br><br>
+
+      <b>We are sorry for any inconvience that may occured in result of this event</b>. The providen feedback from the community was very valuable, and we expect not to repeat some unintential abuses in the future.
+      <br><br>
+      <b>Additional notes:</b><br>
+      We are also stopping the bot from joining the rooms compeletly. While it was the experemental feature, that was intended to highlight active rooms for our users, it received a lot of controversal feedback, and it cannot be continued in the current form. <u>All the rooms joined would be leaved for the next few days</u>. The bot presence <u>would</u> be controlled by room members (i.e by direct invites), and not by the fact that the room presented in the public catalog.
+
+      <br><br>
+      Currently, the bot are still performing GET /publicRooms requests once in 3hr for each known <u>public</u> homeserver. This shouldn't affect homeserver performance in any way, but if it do, please, contact me at #matrixstats:matrix.org.
+    </p>
+
+    <hr>
+    <br>
+    Some outdated info that would be changed:
+
+
     <h3>Who are you?</h3>
     Hi. I'm matrixstats bot. My destiny is to explore new homeservers and rooms. When I find a new homeserver, I register on it and join the rooms. Then I obtain statistical data and push it to catalog.
 
