@@ -38,15 +38,16 @@ def display_room_delta(room, rating):
 @register.filter
 def display_server_status(server):
     statuses = {
-        'a': {'name': 'assumed', 'color': '#6495ED'},
-        'c': {'name': 'confirmed', 'color': '#4682B4'},
-        'n': {'name': 'not_exist', 'color': '#888'},
-        'd': {'name': 'reg_disabled', 'color': '#888'},
-        'r': {'name': 'registered', 'color': 'seagreen'},
-        'u': {'name': 'unknown', 'color': 'violet'},
+        'a': {'name': 'assumed', 'color': '#6495ED', 'icon': 'fa-sync'},
+        'c': {'name': 'confirmed', 'color': '#888', 'icon': 'fa-question'},
+        'n': {'name': 'not_exist', 'color': '#888', 'icon': 'fa-times'},
+        'd': {'name': 'private', 'color': '#888', 'icon': 'fa-lock'},
+        'r': {'name': 'public', 'color': 'seagreen', 'icon': 'fa-globe'},
+        'u': {'name': 'unknown', 'color': 'violet', 'icon': 'fa-exclamation-triangle'},
     }
-    html = "<span style='color: %s'>%s</span>" % (
+    html = "<span style='color: %s'><i class='fas %s fa-sm'></i> %s</span>" % (
         statuses[server.status]['color'],
+        statuses[server.status]['icon'],
         statuses[server.status]['name']
     )
     return mark_safe(html)
