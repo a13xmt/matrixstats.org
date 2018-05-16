@@ -13,7 +13,7 @@ from matrix_bot.resources import rs, rds
 
 from matrix_bot.login import login
 from matrix_bot.registration import continue_registration, update_profile, upload_filter, verify_existence, set_displayname
-from matrix_bot.join import join, get_banned_rooms, get_joined_rooms, fetch_joined_rooms, update_banned_rooms, get_rooms_to_join
+from matrix_bot.join import join, leave, get_banned_rooms, get_joined_rooms, fetch_joined_rooms, update_banned_rooms, get_rooms_to_join
 from matrix_bot.sync import sync, get_rooms, save_rooms
 from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
 from matrix_bot.reply import reply, mark_as_read
@@ -179,6 +179,9 @@ class MatrixHomeserver():
 
     def join(self, room_id):
         return join(self, room_id)
+
+    def leave(self, room_id):
+        return leave(self, room_id)
 
     def reply(self, room_id, msg):
         return reply(self, room_id, msg)

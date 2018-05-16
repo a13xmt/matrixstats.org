@@ -55,6 +55,15 @@ def join(self, room_id):
         mark_as_joined(self, room_id)
     return data.get('room_id')
 
+def leave(self, room_id):
+    r = self.api_call("POST", "/rooms/%s/leave" % room_id, json={})
+    data = r.json()
+    key = self._prefixed("joined_rooms")
+    self.rds.srem(key, room_id)
+    key = self._prefixed("was_joined_rooms")
+    self.rds.srem(key, room_id)
+    return room_id
+
 def update_banned_rooms(self):
     key_joined = self._prefixed("joined_rooms")
     key_was_joined = self._prefixed("was_joined_rooms")
