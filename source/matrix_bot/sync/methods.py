@@ -2,29 +2,61 @@ import json
 from datetime import datetime, timedelta
 from .handlers import room_event_handlers
 
-def sync(self, filter_obj=None, since=None, fast_forward=False):
+
+def get_sync_stats(self):
+    pass
+
+def get_last_sync_stats(self):
+    key = self._prefixed("sync_stats")
+    data = self.rds.lindex(key, 0)
+    data = data.decode().split(':') if data else [0,0,0]
+    data = [int(d) for d in data]
+    return (data[0], datetime.fromtimestamp(data[1]), datetime.fromtimestamp(data[2]))
+
+def set_last_sync_stats(self, sync_started, sync_ended):
+    key = self._prefixed("sync_stats")
+    delta = (sync_ended - sync_started).total_seconds()
+    data = [
+        int(delta),
+        int(sync_started.timestamp()),
+        int(sync_ended.timestamp())
+    ]
+    data = ":".join([str(d) for d in data])
+    self.rds.lpush(key, data)
+    self.rds.ltrim(key, 0, 120)
+
+def sync(self, filter_obj=None, since=None, timeout=30, fast_forward=False):
+    key = self._prefixed("sync_stats")
+    sync_started = datetime.now()
+
+    ls_delta, ls_started, ls_ended = get_last_sync_stats(self)
+    print(ls_delta, ls_started, ls_ended)
+    delta = sync_started - ls_ended
+    if delta > timedelta(days=1):
+        fast_forward = True
+
     if fast_forward:
+        timeout = 0
         filter_obj = {'room': {'rooms': [], 'state': {'limit': 1,}, 'timeline': {'limit': 1,}}}
     filter_value = json.dumps(filter_obj) if filter_obj is not None else self.server.data.get('filter_id')
     cached_since = self._from_cache('next_batch')
     since = since or cached_since.decode() if cached_since else None
-    qs = ""
+    qs = "timeout=%s&" % (timeout * 1000)
     if filter_value:
         qs += "filter=%s&" % filter_value
     if since:
         qs += "since=%s&" % since
+    print(qs)
     r = self.api_call(
         "GET",
         "/sync?%s" % qs,
     )
+    sync_ended = datetime.now()
     data = r.json()
     next_batch = data.get('next_batch')
-    with open("sync.json", "w") as f:
-        f.write(json.dumps(data))
-    result = process_messages(self, data)
-    if next_batch:
-        self._to_cache('next_batch', next_batch)
-    return result
+    self._to_cache('next_batch', next_batch)
+    set_last_sync_stats(self, sync_started, sync_ended)
+    return data
 
 def process_messages(self, data):
     events_total = 0
