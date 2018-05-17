@@ -189,8 +189,8 @@ class MatrixHomeserver():
     def mark_as_read(self, room_id, event_id):
         return mark_as_read(self, room_id, event_id)
 
-    def sync(self, filter_obj=None, since=None):
-        return sync(self, filter_obj, since)
+    def sync(self, filter_obj=None, since=None, fast_forward=False):
+        return sync(self, filter_obj, since, fast_forward)
 
     def get_unique_messages(self, room_id, datestr):
         return get_unique_messages(self, room_id, datestr)
