@@ -2,35 +2,48 @@ import json
 from datetime import datetime, timedelta
 from .handlers import room_event_handlers
 
+STATS_LIMIT_PER_SERVER = 120
 
-def get_sync_stats(self):
-    pass
-
-def get_last_sync_stats(self):
-    key = self._prefixed("sync_stats")
-    data = self.rds.lindex(key, 0)
-    data = data.decode().split(':') if data else [0,0,0]
-    data = [int(d) for d in data]
-    return (data[0], datetime.fromtimestamp(data[1]), datetime.fromtimestamp(data[2]))
-
-def set_last_sync_stats(self, sync_started, sync_ended):
-    key = self._prefixed("sync_stats")
-    delta = (sync_ended - sync_started).total_seconds()
+def encode(self, delta, sync_started, sync_ended):
     data = [
         int(delta),
         int(sync_started.timestamp()),
         int(sync_ended.timestamp())
     ]
     data = ":".join([str(d) for d in data])
+    return data
+
+def decode(self, data):
+    data = data.decode().split(':') if data else [0,0,0]
+    data = [int(d) for d in data]
+    data = (data[0], datetime.fromtimestamp(data[1]), datetime.fromtimestamp(data[2]))
+    return data
+
+def get_sync_stats(self):
+    key = self._prefixed("sync_stats")
+    stats = self.rds.lrange(key, 0, STATS_LIMIT_PER_SERVER)
+    data = [decode(self, s) for s in stats]
+    data = [
+        [ str(item) for item in d ] for d in data
+    ]
+    return data
+
+def get_last_sync_stats(self):
+    key = self._prefixed("sync_stats")
+    data = self.rds.lindex(key, 0)
+    return decode(self, data)
+
+def set_last_sync_stats(self, sync_started, sync_ended):
+    key = self._prefixed("sync_stats")
+    delta = (sync_ended - sync_started).total_seconds()
+    data = encode(self, delta, sync_started, sync_ended)
     self.rds.lpush(key, data)
-    self.rds.ltrim(key, 0, 120)
+    self.rds.ltrim(key, 0, STATS_LIMIT_PER_SERVER)
 
 def sync(self, filter_obj=None, since=None, timeout=30, fast_forward=False):
     key = self._prefixed("sync_stats")
     sync_started = datetime.now()
-
     ls_delta, ls_started, ls_ended = get_last_sync_stats(self)
-    print(ls_delta, ls_started, ls_ended)
     delta = sync_started - ls_ended
     if delta > timedelta(days=1):
         fast_forward = True
@@ -46,7 +59,6 @@ def sync(self, filter_obj=None, since=None, timeout=30, fast_forward=False):
         qs += "filter=%s&" % filter_value
     if since:
         qs += "since=%s&" % since
-    print(qs)
     r = self.api_call(
         "GET",
         "/sync?%s" % qs,
