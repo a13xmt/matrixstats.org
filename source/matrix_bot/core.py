@@ -14,9 +14,10 @@ from matrix_bot.resources import rs, rds
 from matrix_bot.login import login
 from matrix_bot.registration import continue_registration, update_profile, upload_filter, verify_existence, set_displayname
 from matrix_bot.join import join, leave, get_banned_rooms, get_joined_rooms, fetch_joined_rooms, update_banned_rooms, get_rooms_to_join
-from matrix_bot.sync import sync, get_rooms, save_rooms, get_sync_stats
+from matrix_bot.sync import sync, get_rooms, save_rooms, get_sync_stats, sync_invites, process_invites
 from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
 from matrix_bot.reply import reply, mark_as_read
+from matrix_bot.messages import process_messages
 
 def handle_server_instance(server_id):
     """ Check the server instance for uncompleted registration
@@ -191,6 +192,15 @@ class MatrixHomeserver():
 
     def sync(self, filter_obj=None, since=None, timeout=30, fast_forward=False):
         return sync(self, filter_obj, since, timeout, fast_forward)
+
+    def process_messages(self, data):
+        return process_messages(self, data)
+
+    def sync_invites(self):
+        return sync_invites(self)
+
+    def process_invites(self, data):
+        return process_invites(self, data)
 
     def get_sync_stats(self):
         return get_sync_stats(self)
