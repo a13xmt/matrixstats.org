@@ -1,4 +1,7 @@
 from room_stats.models import Room
+from datetime import datetime
+
+LOG_LIMIT_PER_SERVER = 100
 
 def mark_as_banned(self, room_id):
     key = self._prefixed("banned_rooms")
@@ -14,11 +17,19 @@ def mark_as_unbanned(self, room_id):
     p.srem(key_was_joined)
     p.execute()
 
-def mark_as_joined(self, room_id):
+def mark_as_joined(self, room_id, invite_from):
     key = self._prefixed("joined_rooms")
     self.rds.sadd(key, room_id)
     key = self._prefixed("was_joined_rooms")
     self.rds.sadd(key, room_id)
+    key = self._prefixed("room_join_log")
+    data = ":".join([
+        int(datetime.now().timestamp()),
+        room_id,
+        invite_from or ''
+    ])
+    self.rds.lpush(key, data)
+    self.rds.ltrim(key, 0, LOG_LIMIT_PER_SERVER)
 
 def get_banned_rooms(self):
     key = self._prefixed("banned_rooms")
@@ -46,22 +57,31 @@ def fetch_joined_rooms(self):
         self.rds.delete(key_joined)
         return []
 
-def join(self, room_id):
+def join(self, room_id, invite_from=None):
     r = self.api_call("POST", "/rooms/%s/join" % room_id, json={}, forward_error_codes=[403])
     data = r.json()
     if r.status_code == 403:
         mark_as_banned(self, room_id)
     else:
-        mark_as_joined(self, room_id)
+        mark_as_joined(self, room_id, invite_from)
     return data.get('room_id')
 
-def leave(self, room_id):
+def leave(self, room_id, reason=None):
     r = self.api_call("POST", "/rooms/%s/leave" % room_id, json={})
     data = r.json()
     key = self._prefixed("joined_rooms")
     self.rds.srem(key, room_id)
     key = self._prefixed("was_joined_rooms")
     self.rds.srem(key, room_id)
+    key = self._prefixed("room_leave_log")
+    data = ":".join([
+        int(datetime.now().timestamp()),
+        room_id,
+        reason or ''
+    ])
+    self.rds.lpush(key, data)
+    self.rds.ltrim(key, 0, LOG_LIMIT_PER_SERVER)
+
     return room_id
 
 def update_banned_rooms(self):
