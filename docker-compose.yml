@@ -58,7 +58,7 @@ services:
       - 'logsdata:/logs'
       - 'storagedata:/storage'
       - 'sockets:/var/run/sockets'
-    command: 'celery -A matrix_stats worker -l info -E -Q control --concurrency 1 -Ofair --logfile=/logs/worker-default.log'
+    command: 'celery -A matrix_stats worker -n control -l info -E -Q control --concurrency 1 -Ofair --logfile=/logs/worker-default.log'
     depends_on:
       - redis
 
@@ -74,7 +74,7 @@ services:
       - 'logsdata:/logs'
       - 'storagedata:/storage'
       - 'sockets:/var/run/sockets'
-    command: 'celery -A matrix_stats worker -l info -E -Q service --concurrency 5 -Ofair --logfile=/logs/worker-service.log'
+    command: 'celery -A matrix_stats worker -n service -l info -E -Q service --concurrency 5 -Ofair --logfile=/logs/worker-service.log'
     depends_on:
       - redis
 
@@ -90,7 +90,7 @@ services:
       - 'logsdata:/logs'
       - 'storagedata:/storage'
       - 'sockets:/var/run/sockets'
-    command: 'celery -A matrix_stats worker -l info -E -Q processing --concurrency 1 -Ofair --logfile=/logs/worker-processing.log'
+    command: 'celery -A matrix_stats worker -n processing -l info -E -Q processing --concurrency 1 -Ofair --logfile=/logs/worker-processing.log'
     depends_on:
       - redis
 
@@ -106,7 +106,7 @@ services:
       - 'logsdata:/logs'
       - 'storagedata:/storage'
       - 'sockets:/var/run/sockets'
-    command: 'celery -A matrix_stats worker -P eventlet -c 500 -l info -E -Q sync -Ofair --logfile=/logs/worker-sync.log'
+    command: 'celery -A matrix_stats worker -n sync -P eventlet -c 500 -l info -E -Q sync -Ofair --logfile=/logs/worker-sync.log'
     depends_on:
       - redis
 

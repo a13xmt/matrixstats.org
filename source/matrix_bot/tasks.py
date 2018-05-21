@@ -192,7 +192,7 @@ def register_new_servers():
     mutex_exec_timeout=120,
     mutex_interval_key='interval',
     mutex_lock_keys=['server_id'])
-def sync(server_id, interval, mutex_uuid=None):
+def sync2(server_id, interval, mutex_uuid=None):
     """
     Synchronize last messages from the given server.
     Adjust sync interval, if changed.
@@ -208,6 +208,51 @@ def sync(server_id, interval, mutex_uuid=None):
         return result
     else:
         raise StopSync()
+
+@app.task
+def sync(server_id):
+    s = MatrixHomeserver(server_id)
+    try:
+        data = s.sync()
+    except (TimeoutError, ConnectionError, requests.exceptions.ConnectionError) as ex:
+        return "CONN_ERR"
+    process.apply_async((server_id, data))
+    if s.server.sync_allowed:
+        sync.apply_async((server_id,))
+
+@app.task
+def process(server_id, data):
+    s = MatrixHomeserver(server_id)
+    accept, decline = s.process_invites(data)
+    if accept:
+        accept_invites.apply_async((server_id, accept))
+    if decline:
+        decline_invites.apply_async((server_id, decline))
+    print(accept,decline)
+    s.process_messages(data)
+
+@app.task
+def accept_invites(server_id, rooms_list):
+    s = MatrixHomeserver(server_id)
+    for room in rooms_list:
+        s.join(room['id'], room['sender'])
+        if len(rooms_list) > 1:
+            sleep(10)
+    return rooms_list
+
+@app.task
+def decline_invites(server_id, rooms_list):
+    s = MatrixHomeserver(server_id)
+    for room in rooms_list:
+        s.leave(room['id'])
+        if len(rooms_list) > 1:
+            sleep(10)
+    return rooms_list
+
+@app.task
+def reply(server_id, room_id, message):
+    pass
+
 
 @app.task
 def sync_all():
@@ -293,25 +338,26 @@ def update_all_joined_rooms():
     for server in servers:
         update_joined_rooms.apply_async((server.id, ))
 
-@app.task
-def join_rooms(server_id, limit=100):
-    s = MatrixHomeserver(server_id)
-    rooms = s.get_rooms_to_join()[:limit]
-    joined = []
-    for room_id in rooms:
-        try:
-            joined.append(s.join(room_id))
-        except (ConnectionError, TimeoutError, requests.exceptions.ConnectionError):
-            pass
-        sleep(3)
-    result = {'joined': len(joined)}
-    return result
+# disabled in result of 15.05.18 incedent
+# @app.task
+# def join_rooms(server_id, limit=100):
+#     s = MatrixHomeserver(server_id)
+#     rooms = s.get_rooms_to_join()[:limit]
+#     joined = []
+#     for room_id in rooms:
+#         try:
+#             joined.append(s.join(room_id))
+#         except (ConnectionError, TimeoutError, requests.exceptions.ConnectionError):
+#             pass
+#         sleep(3)
+#     result = {'joined': len(joined)}
+#     return result
 
-@app.task
-def join_all_rooms():
-    servers = Server.objects.filter(status='r', sync_allowed=True)
-    for server in servers:
-        join_rooms.apply_async((server.id, ))
+# @app.task
+# def join_all_rooms():
+#     servers = Server.objects.filter(status='r', sync_allowed=True)
+#     for server in servers:
+#         join_rooms.apply_async((server.id, ))
 
 @app.task
 def compress_statistical_data():
