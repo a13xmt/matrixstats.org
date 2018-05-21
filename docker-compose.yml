@@ -78,6 +78,22 @@ services:
     depends_on:
       - redis
 
+  celery_worker_processing:
+    image: 'websource'
+    environment:
+      - C_FORCE_ROOT=true
+    env_file:
+      - ./source/matrix_stats/env/prod
+    volumes:
+      - 'mediadata:/media'
+      - 'staticdata:/static'
+      - 'logsdata:/logs'
+      - 'storagedata:/storage'
+      - 'sockets:/var/run/sockets'
+    command: 'celery -A matrix_stats worker -l info -E -Q processing --concurrency 1 -Ofair --logfile=/logs/worker-processing.log'
+    depends_on:
+      - redis
+
   celery_worker_sync:
     image: 'websource'
     environment:
@@ -90,7 +106,7 @@ services:
       - 'logsdata:/logs'
       - 'storagedata:/storage'
       - 'sockets:/var/run/sockets'
-    command: 'celery -A matrix_stats worker -P eventlet -c 50 -l info -E -Q sync -Ofair --logfile=/logs/worker-sync.log'
+    command: 'celery -A matrix_stats worker -P eventlet -c 500 -l info -E -Q sync -Ofair --logfile=/logs/worker-sync.log'
     depends_on:
       - redis
 
