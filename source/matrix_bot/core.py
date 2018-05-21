@@ -178,8 +178,8 @@ class MatrixHomeserver():
     def upload_filter(self):
         return upload_filter(self)
 
-    def join(self, room_id):
-        return join(self, room_id)
+    def join(self, room_id, invite_from=None):
+        return join(self, room_id, invite_from)
 
     def leave(self, room_id):
         return leave(self, room_id)

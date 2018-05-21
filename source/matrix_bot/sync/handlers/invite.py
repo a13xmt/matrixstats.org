@@ -11,8 +11,8 @@ def parse_invites(self, data):
         events = invites[room_id].get('invite_state', {}).get('events', [])
         events = {e['type']: e for e in events}
         meta = {
-            'room_id': room_id,
-            'room_name': events.get('m.room.name', {}).get('content', {}).get('name'),
+            'id': room_id,
+            'name': events.get('m.room.name', {}).get('content', {}).get('name'),
             'scope': events.get('m.room.join_rules', {}).get('content', {}).get('join_rule'),
             'ts': events.get('m.room.member', {}).get('origin_server_ts'),
             'sender': events.get('m.room.member', {}).get('sender'),
@@ -37,6 +37,5 @@ def process_invites(self, data):
         if re.match(pattern, invite['sender']):
             decline.append(invite)
         else:
-            print(invite['sender'])
             accept.append(invite)
     return accept, decline

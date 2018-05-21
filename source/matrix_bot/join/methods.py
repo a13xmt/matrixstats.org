@@ -24,7 +24,7 @@ def mark_as_joined(self, room_id, invite_from):
     self.rds.sadd(key, room_id)
     key = self._prefixed("room_join_log")
     data = ":".join([
-        int(datetime.now().timestamp()),
+        str(int(datetime.now().timestamp())),
         room_id,
         invite_from or ''
     ])
