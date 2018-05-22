@@ -32,7 +32,7 @@ def process_invites(self, data):
 
     accept = []
     decline = []
-    pattern = "(.*ChanServ.*|.*rizon.*|.*irc.*|.*snoonet.*)"
+    pattern = "(.*ChanServ.*|.*rizon.*|.*irc.*|.*snoonet.*|.*freenode.*)"
     for invite in invites:
         if re.match(pattern, invite['sender']):
             decline.append(invite)

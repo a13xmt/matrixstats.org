@@ -75,7 +75,7 @@ def leave(self, room_id, reason=None):
     self.rds.srem(key, room_id)
     key = self._prefixed("room_leave_log")
     data = ":".join([
-        int(datetime.now().timestamp()),
+        str(int(datetime.now().timestamp())),
         room_id,
         reason or ''
     ])
