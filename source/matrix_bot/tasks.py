@@ -207,10 +207,7 @@ def sync(server_id, mutex_uuid=None):
     if s.server.sync_allowed and s.server.status == 'r':
         data = s.sync()
         process.apply_async((server_id, data))
-        # FIXME move this to redis instead
-        s.server.last_sync_time = timezone.now()
-        s.server.save()
-        return len(data)
+        return "OK"
     else:
         raise StopSync()
 

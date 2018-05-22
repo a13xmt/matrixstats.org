@@ -420,6 +420,9 @@ def list_homeservers(request):
     for delta in [2,1,0]:
         dates.append(str((datetime.now() - timedelta(days=delta)).date()))
     for server in servers:
+        last_sync = rds.lindex("%s__sync_stats" % server.hostname, 0)
+        last_sync = datetime.fromtimestamp(int(last_sync.decode().split(":")[2])) if last_sync else None
+        server.last_sync = last_sync
         server.stats = {}
         total = server.data.get('total_rooms', 0)
         owned = server.data.get('owned_rooms', 0)

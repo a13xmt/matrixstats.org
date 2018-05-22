@@ -1,6 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
-from django.utils import timezone
+from datetime import datetime
 import re
 
 register = template.Library()
@@ -75,10 +75,10 @@ def display_server_sync_state(server):
 
 @register.filter
 def highlight_sync_delta(server):
-    date = server.last_sync_time
+    date = server.last_sync
     if not date:
         return "–"
-    now = timezone.now()
+    now = datetime.now()
     delta = (now - date).total_seconds()
     color_map = {
         600: "seagreen", # 10 minutes
