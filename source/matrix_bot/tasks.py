@@ -31,14 +31,12 @@ class RepeatableMutexTask(celery.Task):
     terminate_exceptions -- Set of exceptions that would finish the schedule after the task returns.
     mutex_max_exec_time -- Upper time limit to consider task as alive.
     mutex_lock_keys -- List of unique task arguments that forms an lock.
-    mutex_interval_key -- Name of the task argument that contains next interval (countdown) for task.
     """
 
     continue_exceptions = set()
     terminate_exceptions = set()
     mutex_max_exec_time = 60
     mutex_lock_keys = None
-    mutex_interval_key = None
     rds = rds_sync
 
     def get_key(self, args, kwargs):
@@ -58,20 +56,20 @@ class RepeatableMutexTask(celery.Task):
         key = "m:%s:%s" % (self.name, ":".join(accum))
         return key
 
-    def raise_or_lock(self, key, uuid, interval):
+    def raise_or_lock(self, key, uuid):
         """
         Lock the given redis key, making another instances
         of the task with the same arguments unable to run.
         If the lock already exists, exception raised.
         """
-        print("Attempting to lock for %ss key %s with uuid %s" % (interval, key, uuid))
+        print("Attempting to lock key %s with uuid %s" % (key, uuid))
         lock_uuid = self.rds.get(key)
         lock_uuid = lock_uuid.decode() if lock_uuid else None
         safe = not lock_uuid or lock_uuid == uuid
         if not safe:
             ttl = self.rds.ttl(key)
             raise AlreadyLocked(ttl)
-        self.rds.set(key, uuid, ex=self.mutex_max_exec_time+interval)
+        self.rds.set(key, uuid, ex=self.mutex_max_exec_time)
 
     def __call__(self, *args, **kwargs):
         """
@@ -89,40 +87,29 @@ class RepeatableMutexTask(celery.Task):
 
     def apply_async(self, args=None, kwargs=None, **options):
         """
-        Makes the current task run indefenetly with the given
-        time interval. The task can only be stopped in case of
-        critical exception, or special exit code from the worker.
+        Makes the current task run indefenetly. The task can only
+        be stopped in case of critical exception, or special exit
+        code from the worker.
         """
 
         if not self.mutex_lock_keys:
             raise RuntimeError("No mutex_lock_keys set for RepeatableMutexTask")
-        if not self.mutex_interval_key:
-            raise RuntimeError("No mutex_interval_key set for RepeatableMutexTask")
 
         args = args or {}
         kwargs = kwargs or {}
         call_args = getcallargs(self.run, *args, **kwargs)
-        interval = call_args.get(self.mutex_interval_key)
 
         uuid = kwargs.get('mutex_uuid')
         if not uuid:
             uuid = str(uuid4())
             kwargs['mutex_uuid'] = uuid
         key = self.get_key(args, kwargs)
-        self.raise_or_lock(key, uuid, interval)
+        self.raise_or_lock(key, uuid)
         return super(RepeatableMutexTask, self).apply_async(args, kwargs, **options)
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
         """
-        Reschedule the task in case it was completed successfully.
-
-        The task itself can return an object with mutex_interval_key field set,
-        to use the selected interval for the next call. For example, the task
-        may return {'interval': 10} if 'interval' was used as a mutex_interval_key,
-        and it would be used as the next countdown value.
-
-        This allows to control task interval in a runtime instead of relying
-        on a constant schedule.
+        Repreat the task in case it was completed successfully.
         """
         # If the task was finished with an error,
         # just exit without rescheduling
@@ -131,17 +118,12 @@ class RepeatableMutexTask(celery.Task):
             self.rds.delete(self.get_key(args,kwargs))
             return
 
-        # Get the next task interval from the task return value, or from the initial task args
         call_args = getcallargs(self.run, *args, **kwargs)
         if isinstance(call_args.get('self'), celery.Task):
             del call_args['self']
-        task_result_interval = retval.get(self.mutex_interval_key) if (type(retval) is dict) else None
-        interval = task_result_interval or call_args.get(self.mutex_interval_key)
-        # Inject task interval value in case it was changed
-        call_args[self.mutex_interval_key] = interval
 
-        # Now we can reschedule the task
-        self.apply_async(None, call_args, countdown=interval)
+        # Now we can repeat the task
+        self.apply_async(None, call_args)
 
 
 import time
@@ -168,7 +150,7 @@ def register(server_id):
         if not profile_data:
             profile_data = s.update_profile()
             result['profile_data'] = profile_data
-        sync.apply_async((s.server.id, s.server.sync_interval))
+        sync.apply_async((s.server.id,))
     return result
 
 @app.task
@@ -209,16 +191,28 @@ def sync2(server_id, interval, mutex_uuid=None):
     else:
         raise StopSync()
 
-@app.task
-def sync(server_id):
+@app.task(
+    base=RepeatableMutexTask,
+    continue_exceptions=(
+        DiscardTask,
+        TimeoutError,
+        ConnectionError,
+        requests.exceptions.ConnectionError,
+    ),
+    terminate_exceptions=(StopSync,),
+    mutex_max_exec_time=120,
+    mutex_lock_keys=['server_id'])
+def sync(server_id, mutex_uuid=None):
     s = MatrixHomeserver(server_id)
-    try:
+    if s.server.sync_allowed and s.server.status == 'r':
         data = s.sync()
-    except (TimeoutError, ConnectionError, requests.exceptions.ConnectionError) as ex:
-        return "CONN_ERR"
-    process.apply_async((server_id, data))
-    if s.server.sync_allowed:
-        sync.apply_async((server_id,))
+        process.apply_async((server_id, data))
+        # FIXME move this to redis instead
+        s.server.last_sync_time = timezone.now()
+        s.server.save()
+        return len(data)
+    else:
+        raise StopSync()
 
 @app.task
 def process(server_id, data):
@@ -228,8 +222,13 @@ def process(server_id, data):
         accept_invites.apply_async((server_id, accept))
     if decline:
         decline_invites.apply_async((server_id, decline))
-    print(accept,decline)
     s.process_messages(data)
+
+@app.task
+def process_awaiting_invites(server_id):
+    s = MatrixHomeserver(server_id)
+    data = s.sync_invites()
+    process.apply_async((server_id, data))
 
 @app.task
 def accept_invites(server_id, rooms_list):
@@ -259,7 +258,7 @@ def sync_all():
     servers = Server.objects.filter(status='r', sync_allowed=True)
     for server in servers:
         try:
-            sync.apply_async((server.id, server.sync_interval ))
+            sync.apply_async((server.id,))
         except AlreadyLocked:
             pass
 

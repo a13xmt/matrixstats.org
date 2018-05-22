@@ -77,6 +77,7 @@ app.conf.beat_schedule = {
 app.conf.task_routes = {
     'matrix_bot.tasks.sync': {'queue': 'sync'},
     'matrix_bot.tasks.join_rooms': {'queue': 'sync'},
+    'matrix_bot.tasks.process_awaiting_invites': {'queue': 'sync'},
     'matrix_bot.tasks.accept_invites': {'queue': 'sync'},
     'matrix_bot.tasks.decline_invites': {'queue': 'sync'},
     'matrix_bot.tasks.reply': {'queue': 'sync'},
