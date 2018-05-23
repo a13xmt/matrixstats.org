@@ -2,7 +2,7 @@ import requests
 import json
 import re
 from datetime import datetime, timedelta
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
@@ -395,7 +395,7 @@ def about(request):
     return render(request, 'room_stats/about.html')
 
 def bot(request):
-    return render(request, 'room_stats/bot.html')
+    return redirect("/faq/#bot")
 
 def faq(request):
     return render(request, 'room_stats/faq.html')
