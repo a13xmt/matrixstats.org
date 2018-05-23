@@ -48,12 +48,14 @@ def sync(self, filter_obj=None, since=None, timeout=30, fast_forward=False):
     if delta > timedelta(days=1):
         fast_forward = True
 
-    if fast_forward:
-        timeout = 0
-        filter_obj = {'room': {'rooms': [], 'state': {'limit': 1,}, 'timeline': {'limit': 1,}}}
-    filter_value = json.dumps(filter_obj) if filter_obj is not None else self.server.data.get('filter_id')
     cached_since = self._from_cache('next_batch')
     since = since or cached_since.decode() if cached_since else None
+
+    if fast_forward:
+        timeout = 0
+        since = None
+        filter_obj = {'room': {'rooms': [], 'state': {'limit': 1,}, 'timeline': {'limit': 1,}}}
+    filter_value = json.dumps(filter_obj) if filter_obj is not None else self.server.data.get('filter_id')
     qs = "timeout=%s&" % (timeout * 1000)
     if filter_value:
         qs += "filter=%s&" % filter_value
