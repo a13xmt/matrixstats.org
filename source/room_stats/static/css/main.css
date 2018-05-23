@@ -819,6 +819,33 @@ a.tag-cloud:hover {
 
 /*
  *
+ * FAQ
+ *
+ */
+.faq-toc {
+}
+
+.faq-toc > ul {
+  /* list-style-type: none; */
+  padding: 0;
+  margin: 0 0 0 25px;
+}
+
+.faq-toc > ul > li {
+  margin-left: 25px;
+}
+
+.faq-toc > ul > li > a {
+  text-decoration: none;
+}
+
+.faq-content > div {
+  margin-left: 25px;
+}
+
+
+/*
+ *
  * Utils
  *
  */

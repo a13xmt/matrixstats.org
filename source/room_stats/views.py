@@ -397,6 +397,9 @@ def about(request):
 def bot(request):
     return render(request, 'room_stats/bot.html')
 
+def faq(request):
+    return render(request, 'room_stats/faq.html')
+
 @login_required
 def set_server_recaptcha(request):
     data = json.loads(request.body)

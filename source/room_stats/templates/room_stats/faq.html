@@ -1,0 +1,121 @@
+{% extends 'room_stats/base.html' %}
+{% load staticfiles %}
+
+
+{% block additional_imports %}
+  <link rel="stylesheet" type="text/css" href="{% static 'vendor/datatables/datatables.min.css' %}"/>
+{% endblock %}
+
+{% block title %}
+   FAQ
+{% endblock %}
+
+{% block content %}
+  <h1>Frequently asked questions</h1>
+  <br>
+  <div class="faq-toc">
+    <ul>
+
+      <h2 id="toc-general">General</h2>
+      <li><a href="#what-is-matrixstats">What is matrixstats?</a></li>
+
+      <h2 id="toc-bot">Bot</h2>
+      <li><a href="#what-is-bot-used-for">What is the bot used for?</a></li>
+      <li><a href="#what-information-are-collected">What information are collected?</a></li>
+      <li><a href="#does-the-bot-steal-my-chats">Does the bot steal my chats?</a></li>
+      <li><a href="#why-does-the-bot-have-different-mxid">Why does the bot have different MXID for each homeserver?</a></li>
+      <li><a href="#does-the-bot-put-a-high-load">Does the bot put a high load on my server?</a></li>
+
+      <h2 id="toc-homeservers">Homeservers</h2>
+      <li><a href="#how-homeservers-are-discovered">How homeservers are discovered?</a></li>
+      <li><a href="#how-uptime-is-calculated">How uptime is calculated?</a></li>
+      <li><a href="#what-is-self-sufficient-rooms">What is self-sufficient rooms?</a></li>
+      <li><a href="#what-does-status-mean">What does status mean and how to change it?</a></li>
+      <li><a href="#what-registration-flows-are-supported">What registration flows are supported?</a></li>
+    </ul>
+
+  </div>
+  <hr />
+
+  <div class="faq-content">
+
+    <h1>General</h1>
+
+    <div id="what-is-matrixstats">
+      <h3>What is matrixstats?</h3>
+      <p>Matrixstats is a public catalog for matrix rooms. It provides a way to navigate rooms from public homeservers and to sort them in different ways.</p>
+    </div>
+
+    <h1 id="bot">Bot</h1>
+
+    <div id="what-is-bot-used-for">
+      <h3>What is bot used for?</h3>
+      <p>We use the bot to collect information about the servers. The information is used to fill the catalog and homeservers page. It includes public rooms information and statistics for server responses.</p>
+      <p>The bot can also be invited into specific room to provide an additional stats like number of unique senders and total messages for period for given room. This information is used to highlight active rooms and make them more visible to future visitors. This statistics can also be viewed on the room details page afterwards.</p>
+    </div>
+
+    <div id="what-information-are-collected">
+      <h3>What information are collected?</h3>
+      <p>For public homeservers we collect public rooms details, amount of successfull/failed requests, and information about last synchronization time.</p>
+      <p>For joined rooms we collect events ids and mxids, that are used to count and deduplicate events. The information is stored up for a month and then collapsed into the single numbers. We don't collect anything except event ids and mxids.</p>
+    </div>
+
+    <div id="does-the-bot-steal-my-chats">
+      <h3>Does the bot steal my chats?</h3>
+      <p>No. The bot doesn't store messages in any way. It's only used to collect statistical data.</p>
+      <p>While we can't guarantee this in any reliable way, we belive that project goals are transparent enough to not consider the bot as a threat. It's just a room member and it's behavior should be considered in the same way.</p>
+    </div>
+
+    <div id="why-does-the-bot-have-different-mxid">
+      <h3>Why does the bot have different MXID for each homeserver?</h3>
+      <p>We decided to split registrations between the homeservers for a few reasons. First, it allows to collect rooms from disconnected federations, i.e each server can be queried for its own rooms even if they not federated. Some rooms may be interesting for visitors, but unavailable in default ways. Second, it allows to query server as regular user and collect health statistics like number of successfull/failed sync requests. This information can be used to notify users about the server problems. And third, distributed systems can be more fail-tolerant in case of some fedetation-level issues.</p>
+    </div>
+
+    <div id="does-the-bot-put-a-high-load">
+      <h3>Does the bot put a high load on my server?</h3>
+      <p>The bot just mimics the client behavior, i.e awaits events from the server and requerying then. It works 24/7 however, while the other users may rejoin periodically. In terms of load it shouldn't be much more different than regular client.</p>
+      <p>We had limited performance issues in the past related to unoptimal sync logic. The things was changed greatly from this time, and it shouldn't be an issue anymore.</p>
+    </div>
+
+
+    <h1 id="homeservers">Homeservers</h1>
+
+    <div id="how-homeservers-are-discovered">
+      <h3>How homeservers are discovered?</h3>
+      <p>They added manually currently. While the first wave of the servers was collected automatically, we decided to not continue this practice. Some homeserver owners may not be interested in public catalogs even if the server are considered as opened for registrations.</p>
+    </div>
+
+    <div id="how-uptime-is-calculated">
+      <h3>How uptime is calculated?</h3>
+      <p>We log each request to the server and calculate the proportion between the successful and the failed ones. We consider each 200 http response as successful, and everything else as failed, along with connection errors.</p>
+    </div>
+
+    <div id="what-is-self-sufficient-rooms">
+      <h3>What is self-sufficient rooms?</h3>
+      <p>Self-sufficient rooms are rooms that were created on the given homeserver. They include given server hostname in their id.</p>
+    </div>
+
+    <div id="what-does-status-mean">
+      <h3>What does status mean and how to change it?</h3>
+      <p>Status describes current state of homeserver discovery. While "Public" and "Private" statuses are clear enough, the others may be missleading. Basically, the "Confirmed" status most likely means that the server is "Public" but registration is protected with captcha. And "Unknown" status most likely means that registration is open, but the bot can't register due to missing registration flow.</p>
+    </div>
+
+    <div id="what-registration-flows-are-supported">
+      <h3>What registration flows are supported?</h3>
+      <p>We are currently supporting only m.login.dummy flow for automated registration. For other flows, manual registration should be used in order to bypass captcha or email validation. It may take some time so. [ We also planning to add some sort of contact form that can be used for requesting manual registration. This section will be expanded later.]</p>
+    </div>
+
+    <!-- This area is reserved -->
+
+    <div id="">
+      <h3>
+      </h3>
+      <p>
+      </p>
+    </div>
+
+    <!-- Some space to enable toc-links for lower sections -->
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  </div>
+
+{% endblock %}
