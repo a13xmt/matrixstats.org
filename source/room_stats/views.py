@@ -518,6 +518,52 @@ def get_room_statistics(request, room_id):
         result[period]['ovdmx_messages'] = ovdmx_messages
     return JsonResponse(result)
 
+def get_homeserver_stats(request, homeserver):
+    server = Server.objects.filter(hostname=homeserver).first()
+    if not server:
+        raise Http404("There is no such server")
+    dates = []
+    for delta in [2,1,0]:
+        dates.append(str((datetime.now() - timedelta(days=delta)).date()))
+
+    date = dates[-1]
+    sts_key = "%s__sts__%s" % (server.hostname, date)
+    ets_key = "%s__ets__%s" % (server.hostname, date)
+
+    success_timestamps = [ int(t.decode()) for t in rds.smembers(sts_key) ]
+    error_timestamps = [ int(t.decode()) for t in rds.smembers(ets_key) ]
+
+    # Builds map with statistical values
+    PERIOD = 86400
+    CHUNK_SIZE = 600
+    chunks = int(PERIOD / CHUNK_SIZE)
+    stats = { i: {'s': 0, 'e': 0} for i in range(0, chunks)}
+
+    # Calculates corresponding chunk for given timestamp
+    assign_chunk = lambda ts: int( ts / CHUNK_SIZE )
+
+    # Calculates success ratio for requests
+    success_ratio = lambda sc,ec: None if sc == 0 else 100 if ec == 0 else (sc / (sc+ec) * 100)
+
+    for ts in success_timestamps:
+        chunk = assign_chunk(ts)
+        stats[chunk]['s'] += 1;
+
+    for ts in error_timestamps:
+        chunk = assign_chunk(ts)
+        stats[chunk]['e'] += 1;
+
+    for key, item in stats.items():
+        item['r'] = success_ratio(item['s'], item['e'])
+
+    result = {
+        'chunk_size': CHUNK_SIZE,
+        'data': stats
+    }
+
+    return JsonResponse(result)
+
+
 def api_get_rooms(request):
     rooms = Room.objects.prefetch_related('categories')
     result = [{
