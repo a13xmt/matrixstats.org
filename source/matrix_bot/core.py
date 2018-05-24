@@ -120,7 +120,7 @@ class MatrixHomeserver():
             self.rds.incr(success_counter_key)
             self.rds.expire(success_counter_key, 60 * 60 * 72)
             # add success timestamps to redis
-            success_timestamps_key = self._prefixed("stk__%s" % day)
+            success_timestamps_key = self._prefixed("sts__%s" % day)
             self.rds.sadd(success_timestamps_key, seconds_delta, 1)
             self.rds.expire(success_timestamps_key, 60 * 60 * 72)
 
@@ -139,7 +139,7 @@ class MatrixHomeserver():
             self.rds.rpush(err_details_key, err_details_data)
             self.rds.expire(err_details_key, 60 * 60 * 72)
             # add error timestamps to redis
-            error_timestamps_key = self._prefixed("etk__%s" % day)
+            error_timestamps_key = self._prefixed("ets__%s" % day)
             self.rds.sadd(error_timestamps_key, seconds_delta, 1)
             self.rds.expire(error_timestamps_key, 60 * 60 * 72)
 
