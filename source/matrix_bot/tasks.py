@@ -122,6 +122,10 @@ class RepeatableMutexTask(celery.Task):
         if isinstance(call_args.get('self'), celery.Task):
             del call_args['self']
 
+        # don't call the task immediately in case of errors
+        if type(retval) is dict and retval.get("result") == "RECOVERED":
+            sleep(30)
+
         # Now we can repeat the task
         self.apply_async(None, call_args)
 
