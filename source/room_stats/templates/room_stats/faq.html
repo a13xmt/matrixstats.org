@@ -42,7 +42,7 @@
 
     <div id="what-is-matrixstats">
       <h3>What is matrixstats?</h3>
-      <p>Matrixstats is a public catalog for matrix rooms. It provides a way to navigate rooms from public homeservers and to sort them in different ways.</p>
+      <p>Matrixstats is a public catalog for matrix rooms. It provides an easy way to navigate a lot rooms from public homeservers and sort them in different ways.</p>
     </div>
 
     <h2 id="bot">Bot</h2>
@@ -50,19 +50,19 @@
     <div id="what-is-bot-used-for">
       <h3>What is bot used for?</h3>
       <p>We use the bot to collect information about the servers. The information is used to fill the catalog and homeservers page. It includes public rooms information and statistics for server responses.</p>
-      <p>The bot can also be invited into specific room to provide an additional stats like number of unique senders and total messages for period for given room. This information is used to highlight active rooms and make them more visible to future visitors. This statistics can also be viewed on the room details page afterwards.</p>
+      <p>The bot can also be invited into specific room to provide an additional stats like number of unique senders and total messages for period for given room. This information is used to highlight active rooms and make them more visible for future visitors. The statistics can also be viewed on the room details page afterwards.</p>
     </div>
 
     <div id="what-information-are-collected">
       <h3>What information are collected?</h3>
-      <p>For public homeservers we collect public rooms details, amount of successfull/failed requests, and information about last synchronization time.</p>
+      <p>For public homeservers we collect public rooms details, amount of successfull/failed requests, and the information about last synchronization time.</p>
       <p>For joined rooms we collect events ids and mxids, that are used to count and deduplicate events. The information is stored up for a month and then collapsed into the single numbers. We don't collect anything except event ids and mxids.</p>
     </div>
 
     <div id="does-the-bot-steal-my-chats">
       <h3>Does the bot steal my chats?</h3>
-      <p>No. The bot doesn't store messages in any way. It's only used to collect statistical data.</p>
-      <p>While we can't guarantee this in any reliable way, we belive that project goals are transparent enough to not consider the bot as a threat. It's just a room member and it's behavior should be considered in the same way.</p>
+      <p>No. The bot doesn't store messages in any way. It's only used for collecting statistical data.</p>
+      <p>While we can't guarantee this in any reliable way, we belive that project goals are transparent enough to not consider the bot as a threat. It's also just a room member, so its behavior should be considered in the same way.</p>
     </div>
 
     <div id="why-does-the-bot-have-different-mxid">
@@ -72,7 +72,7 @@
 
     <div id="does-the-bot-put-a-high-load">
       <h3>Does the bot put a high load on my server?</h3>
-      <p>The bot just mimics the client behavior, i.e awaits events from the server and requerying then. It works 24/7 however, while the other users may rejoin periodically. In terms of load it shouldn't be much more different than regular client.</p>
+      <p>The bot just mimics client behavior, i.e awaits events from the server and retrying if neccessary. It works 24/7 however, while the other users may rejoin periodically. In terms of load it shouldn't differ too much from the regular client.</p>
       <p>We had limited performance issues in the past related to unoptimal sync logic. The things was changed greatly from this time, and it shouldn't be an issue anymore.</p>
     </div>
 
@@ -81,12 +81,12 @@
 
     <div id="how-homeservers-are-discovered">
       <h3>How homeservers are discovered?</h3>
-      <p>They added manually currently. While the first wave of the servers was collected automatically, we decided to not continue this practice. Some homeserver owners may not be interested in public catalogs even if the server are considered as opened for registrations.</p>
+      <p>Homeservers are added manually at moment. While the first wave of servers was collected automatically, we decided not to continue this practice anymore. The reason is that some homeserver owners may not be interested in public catalogs even if the server considered as public. This cannot be predicted reliably, so the manual discovery was chosen.</p>
     </div>
 
     <div id="how-uptime-is-calculated">
       <h3>How uptime is calculated?</h3>
-      <p>We log each request to the server and calculate the proportion between the successful and the failed ones. We consider each 200 http response as successful, and everything else as failed, along with connection errors.</p>
+      <p>We log each request to the server and calculate the ratio between successful and failed ones. We consider "200 OK" as successful response and everything else as failed one along with possible connection errors.</p>
     </div>
 
     <div id="what-is-self-sufficient-rooms">
@@ -96,12 +96,12 @@
 
     <div id="what-does-status-mean">
       <h3>What does status mean and how to change it?</h3>
-      <p>Status describes current state of homeserver discovery. While "Public" and "Private" statuses are clear enough, the others may be missleading. Basically, the "Confirmed" status most likely means that the server is "Public" but registration is protected with captcha. And "Unknown" status most likely means that registration is open, but the bot can't register due to missing registration flow.</p>
+      <p>Status describes the current state of the homeserver discovery. While "Public" and "Private" statuses are clear enough, the others may be missleading. Basically, the "Confirmed" status most likely means that the server is "Public" but registration is protected with captcha. And "Unknown" status most likely means that registration is open, but the bot can't register due to missing registration flow on the bot side.</p>
     </div>
 
     <div id="what-registration-flows-are-supported">
       <h3>What registration flows are supported?</h3>
-      <p>We are currently supporting only m.login.dummy flow for automated registration. For other flows, manual registration should be used in order to bypass captcha or email validation. It may take some time so. [ We also planning to add some sort of contact form that can be used for requesting manual registration. This section will be expanded later.]</p>
+      <p>We currently support only m.login.dummy flow for automated registrations. For other flows, manual registration should be used in order to bypass captcha or email validation. It may take some time then. [ We also planning to add some sort of contact form that can be used for requesting manual registration, but it's not ready yet. This section will be expanded later.]</p>
     </div>
 
     <!-- This area is reserved -->
