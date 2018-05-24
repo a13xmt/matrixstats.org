@@ -113,10 +113,17 @@ class MatrixHomeserver():
     def _log_request_meta(self, success=True, code=None, path=None):
         date = datetime.now()
         day = date.strftime("%Y-%m-%d")
+        seconds_delta = int((date - date.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds())
         if success:
+            # FIXME remove this later
             success_counter_key = self._prefixed("sc__%s" % day)
             self.rds.incr(success_counter_key)
             self.rds.expire(success_counter_key, 60 * 60 * 72)
+            # add success timestamps to redis
+            success_timestamps_key = self._prefixed("stk__%s" % day)
+            self.rds.sadd(success_timestamps_key, seconds_delta, 1)
+            self.rds.expire(success_timestamps_key, 60 * 60 * 72)
+
         else:
             err_counter_key = self._prefixed("ec__%s" % day)
             err_details_key = self._prefixed("ed__%s" % day)
@@ -125,11 +132,16 @@ class MatrixHomeserver():
                 path,
                 date.strftime("%H:%M:%S")
             )
+            # FIXME remove this later
             self.rds.incr(err_counter_key)
             self.rds.expire(err_counter_key, 60 * 60 * 72)
+            # FIXME until this point
             self.rds.rpush(err_details_key, err_details_data)
             self.rds.expire(err_details_key, 60 * 60 * 72)
-
+            # add error timestamps to redis
+            error_timestamps_key = self._prefixed("etk__%s" % day)
+            self.rds.sadd(error_timestamps_key, seconds_delta, 1)
+            self.rds.expire(error_timestamps_key, 60 * 60 * 72)
 
     def api_call(self, method, path, data=None, json=None, suffix=None, params=None, auth=True, headers=None, forward_error_codes=None):
         """ Performs an API call to homeserver.
