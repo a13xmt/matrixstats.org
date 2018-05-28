@@ -36,7 +36,7 @@ function render_healthmap(data, date, id){
     r = obj['r']
     if (r == null){ return "#a9a9a9" }
     else { return color_map[
-      Math.round(r / (color_map.length - 1))
+      Math.floor(r / (color_map.length - 1))
     ]}
   }
 
