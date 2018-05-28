@@ -53,9 +53,7 @@
       {{ server | display_server_status  }}
       {{ server | display_server_sync_state }}
       <td class='text-center'>{{ server | highlight_sync_delta }}</td>
-      {% for date,stat in server.stats.items %}
-        {{ stat | highlight_server_stats }}
-      {% endfor %}
+      {{ server | render_server_stats }}
     </tr>
     {% endfor %}
     </tbody>

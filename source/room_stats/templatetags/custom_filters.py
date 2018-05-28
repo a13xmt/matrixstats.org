@@ -100,8 +100,8 @@ def highlight_sync_delta(server):
     return mark_safe(html)
 
 
-@register.filter
-def highlight_server_stats(stat):
+# @register.filter
+def highlight_server_stats(server, stat):
     scn = stat.get('scn')
     if scn is None:
         return mark_safe("<td data-order='0' class='text-center'>–</td>")
@@ -115,12 +115,21 @@ def highlight_server_stats(stat):
     }
     closest = min(color_map, key=lambda x: abs(x-scn))
 
-    html = "<td data-order='%s' class='text-center' style='color: %s' title='Requests: %s successful, %s failed.'>%s</td>" % (
+    html = "<td data-order='%s' class='text-center'><a href='%s' style='color: %s' title='Requests: %s successful, %s failed.'>%s</a></td>" % (
         scn,
+        reverse('get-homeserver-details', args=[server.hostname]),
         color_map[closest],
         stat.get('sc'),
         stat.get('ec'),
         scp
     )
-    return mark_safe(html)
+    return html
+
+@register.filter
+def render_server_stats(server):
+    result = []
+    for date, stat in server.stats.items():
+        result.append(highlight_server_stats(server, stat))
+    return mark_safe("".join(result))
+
 
