@@ -537,7 +537,7 @@ def get_homeserver_stats(request, homeserver):
     PERIOD = 86400
     CHUNK_SIZE = 600
     chunks = int(PERIOD / CHUNK_SIZE)
-    stats = { i: {'s': 0, 'e': 0} for i in range(0, chunks)}
+    stats = [{'s': 0, 'e': 0} for i in range(0, chunks)]
 
     # Calculates corresponding chunk for given timestamp
     assign_chunk = lambda ts: int( ts / CHUNK_SIZE )
@@ -553,7 +553,7 @@ def get_homeserver_stats(request, homeserver):
         chunk = assign_chunk(ts)
         stats[chunk]['e'] += 1;
 
-    for key, item in stats.items():
+    for item in stats:
         item['r'] = success_ratio(item['s'], item['e'])
 
     result = {
@@ -562,6 +562,14 @@ def get_homeserver_stats(request, homeserver):
     }
 
     return JsonResponse(result)
+
+
+def get_homeserver_details(request, homeserver):
+    server = Server.objects.filter(hostname=homeserver).first()
+    if not server:
+        raise Http404("There is no such server")
+    context = {'server': server}
+    return render(request, "room_stats/homeserver_details.html", context)
 
 
 def api_get_rooms(request):

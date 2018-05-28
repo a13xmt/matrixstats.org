@@ -1,0 +1,19 @@
+
+{% extends 'room_stats/base.html' %}
+{% load staticfiles %}
+{% load custom_filters %}
+
+{% block additional_imports %}
+  <script src='{% static "vendor/d3.v5.min.js" %}'></script>
+  <script src='{% static "js/hstats.js" %}'></script>
+{% endblock %}
+
+{% block title %}
+  {{ server.hostname }} details
+{% endblock %}
+
+{% block content %}
+  <h1>{{ server.hostname }} homeserver details</h1>
+  <div id="healthmap"></div>
+
+{% endblock content %}

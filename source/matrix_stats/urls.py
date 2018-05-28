@@ -73,6 +73,7 @@ urlpatterns = [
     url(r'^bot/$', views.bot, name='bot'),
     url(r'^faq/$', views.faq, name='faq'),
     url(r'^homeserver/$', views.add_homeserver, name='add-homeserver'),
+    url(r'^homeserver/(?P<homeserver>[a-zA-Z0-9\.\:\_\-]+)/details/$', views.get_homeserver_details, name='get-homeserver-details'),
     url(r'^homeserver/(?P<homeserver>[a-zA-Z0-9\.\:\_\-]+)/stats/$', views.get_homeserver_stats, name='get-homeserver-stats'),
     url(r'^homeservers/$', views.list_homeservers, name='homeservers'),
 
