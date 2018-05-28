@@ -16,7 +16,7 @@ function handle_healthmap_data(data, status){
 }
 
 function render_healthmap(data, date, id){
-  border = 1.25
+  border = 1
   cols = 24
   rows = 6
   box_h =16
@@ -100,7 +100,7 @@ function render_healthmap(data, date, id){
   chart.append("text")
     .attr("font-size", "14")
     .attr("fill", "#333")
-    .attr("transform", "translate(" + (margin_left + 18)  + ",25)")
+    .attr("transform", "translate(" + (margin_left + 18)  + ",15)")
     .text(date)
 }
 
