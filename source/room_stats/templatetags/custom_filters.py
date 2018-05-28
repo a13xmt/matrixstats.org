@@ -1,4 +1,5 @@
 from django import template
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from datetime import datetime
 import re
@@ -92,7 +93,8 @@ def highlight_sync_delta(server):
         3600*72: "#dd776e", # 3 day
     }
     closest = min(color_map, key=lambda x: abs(x-delta))
-    html = "<span style='color: %s'>%s</span>" % (
+    html = "<a href='%s' style='color: %s'>%s</a>" % (
+        reverse("get-homeserver-details", args=[server.hostname]),
         color_map[closest] if server.sync_allowed else '#888',
         date.strftime("%d/%m/%Y %H:%M"))
     return mark_safe(html)
