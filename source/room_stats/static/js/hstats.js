@@ -1,6 +1,7 @@
 function fetch_healthmap_data(){
+  var hostname = $(".healthmap").data("hostname")
   $.ajax({
-    url: '/homeserver/matrix.org/stats/',
+    url: '/homeserver/' + hostname + '/stats/',
     success: handle_healthmap_data,
     error: function(error,text){ console.log(error,text)}
   })
