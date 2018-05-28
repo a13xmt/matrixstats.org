@@ -121,7 +121,7 @@ class MatrixHomeserver():
             self.rds.expire(success_counter_key, 60 * 60 * 72)
             # add success timestamps to redis
             success_timestamps_key = self._prefixed("sts__%s" % day)
-            self.rds.sadd(success_timestamps_key, seconds_delta, 1)
+            self.rds.sadd(success_timestamps_key, seconds_delta)
             self.rds.expire(success_timestamps_key, 60 * 60 * 72)
 
         else:
@@ -140,7 +140,7 @@ class MatrixHomeserver():
             self.rds.expire(err_details_key, 60 * 60 * 72)
             # add error timestamps to redis
             error_timestamps_key = self._prefixed("ets__%s" % day)
-            self.rds.sadd(error_timestamps_key, seconds_delta, 1)
+            self.rds.sadd(error_timestamps_key, seconds_delta)
             self.rds.expire(error_timestamps_key, 60 * 60 * 72)
 
     def api_call(self, method, path, data=None, json=None, suffix=None, params=None, auth=True, headers=None, forward_error_codes=None):
