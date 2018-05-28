@@ -846,6 +846,27 @@ a.tag-cloud:hover {
 
 /*
  *
+ * Healthmap
+ *
+ */
+.healthmap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.axis text {
+  fill: #444;
+}
+
+.axis line,
+.axis path{
+  stroke: #444;
+}
+
+
+/*
+ *
  * Utils
  *
  */

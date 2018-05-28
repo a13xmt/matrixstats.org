@@ -1,21 +1,28 @@
 function fetch_healthmap_data(){
   $.ajax({
     url: '/homeserver/matrix.org/stats/',
-    success: display_healthmap,
+    success: handle_healthmap_data,
     error: function(error,text){ console.log(error,text)}
   })
 }
 
-function display_healthmap(data,status){
-  data = data['data']
+function handle_healthmap_data(data, status){
+  var dates = Object.keys(data)
+  dates.forEach(function(date){
+    var id = "healthmap-" + date
+    $(".healthmap").append("<div id='" + id + "'></div>")
+    render_healthmap(data[date], date, id)
+  })
+}
 
+function render_healthmap(data, date, id){
   border = 1.25
   cols = 24
   rows = 6
   box_h =16
   box_w =16
   margin_top = 50;
-  margin_left = 100;
+  margin_left = 40;
   height = cols * (box_h + border) + margin_top
   width = rows * (box_w + border) + margin_left
 
@@ -41,7 +48,7 @@ function display_healthmap(data,status){
     .domain(d3.range(0, cols, 1))
     .range([0, (box_h + border) * cols])
 
-  chart = d3.select("#healthmap")
+  chart = d3.select("#" + id)
     .append('svg')
     .attr('class', 'chart')
     .attr('width', width)
@@ -90,13 +97,12 @@ function display_healthmap(data,status){
     .attr("fill", "#666666")
     .call(xAxis)
 
-  // chart.append("text")
-  //   .attr("text-anchor", "left")
-  //   .attr("transform", "translate(" + left_margin + ",15)")
-  //   .text("Hour")
-
+  chart.append("text")
+    .attr("font-size", "14")
+    .attr("fill", "#333")
+    .attr("transform", "translate(" + (margin_left + 18)  + ",25)")
+    .text(date)
 }
-
 
 
 $(document).ready(function(){
