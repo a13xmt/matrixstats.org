@@ -548,7 +548,7 @@ def get_homeserver_stats(request, homeserver):
         assign_chunk = lambda ts: int( ts / CHUNK_SIZE )
 
         # Calculates success ratio for requests
-        success_ratio = lambda sc,ec: None if sc == 0 else 100 if ec == 0 else (sc / (sc+ec) * 100)
+        success_ratio = lambda sc,ec: None if (sc == 0 and ec == 0) else 100 if ec == 0 else (sc / (sc+ec) * 100)
 
         for ts in success_timestamps:
             chunk = assign_chunk(ts)
