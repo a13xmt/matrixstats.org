@@ -485,6 +485,7 @@ def get_room_statistics(request, room_id):
         raise Http404("There is no such statistics")
 
     result = {}
+    missing_periods = 0
     for period in periods:
         stats = RoomStatisticalData.objects.raw(
             ROOM_STATISTICS_FOR_PERIOD_QUERY % {
@@ -494,8 +495,9 @@ def get_room_statistics(request, room_id):
             }
         )
         # Empty if just two date borders inside
-        if len(stats[:]) <= 2:
-            raise Http404("There is no such statistics")
+        stats_is_empty = len(stats[:]) <= 2
+        if stats_is_empty:
+            missing_periods += 1
         senders = [{
             'date': s.starts_at,
             'value': s.senders_total,
@@ -508,7 +510,7 @@ def get_room_statistics(request, room_id):
             'index': 'messages'
         } for s in stats]
 
-        ovdmx_messages = max([s.messages_total for s in stats]) * 1.1
+        ovdmx_messages = max([s.messages_total for s in stats]) * 1.1 if not stats_is_empty else 2
         ovdmx_senders = ovdmx_messages * 0.5
 
         result[period] = {}
@@ -516,6 +518,8 @@ def get_room_statistics(request, room_id):
         result[period]['messages'] = messages
         result[period]['ovdmx_senders'] = ovdmx_senders
         result[period]['ovdmx_messages'] = ovdmx_messages
+    if missing_periods >= 3:
+        raise Http404("There is no such statistics")
     return JsonResponse(result)
 
 def get_homeserver_stats(request, homeserver):
