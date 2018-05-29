@@ -28,7 +28,6 @@
       <h2 id="toc-homeservers">Homeservers</h2>
       <li><a href="#how-homeservers-are-discovered">How homeservers are discovered?</a></li>
       <li><a href="#how-uptime-is-calculated">How uptime is calculated?</a></li>
-      <li><a href="#what-is-self-sufficient-rooms">What is self-sufficient rooms?</a></li>
       <li><a href="#what-does-status-mean">What does status mean and how to change it?</a></li>
       <li><a href="#what-registration-flows-are-supported">What registration flows are supported?</a></li>
     </ul>
@@ -88,11 +87,6 @@
     <div id="how-uptime-is-calculated">
       <h3>How uptime is calculated?</h3>
       <p>We log each request to the server and calculate the ratio between successful and failed ones. We consider "200 OK" as successful response and everything else as failed one along with possible connection errors.</p>
-    </div>
-
-    <div id="what-is-self-sufficient-rooms">
-      <h3>What is self-sufficient rooms?</h3>
-      <p>Self-sufficient rooms are rooms that were created on the given homeserver. They include given server hostname in their id.</p>
     </div>
 
     <div id="what-does-status-mean">
