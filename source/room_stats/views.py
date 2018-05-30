@@ -365,7 +365,10 @@ def promote_room(request):
                 room=room,
                 description=description,
                 size=size,
-                active= True if len(description) == 0 else False,
+                # FIXME 30.05.18
+                # Premoderation disabled until the system would be reworked.
+                # It just lock promotions without reasons currently.
+                active=True, # if len(description) == 0 else False,
                 remove_at=datetime.now() + timedelta(days=7 if size == 's' else 14)
             )
             pr.save()
