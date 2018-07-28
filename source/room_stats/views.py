@@ -467,10 +467,12 @@ def add_homeserver(request):
     if request.recaptcha_is_valid:
         hostname = request.POST.get('hostname')
         hostname = re.sub('[^a-zA-Z0-9\.\:\_\-]+', '', hostname)
+        if not hostname:
+            return JsonResponse({'success': False, 'message': 'INCORRECT_HOSTNAME'})
         hs = Server.objects.filter(hostname=hostname).first()
         if hs:
             return JsonResponse({'success': False, 'message': 'ALREADY_EXISTS'})
-        hs = Server(hostname=hostname, sync_interval=600)
+        hs = Server(hostname=hostname, sync_enabled=False, sync_interval=600)
         hs.save()
         return JsonResponse({'success': True, 'message': 'CREATED'})
     else:
