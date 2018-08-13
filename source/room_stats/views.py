@@ -472,7 +472,7 @@ def add_homeserver(request):
         hs = Server.objects.filter(hostname=hostname).first()
         if hs:
             return JsonResponse({'success': False, 'message': 'ALREADY_EXISTS'})
-        hs = Server(hostname=hostname, sync_enabled=False, sync_interval=600)
+        hs = Server(hostname=hostname, sync_allowed=False, sync_interval=600)
         hs.save()
         return JsonResponse({'success': True, 'message': 'CREATED'})
     else:
