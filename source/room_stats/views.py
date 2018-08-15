@@ -110,6 +110,13 @@ def room_stats_view(request, room_id):
 
     return render(request, 'room_stats/room_details.html', context)
 
+def room_alias_view(request, room_alias):
+    room_alias = room_alias if room_alias.startswith("#") else "#%s" % room_alias
+    room = Room.objects.filter(aliases__contains=room_alias).first()
+    if not room:
+        raise Http404("There is no room with given alias, or given homeserver not known.")
+    return redirect("/room/%s" % room.id)
+
 def list_rooms_by_category(request, category_name):
     category = Category.objects.filter(name=category_name).first()
     if not category:
