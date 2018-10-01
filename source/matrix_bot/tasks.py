@@ -287,7 +287,7 @@ def save_statistics():
     return results
 
 
-@app.task(base=QueueOnce, once={'timeout': 120, 'unlock_before_run': True})
+@app.task(base=QueueOnce, task_time_limit=180, once={'timeout': 120, 'unlock_before_run': True})
 def get_rooms(server_id):
     s = MatrixHomeserver(server_id)
     try:
