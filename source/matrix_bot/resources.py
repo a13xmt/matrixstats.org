@@ -22,4 +22,5 @@ else:
     redis_settings['port'] = os.environ.get("REDIS_PORT")
 
 rds = redis.StrictRedis(db=0, **redis_settings)
+rds_alias = redis.StrictRedis(db=1, **redis_settings)
 rds_sync = redis.StrictRedis(db=4, socket_timeout=3600, **redis_settings)

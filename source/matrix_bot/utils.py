@@ -15,3 +15,14 @@ def serialize(ex):
 def critical(msg):
     # FIXME send notification
     print(msg)
+
+def rds_scan_keys(rds, glob):
+    """ Search redis keys by pattern """
+    n = 0
+    keys = []
+    while(True):
+        n, k = rds.scan(n, match=glob)
+        keys.extend(k)
+        if n == 0:
+            break
+    return keys

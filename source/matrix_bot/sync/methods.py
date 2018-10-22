@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from .handlers import parse_invites
 
 STATS_LIMIT_PER_SERVER = 120
+ROOM_ALIASES_TTL = 3 * 24 * 60 * 60 # 3 days
 
 def encode(self, delta, sync_started, sync_ended):
     data = [
@@ -108,6 +109,23 @@ def get_rooms(self, timeout=60, chunk_size=2000, limit=None):
             raise TimeoutError()
     return rooms
 
+def add_room_aliases(rds, room_id, aliases):
+    for alias in aliases:
+        # alias -> room_id relation
+        rds.set(alias, room_id, ex=ROOM_ALIASES_TTL)
+        # room_id -> alias relation
+        key = "%s-%s" % (room_id, alias)
+        rds.set(key, alias, ex=ROOM_ALIASES_TTL)
+    return len(aliases)
+
+def update_rooms_aliases(self, rooms):
+    transaction = self.rds_alias.pipeline()
+    aliases_total = 0
+    for room in rooms:
+        aliases_total += add_room_aliases(transaction, room.get('room_id'), room.get('aliases', []))
+    transaction.execute()
+    return aliases_total
+
 from django_bulk_update.helper import bulk_update
 from django.db import transaction
 from room_stats.models import Room, DailyMembers, Server
@@ -116,6 +134,10 @@ def save_rooms(self, rooms):
 
     obtained = len(rooms)
     print("Rooms obtained: %s" % obtained)
+
+    # Update rooms aliases
+    total_aliases = update_rooms_aliases(self, rooms)
+
     # Exclude known primary homeservers
     # They would update their rooms individually
     exclude_servers = [
@@ -186,7 +208,6 @@ def save_rooms(self, rooms):
         new_rooms.append(room)
     Room.objects.bulk_create(new_rooms)
 
-
     # Update room members
     rooms = Room.objects.filter(id__in=room_ids)
 
@@ -209,12 +230,14 @@ def save_rooms(self, rooms):
 
     self.server.update_data({
         'total_rooms': obtained,
-        'owned_rooms': covered
+        'owned_rooms': covered,
+        'total_aliases': total_aliases
     })
 
     result = {
         'obtained': obtained,
         'covered': covered,
-        'new': new
+        'new': new,
+        'aliases': total_aliases
     }
     return result

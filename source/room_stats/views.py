@@ -13,6 +13,7 @@ from django.http import Http404
 from random import shuffle
 
 from matrix_bot.tasks import register
+from matrix_bot.resources import rds, rds_alias
 from room_stats.models import Room, DailyMembers, Tag, Category, PromotionRequest, Server, RoomStatisticalData, get_period_starting_date
 from .rawsql import NEW_ROOMS_FOR_LAST_N_DAYS_QUERY, ROOM_STATISTICS_FOR_PERIOD_QUERY
 
@@ -112,7 +113,9 @@ def room_stats_view(request, room_id):
 
 def room_alias_view(request, room_alias):
     room_alias = room_alias if room_alias.startswith("#") else "#%s" % room_alias
-    room = Room.objects.filter(aliases__contains=room_alias).first()
+    room_id = rds_alias.get(room_alias)
+    room_id = room_id.decode() if room_id else None
+    room = Room.objects.filter(id=room_id).first()
     if not room:
         raise Http404("There is no room with given alias, or given homeserver not known.")
     return redirect("/room/%s" % room.id)
@@ -424,8 +427,6 @@ def set_server_recaptcha(request):
     register.apply_async((server_id,))
     return JsonResponse({'success': True})
 
-
-from matrix_bot.resources import rds
 def list_homeservers(request):
     servers = Server.objects.all().order_by('id')
 

@@ -40,7 +40,7 @@
     </div>
 
     <meta itemprop="alternateName" value="{{ room.id }}" />
-    <div class="room-details-aliases" itemprop="alternateName">{{ room.aliases }}</div>
+    <div class="room-details-aliases" itemprop="alternateName">{{ room.get_aliases }}</div>
 
     {% with room.get_primary_server as primary_homeserver %}
       <div class="room-federation-list">

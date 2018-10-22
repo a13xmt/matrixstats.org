@@ -9,12 +9,12 @@ django.setup()
 
 from matrix_bot.utils import serialize, critical, prettify
 from room_stats.models import Server
-from matrix_bot.resources import rs, rds
+from matrix_bot.resources import rs, rds, rds_alias
 
 from matrix_bot.login import login
 from matrix_bot.registration import continue_registration, update_profile, upload_filter, verify_existence, set_displayname
 from matrix_bot.join import join, leave, get_banned_rooms, get_joined_rooms, fetch_joined_rooms, update_banned_rooms, get_rooms_to_join
-from matrix_bot.sync import sync, get_rooms, save_rooms, get_sync_stats, sync_invites, process_invites
+from matrix_bot.sync import sync, get_rooms, save_rooms, get_sync_stats, sync_invites, process_invites, update_rooms_aliases
 from matrix_bot.statistics import get_unique_messages, get_unique_senders, get_active_rooms, save_daily_stats
 from matrix_bot.reply import reply, mark_as_read
 from matrix_bot.messages import process_messages
@@ -34,6 +34,7 @@ class MatrixHomeserver():
         self.server = Server.objects.get(pk=server_id)
         self.rs = rs
         self.rds = rds
+        self.rds_alias = rds_alias
         self._in_transaction = False
 
     def _prefixed(self, key):
@@ -234,6 +235,9 @@ class MatrixHomeserver():
 
     def save_rooms(self, rooms):
         return save_rooms(self, rooms)
+
+    def update_rooms_aliases(self, rooms):
+        return update_rooms_aliases(self, rooms)
 
     def joined_rooms(self):
         r = self.api_call("GET", "/joined_rooms")

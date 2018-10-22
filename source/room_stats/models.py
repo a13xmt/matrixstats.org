@@ -9,6 +9,9 @@ from django.db import models
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
+from matrix_bot.resources import rds_alias
+from matrix_bot.utils import rds_scan_keys
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to='category/', blank=True, null=True)
@@ -56,6 +59,14 @@ class Room(models.Model):
             tw = t[0:max_len].split(' ')
             return ' '.join(tw[:-1]) if len(tw) > 1 else tw[0]
             # return ' '.join(self.name[:max_len+1].split(' ')[0:-1]) + '...'
+
+    def get_aliases(self):
+        """ Obtain all known room aliases from redis """
+        keys = rds_scan_keys(rds_alias, "%s*" % (self.id))
+        if not keys:
+            return ""
+        aliases = [a.decode() for a in rds_alias.mget(keys)]
+        return ", ".join(aliases)
 
     def get_alias(self):
         return self.aliases.split(', ')[0]
