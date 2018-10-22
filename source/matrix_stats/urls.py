@@ -33,7 +33,7 @@ urlpatterns = [
     url(r'^room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)$',
         views.room_stats_view, name='room-stats',
     ),
-    url(r'^alias/(?P<room_alias>[a-zA-Z0-9\.\:\_\-\#\%]+)$',
+    url(r'^alias/(?P<room_alias>[a-zA-Z0-9\.\:\_\-\#\%\=]+)$',
         views.room_alias_view, name='room-alias',
     ),
     url(r'^$', views.list_rooms),
