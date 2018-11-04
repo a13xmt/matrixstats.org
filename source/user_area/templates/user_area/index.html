@@ -1,0 +1,10 @@
+Index page
+
+{% if user.is_authenticated %}
+  <br>
+  <br>
+  {{ user.email }}
+  <br>
+  <a href="{% url 'uarea:logout' %}">Logout</a>
+{% endif %}
+

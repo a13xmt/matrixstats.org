@@ -15,11 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.urls import path, include
 
 from room_stats import views
 
 urlpatterns = [
+    path('uarea/', include('user_area.urls', namespace='uarea')),
+
     url(r'^admin/', admin.site.urls),
+    url(r'^admin/defender/', include('defender.urls')),
     url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/setcategory/(?P<category_id>[0-9]*)', views.set_room_category),
     url(r'^admin/room/(?P<room_id>\![a-zA-Z0-9\.\:\_\-]*)/setcategories/', views.set_room_categories),
     url(r'^admin/update_server_recaptcha/', views.set_server_recaptcha),

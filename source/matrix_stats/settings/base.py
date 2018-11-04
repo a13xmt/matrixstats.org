@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'defender',
     'room_stats',
+    'user_area',
     'raven.contrib.django.raven_compat',
 ]
 
@@ -49,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'defender.middleware.FailedLoginMiddleware',
 ]
 
 ROOT_URLCONF = 'matrix_stats.urls'
@@ -127,19 +130,29 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 
 LOGIN_URL = '/uarea/login'
+LOGOUT_REDIRECT_URL = '/uarea/login'
+LOGIN_REDIRECT_URL = '/uarea/'
 
 MEDIA_ROOT = os.environ.get('APP_MEDIA_DIR')
 
 
 RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "MatrixStats <robot@matrixstats.org>"
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.environ.get('EMAIL_HOST')
+# EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+
+DEFENDER_BEHIND_REVERSE_PROXY = True
+DEFENDER_REDIS_URL = "redis://%s:%s/%s"  % (
+    os.environ.get("REDIS_HOST"),
+    os.environ.get("REDIS_PORT"),
+    3
+)
 
 
 RAVEN_ENVIRONMENT = os.environ.get('DJANGO_SETTINGS_MODULE').split('.')[-1]

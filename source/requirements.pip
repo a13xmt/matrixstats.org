@@ -28,3 +28,4 @@ six==1.11.0
 tornado==5.0.2
 urllib3==1.22
 vine==1.1.4
+django-defender=0.5.5
