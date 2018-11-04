@@ -10,6 +10,10 @@ body {
   justify-content: center;
 }
 
+.asteriskField {
+  display: none;
+}
+
 @media only screen and (min-width: 960px) {
   .col-form-label {
     text-align: right;
@@ -18,4 +22,14 @@ body {
   h1 {
     text-align: center;
   }
+}
+
+h1 {
+  font-size: 32px;
+}
+
+.login-caption {
+  font-size: 0.8em;
+  text-align: left;
+  margin-top: 10px;
 }
