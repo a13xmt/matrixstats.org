@@ -19,9 +19,17 @@
   </head>
 
   <body>
+    <div class="wrapper">
     <div class="container">
-      {% block content %}
-      {% endblock content %}
+      <div class="row justify-content-center">
+        <div class="col-6">
+          <h1 class="mt-2">{% block header %}{% endblock %}</h1>
+          <hr class="mt-0 mb-4">
+          {% block content %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
     </div>
   </body>
 

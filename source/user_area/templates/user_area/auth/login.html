@@ -1,5 +1,13 @@
 {% extends "user_area/auth/base.html" %}
+{% load crispy_forms_tags %}
 
+{% block header %}Login to MatrixStats{% endblock %}
+
+{% block content %}
+{% crispy form %}
+{% endblock content %}
+
+{% comment %}
 {% block content %}
 
 {% if form.errors %}
@@ -35,3 +43,5 @@
 <p><a href="{% url 'uarea:password_reset' %}">Lost password?</a></p>
 
 {% endblock %}
+
+{% endcomment %}

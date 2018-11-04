@@ -1,0 +1,7 @@
+{{ activation_key }}
+
+{{ expiration_days }}
+
+{{ user.name }}
+
+{{ scheme }}://{{ site }}{% url 'uarea:activate' activation_key %}

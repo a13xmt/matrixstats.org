@@ -1,0 +1,21 @@
+html,
+body {
+  height: 100%;
+}
+
+.wrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media only screen and (min-width: 960px) {
+  .col-form-label {
+    text-align: right;
+  }
+
+  h1 {
+    text-align: center;
+  }
+}

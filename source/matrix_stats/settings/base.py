@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'defender',
+    'crispy_forms',
     'room_stats',
     'user_area',
     'raven.contrib.django.raven_compat',
@@ -132,9 +133,11 @@ STATIC_ROOT = '/static/'
 LOGIN_URL = '/uarea/login'
 LOGOUT_REDIRECT_URL = '/uarea/login'
 LOGIN_REDIRECT_URL = '/uarea/'
+ACCOUNT_ACTIVATION_DAYS = 7
 
 MEDIA_ROOT = os.environ.get('APP_MEDIA_DIR')
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
 

@@ -1,5 +1,7 @@
-from django.urls import path, reverse_lazy
+from django.urls import path, include, reverse_lazy
+from django.conf.urls import url
 from django.contrib.auth import views as auth_views
+from django.views.generic.base import TemplateView
 
 from . import views
 
@@ -9,7 +11,7 @@ urlpatterns = [
 
     path('', views.index, name='index'),
 
-    path('login/', auth_views.LoginView.as_view(template_name='user_area/auth/login.html'), name="login"),
+    path('login/', views.LoginView.as_view()),
 
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
 
@@ -40,4 +42,44 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='user_area/auth/password_reset_complete.html'
     ), name="password_reset_complete"),
+
+    path('register/', views.RegistrationView.as_view(), name='register'),
+    path('register/complete/', TemplateView.as_view(
+        template_name='user_area/reg/registration_complete.html'),
+        name='registration_complete'
+    ),
+    url(r'^activate/complete/$', TemplateView.as_view(
+        template_name='user_area/reg/activation_complete.html'),
+        name='activation_complete'),
+    url(r'^activate/(?P<activation_key>[-:\w]+)/$', views.ActivationView.as_view(), name='activate'),
+
+
+
+
 ]
+
+# urlpatterns = [
+#     url(r'^activate/complete/$',
+#         TemplateView.as_view(
+#             template_name='django_registration/activation_complete.html'
+#         ),
+#         name='django_registration_activation_complete'),
+#     # The activation key can make use of any character from the
+#     # URL-safe base64 alphabet, plus the colon as a separator.
+#     url(r'^activate/(?P<activation_key>[-:\w]+)/$',
+#         views.ActivationView.as_view(),
+#         name='django_registration_activate'),
+#     url(r'^register/$',
+#         views.RegistrationView.as_view(),
+#         name='django_registration_register'),
+#     url(r'^register/complete/$',
+#         TemplateView.as_view(
+#             template_name='django_registration/registration_complete.html'
+#         ),
+#         name='django_registration_complete'),
+#     url(r'^register/closed/$',
+#         TemplateView.as_view(
+#             template_name='django_registration/registration_closed.html'
+#         ),
+#         name='django_registration_disallowed'),
+# ]
