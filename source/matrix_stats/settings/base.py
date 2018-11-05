@@ -140,6 +140,8 @@ MEDIA_ROOT = os.environ.get('APP_MEDIA_DIR')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT')
+
 RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
 
 DEFAULT_FROM_EMAIL = "MatrixStats <robot@matrixstats.org>"

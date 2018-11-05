@@ -71,6 +71,10 @@ app.conf.beat_schedule = {
     'delete-inactive-rooms-1d': {
         'task': 'matrix_bot.tasks.delete_inactive_rooms',
         'schedule': crontab(hour=4, minute=18)
+    },
+    'verify-bound-servers': {
+        'task':  'user_area.tasks.verify_bound_servers',
+        'schedule': crontab(hour='*/1', minute='*/15'),
     }
 }
 
@@ -93,8 +97,10 @@ app.conf.task_routes = {
     'matrix_bot.tasks.register_new_servers': {'queue': 'control'},
     'matrix_bot.tasks.get_all_rooms': {'queue': 'control'},
     'matrix_bot.tasks.update_all_joined_rooms': {'queue': 'control'},
-    'matrix_bot.tasks.join_all_rooms': {'queue': 'control'}
+    'matrix_bot.tasks.join_all_rooms': {'queue': 'control'},
+
+    'user_area.tasks.verify_bound_servers': {'queue': 'sync'},
 }
 
-app.autodiscover_tasks(['matrix_bot.tasks', 'djcelery_email'])
+app.autodiscover_tasks(['matrix_bot.tasks', 'user_area.tasks', 'djcelery_email'])
 
