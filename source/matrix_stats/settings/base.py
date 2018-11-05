@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'defender',
     'crispy_forms',
+    'djcelery_email',
     'room_stats',
     'user_area',
     'raven.contrib.django.raven_compat',

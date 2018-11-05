@@ -96,5 +96,5 @@ app.conf.task_routes = {
     'matrix_bot.tasks.join_all_rooms': {'queue': 'control'}
 }
 
-app.autodiscover_tasks(['matrix_bot.tasks'])
+app.autodiscover_tasks(['matrix_bot.tasks', 'djcelery_email'])
 
