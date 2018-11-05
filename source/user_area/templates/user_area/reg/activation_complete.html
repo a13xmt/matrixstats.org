@@ -1,1 +1,10 @@
-Activation complete
+{% extends "user_area/auth/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+<p>Registration was successfully completed</p>
+<br>
+<a href="{% url 'uarea:index' %}">Main page</a>
+{% endblock %}
