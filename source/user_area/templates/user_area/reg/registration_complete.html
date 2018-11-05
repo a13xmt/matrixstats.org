@@ -1,1 +1,8 @@
-Registration complete
+{% extends "user_area/auth/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block header %}MatrixStats registration{% endblock %}
+
+{% block content %}
+  Email was sent to given address.
+{% endblock %}

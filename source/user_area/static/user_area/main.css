@@ -10,6 +10,11 @@ body {
   justify-content: center;
 }
 
+.frame {
+  padding: 60px 30px;
+  margin-bottom: 15%;
+}
+
 .asteriskField {
   display: none;
 }

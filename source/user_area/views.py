@@ -22,5 +22,23 @@ class ActivationView(act_views.ActivationView):
     success_url = reverse_lazy('uarea:activation_complete')
 
 class LoginView(auth_views.LoginView):
-    template_name='user_area/auth/login.html'
     form_class = forms.AuthenticationForm
+    template_name = 'user_area/auth/login.html'
+
+class PasswordResetView(auth_views.PasswordResetView):
+    form_class = forms.PasswordResetForm
+    template_name = 'user_area/auth/password_reset.html'
+    email_template_name = 'user_area/auth/email/password_reset_body.html'
+    subject_template_name = "user_area/auth/email/password_reset_subject.txt"
+    success_url = reverse_lazy('uarea:password_reset_done')
+
+class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    form_class = forms.SetPasswordForm
+    template_name = 'user_area/auth/password_reset_confirm.html'
+    success_url = reverse_lazy('uarea:password_reset_complete')
+
+class PasswordChangeView(auth_views.PasswordChangeView):
+    form_class = forms.PasswordChangeForm
+    template_name = 'user_area/auth/password_change.html'
+    success_url = reverse_lazy('uarea:password_change_done')
+
