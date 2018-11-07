@@ -109,3 +109,15 @@ class PasswordChangeForm(auth_forms.PasswordChangeForm):
 
         for fieldname in ['old_password', 'new_password1', 'new_password2']:
             self.fields[fieldname].help_text = None
+
+
+class AddHomeserverForm(forms.Form):
+    hostname = forms.CharField(
+        label='Hostname',
+        max_length=100,
+        help_text="example.com"
+    )
+
+class EditHomeserverForm(forms.Form):
+    pass
+

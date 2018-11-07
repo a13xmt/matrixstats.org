@@ -43,32 +43,11 @@ urlpatterns = [
     url(r'^activate/(?P<activation_key>[-:\w]+)/$', views.ActivationView.as_view(), name='activate'),
 
 
+    path('homeservers/', views.HomeserverList.as_view(), name="homeservers"),
+    path('homeservers/add/', views.AddHomeserver.as_view(), name="add_homeserver"),
+    path('homeservers/<pk>/', views.HomeserverDetail.as_view(), name="homeserver_detail"),
+    path('homeservers/<pk>/edit', views.EditHomeserver.as_view(), name="edit_homeserver"),
+    path('homeservers/<pk>/delete', views.DeleteHomeserver.as_view(), name="delete_homeserver"),
 
 
 ]
-
-# urlpatterns = [
-#     url(r'^activate/complete/$',
-#         TemplateView.as_view(
-#             template_name='django_registration/activation_complete.html'
-#         ),
-#         name='django_registration_activation_complete'),
-#     # The activation key can make use of any character from the
-#     # URL-safe base64 alphabet, plus the colon as a separator.
-#     url(r'^activate/(?P<activation_key>[-:\w]+)/$',
-#         views.ActivationView.as_view(),
-#         name='django_registration_activate'),
-#     url(r'^register/$',
-#         views.RegistrationView.as_view(),
-#         name='django_registration_register'),
-#     url(r'^register/complete/$',
-#         TemplateView.as_view(
-#             template_name='django_registration/registration_complete.html'
-#         ),
-#         name='django_registration_complete'),
-#     url(r'^register/closed/$',
-#         TemplateView.as_view(
-#             template_name='django_registration/registration_closed.html'
-#         ),
-#         name='django_registration_disallowed'),
-# ]
