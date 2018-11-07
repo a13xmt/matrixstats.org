@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Count
 from django.db.models import Case, When
 from django.conf import settings
@@ -74,7 +75,7 @@ def room_stats_view(request, room_id):
     }
 
     # category edit inline (admin)
-    if request.user.id:
+    if request.user.is_staff:
         context['categories'] = Category.objects.order_by('name')
         context['admin'] = True
 
@@ -256,7 +257,7 @@ def list_public_rooms(request):
     }
     return render_rooms_paginated(request, rooms, context)
 
-@login_required
+@staff_member_required
 def set_room_category(request, room_id, category_id):
     room = Room.objects.get(id=room_id)
     category = None if int(category_id) == 0 else Category.objects.get(id=category_id)
@@ -264,7 +265,7 @@ def set_room_category(request, room_id, category_id):
     room.save()
     return JsonResponse({'status': 'ok'})
 
-@login_required
+@staff_member_required
 def set_room_categories(request, room_id):
     data = json.loads(request.body)
     category_ids = [int(val) for val in data]
@@ -413,7 +414,7 @@ def bot(request):
 def faq(request):
     return render(request, 'room_stats/faq.html')
 
-@login_required
+@staff_member_required
 def set_server_recaptcha(request):
     data = json.loads(request.body)
     server_id = data.get('server_id', None)
