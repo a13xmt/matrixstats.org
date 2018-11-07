@@ -129,8 +129,10 @@ class Server(models.Model):
     last_response_data = JSONField(default=dict, blank=True, null=True)
     last_response_code = models.IntegerField(blank=True, null=True)
     last_sync_time = models.DateTimeField(default=None, blank=True, null=True)
-    sync_allowed = models.BooleanField(default=True)
-    sync_interval = models.IntegerField(default=60)
+    sync_allowed = models.BooleanField(default=False)
+    sync_interval = models.IntegerField(default=600)
+    first_seen_at = models.DateTimeField(default=None, blank=True, null=True)
+    last_seen_at = models.DateTimeField(default=None, blank=True, null=True)
 
     def api(self, path="", suffix="/_matrix/client/r0"):
         result = "https://%s%s%s" % (self.hostname, suffix, path)
