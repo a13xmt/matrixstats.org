@@ -1,1 +1,1 @@
-from .verification import verify_bound_servers
+from .verification import verify_bound_servers, verify_server_presence

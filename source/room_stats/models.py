@@ -134,6 +134,9 @@ class Server(models.Model):
     first_seen_at = models.DateTimeField(default=None, blank=True, null=True)
     last_seen_at = models.DateTimeField(default=None, blank=True, null=True)
 
+    def is_active(self):
+        return (self.last_seen_at + timedelta(days=3) > timezone.now()) if self.last_seen_at else False
+
     def api(self, path="", suffix="/_matrix/client/r0"):
         result = "https://%s%s%s" % (self.hostname, suffix, path)
         return result

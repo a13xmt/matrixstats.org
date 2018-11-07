@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.db.models import Q
 import dns.resolver
 from matrix_stats.celery import app
+from matrix_bot.probes import get_server_version
+from room_stats.models import Server
 from user_area.models import BoundServer
 
 VERIFICATION_EXPIRES_IN = timedelta(days=7)
@@ -38,13 +40,22 @@ def verify_txt_record(server):
                   timezone.now(), domain, code.decode(), str(server.verification_code)))
 
 
-@app.task
+@app.task(time_limit=30)
 def verify_bound_servers():
     # Exclude servers that was recently updated
-    # or those who belows to deactivated users
+    # or those who belongs to deactivated users
     servers = BoundServer.objects.exclude(
         Q(is_verified=True) & Q(last_verified_at__gte=(timezone.now() - VERIFICATION_REQUIRED_IN)),
     ).exclude(user__is_active=False)
     for server in servers:
         verify_txt_record(server)
 
+@app.task(time_limit=30)
+def verify_server_presence(server_id):
+    server = Server.objects.get(pk=server_id)
+    versions = get_server_version(server.hostname)
+    if versions:
+        now = timezone.now()
+        server.first_seen_at = server.first_seen_at or now
+        server.last_seen_at = now
+        server.save(update_fields=['first_seen_at', 'last_seen_at'])
