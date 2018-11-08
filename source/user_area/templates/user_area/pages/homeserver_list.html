@@ -1,0 +1,32 @@
+{% extends 'user_area/base.html' %}
+
+{% block header %}Homeservers{% endblock %}
+
+{% block content %}
+
+<div class="col-lg-12">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <a class="btn btn-primary" href="{% url 'uarea:add_homeserver' %}"><i class="fa fa-plus"></i> Add homeserver</a>
+      <br><br>
+    </div>
+  </div>
+
+  <div class="row">
+    {% for s in servers %}
+      {% include 'user_area/widgets/homeserver_item.html' %}
+    {% empty %}
+      <div class="col-lg-6">
+        <div class="panel panel-default">
+          <div class="panel-body">
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+
+{% endblock %}

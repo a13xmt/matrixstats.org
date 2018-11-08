@@ -1,0 +1,23 @@
+<div class="col-md-3">
+  <div class="panel {% if not s.server.first_seen_at %}panel-default{% elif s.server.is_active %}panel-success{% else %} panel-danger{% endif %}">
+    <div class="panel-heading">
+      <b>{% if s.server %}{{ s.server.hostname }}{% else %}-{% endif %}</b>
+      <div class="pull-right">
+        {% if s.is_verified %}<i>(verified)</i>{% endif %}
+        <a href="{% url 'uarea:edit_homeserver' pk=s.pk %}"><i class="fa fa-pencil text-muted"></i></a>
+        <a href="{% url 'uarea:homeserver_detail' pk=s.pk %}"><i class="fa fa-cog text-muted"></i></a>
+      </div>
+    </div>
+    <div class="panel-body">
+      <ul>
+        <li>pk: <a href="{% url 'user_area:homeserver_detail' pk=s.pk %}">{{ s.pk }}</a></li>
+        <li>Is verified: {{ s.is_verified}}</li>
+        <li>Last verified: {{ s.last_verified_at|default:"-" }}</li>
+        <li>Verification code: {{ s.verification_code }}</li>
+
+        <li>First seen at: {{ s.server.first_seen_at|default:"-" }}</li>
+        <li>Last seen at: {{ s.server.last_seen_at|default:"-" }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
