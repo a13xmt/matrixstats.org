@@ -1,0 +1,142 @@
+
+{% extends 'user_area/base.html' %}
+
+{% block title %}Edit homeserver{% endblock %}
+{% block header %}Edit homeserver{% endblock %}
+
+{% block content %}
+
+<div class="col-md-12">
+
+
+  {{ form.errors }}
+
+  {% if not server.is_verified %}
+    <div class="row">
+      <div class="col-lg-8 col-sm-12">
+        <div class="alert alert-warning" role="alert">
+          <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+          This homeserver is not verified. Any changes will be saved, but will take no effect. Please, <a class="alert-link" href="{% url 'uarea:homeserver_detail' pk=server.pk %}">validate</a> it in order to apply the changes.
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="row">
+      <div class="col-lg-4 col-sm-6">
+      <legend>Basic information</legend>
+        <div class="form-group col-lg-12">
+          <label>Title</label>
+          <input name="header" class="form-control" placeholder="What's your server name?" value="{{ form.header.value }}">
+        </div>
+
+        <div class="form-group col-lg-12">
+          <label>Description</label>
+          <textarea name="description" class="form-control" placeholder="What is the right words to describe your homeserver?">{{ form.description.value }}</textarea>
+        </div>
+
+        <div class="form-group col-lg-12">
+          <label>Code of conduct</label>
+          <textarea name="rules" class="form-control" placeholder="If you have some rules, you could add them. Text or URL.">{{ form.rules.value }}</textarea>
+          <small class="form-text text-muted"></small>
+        </div>
+
+      </div>
+
+
+      <div class="col-lg-4 col-sm-6">
+        <legend>Logo</legend>
+        <div class="form-group col-lg-12">
+          <label>Logo</label>
+          <img src="" />
+          <div class="input-group">
+            <input type="text" class="form-control" id="upload-file-info" placeholder="Select image file" readonly>
+            <label class="input-group-btn">
+              <span class="btn btn-default">Choose File
+                <input type="file" name="logo" style="display: none;"
+                      onchange="$('#upload-file-info').attr('placeholder', this.files[0].name)">
+              </span>
+            </label>
+          </div>
+          <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+          <br>
+          <span><input type="checkbox"> Remove</span>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <div class="row">
+
+      <div class="col-lg-8 col-md-12">
+        <legend>Additional information</legend>
+        <div class="form-group col-lg-6 col-md-6">
+          <label>Registration</label>
+          <select name="registration" class="form-control">
+            {% for value, text in form.fields.registration.choices %}
+              <option value="{{ value }}"
+                  {% if value == form.registration.value %}selected="selected"{% endif %}>
+                  {{ text }}
+              </option>
+            {% endfor %}
+          </select>
+          <small class="form-text text-muted">What is the current state of your homeserver registration?</small>
+        </div>
+
+
+        <div class="form-group col-lg-6 col-md-6">
+          <label>Population size</label>
+          <select name="server_load" class="form-control">
+            {% for value, text in form.fields.server_load.choices %}
+              <option value="{{ value }}"
+                  {% if value == form.server_load.value %}selected="selected"{% endif %}>
+                  {{ text }}
+              </option>
+            {% endfor %}
+          </select>
+          <small class="form-text text-muted">What is the population size of your homeserver (in terms of available resources)?</small>
+        </div>
+
+        <div class="form-group col-lg-6 col-md-6">
+          <label>Service</label>
+          <select name="payment_model" class="form-control">
+            {% for value, text in form.fields.payment_model.choices %}
+              <option value="{{ value }}"
+                  {% if value == form.payment_model.value %}selected="selected"{% endif %}>
+                  {{ text }}
+              </option>
+            {% endfor %}
+          </select>
+          <small class="form-text text-muted">What type of service do you provide?</small>
+        </div>
+
+        <div class="form-group col-lg-6 col-md-6">
+          <label>Maturity</label>
+          <select name="maturity" class="form-control">
+            {% for value, text in form.fields.maturity.choices %}
+              <option value="{{ value }}"
+                  {% if value == form.maturity.value %}selected="selected"{% endif %}>
+                  {{ text }}
+              </option>
+            {% endfor %}
+          </select>
+          <small class="form-text text-muted">How stable your homeserver is?</small>
+        </div>
+
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="form-group col-lg-8 col-sm-12">
+      <input type="submit" value="Update" class="btn btn-primary">
+    </div>
+
+  </form>
+
+</div>
+
+{% endblock %}
