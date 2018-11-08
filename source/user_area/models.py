@@ -27,6 +27,10 @@ class BoundServer(models.Model):
         ('c', 'Closed'),
         ('t', 'Closed (temporarily)')
     )
+    MATURITY_CHOICES = (
+        ('s', 'Stable'),
+        ('e', 'Experimental'),
+    )
 
     id = HashidAutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -39,6 +43,7 @@ class BoundServer(models.Model):
     description = models.TextField(blank=True, null=True)
     logo = models.ImageField(upload_to=upload_to, blank=True, null=True)
     rules = models.TextField(blank=True, null=True)
+    maturity = models.CharField(max_length=1, choices=MATURITY_CHOICES, default='s')
     server_load = models.CharField(max_length=1, choices=SERVER_LOAD_CHOICES, default='l')
     payment_model = models.CharField(max_length=1, choices=PAYMENT_MODEL_CHOICES, default='f')
     registration = models.CharField(max_length=1, choices=REGISTRATION_CHOICES, default='o')
