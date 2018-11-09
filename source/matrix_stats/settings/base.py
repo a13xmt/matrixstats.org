@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'defender',
     'crispy_forms',
+    'django_cleanup',
     'djcelery_email',
     'room_stats',
     'user_area',

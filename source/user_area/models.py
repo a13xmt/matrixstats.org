@@ -48,6 +48,12 @@ class BoundServer(models.Model):
     payment_model = models.CharField(max_length=1, choices=PAYMENT_MODEL_CHOICES, default='f')
     registration = models.CharField(max_length=1, choices=REGISTRATION_CHOICES, default='o')
 
+    def get_logo_url(self):
+        return '/static/%s' % (self.logo.name if self.logo else 'img/no-logo.png')
+
+    def get_hostname(self):
+        return self.server.hostname if self.server else "-"
+
     def __str__(self):
         return self.server.hostname if self.server else "-"
 

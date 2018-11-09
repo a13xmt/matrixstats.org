@@ -35,4 +35,5 @@ django-crispy-forms=1.7.2
 django-celery-email=2.0.1
 django-hashid-field=2.1.5
 dnspython=1.15.0
+django-cleanup=2.1.0
 
