@@ -11,7 +11,9 @@ def get_server_version(hostname):
         except (ConnectionError,) as ex:
             pass
         else:
-            if response.status_code == 200:
-                return response.json().get('versions', [])
+            try:
+                return response.json()['versions']
+            except:
+                return False
     return False
 
