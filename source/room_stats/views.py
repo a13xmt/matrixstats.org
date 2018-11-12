@@ -132,7 +132,7 @@ def list_rooms_by_category(request, category_name):
     return render_rooms_paginated(request, rooms, context)
 
 def list_rooms_by_random(request):
-    rooms = Room.objects.filter(members_count__gt=5).order_by('?')[:30]
+    rooms = Room.objects.filter(members_count__gt=50).order_by('?')[:30]
     context = {
         'rooms': rooms,
         'title': "Matrix Rooms: Random",

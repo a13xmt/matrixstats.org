@@ -19,9 +19,11 @@
 
     <h1><a href="{% url 'ratings' %}">Ratings</a></h1>
 
+  {% comment %}
   {% with rooms=new link='/new/monthly/' header='New rooms' %}
     {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
   {% endwith %}
+  {% endcomment %}
 
   {% with rooms=random link='/rooms/random' header='Random rooms' %}
     {% include "room_stats/widgets/scrollable_rooms_widget.html" %}
